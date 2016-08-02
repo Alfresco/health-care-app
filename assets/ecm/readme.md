@@ -29,7 +29,7 @@ Note that it was tested only with internal v.5.2 docker image._
 
 ## Creating Patient folders
 
-_TODO: alfresco JS api sample_
+### Using `curl`
 
 ```sh
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'Authorization: Basic <put-auth-here>' -d '{
@@ -39,6 +39,28 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
      "hc:doctor": "John Doe"
   }
 }' 'http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children?autoRename=true'
+```
+
+### Using `TypeScript`
+
+_TODO: needs explanation_
+
+```ts
+let body = {
+    name: 'Patient 02',
+    nodeType: 'hc:patientFolder',
+    properties: {
+        'hc:doctor': 'John Doe'
+    }
+};
+
+this.authService.getAlfrescoApi().nodes.addNode('-root-', body).then(
+    (data) => console.log(data),
+    (err) => {
+        window.alert('See console output for error details');
+        console.log(err);
+    }
+);
 ```
 
 ## See also
