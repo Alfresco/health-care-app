@@ -25,3 +25,4 @@ export { FormViewer } from './activiti/form-viewer.component';
 export { WebscriptComponent } from './webscript/webscript.component';
 export { AboutComponent } from './about/about.component';
 export { FilesComponent } from './files/files.component';
+export { PatientsComponent } from './patients/patients.component';

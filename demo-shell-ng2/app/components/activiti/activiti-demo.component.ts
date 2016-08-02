@@ -65,6 +65,10 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         ];
     }
 
+    ngOnInit() {
+
+    }
+
     onFilterClick(event: any) {
         this.taskFilter = event;
         this.activititasklist.load(this.taskFilter);

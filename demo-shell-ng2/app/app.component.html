@@ -12,13 +12,14 @@
 
             <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <a class="mdl-navigation__link" data-automation-id="files" href="" routerLink="/files">DocumentList</a>
-                <a class="mdl-navigation__link" data-automation-id="datatable" href="" routerLink="/datatable">DataTable</a>
-                <a class="mdl-navigation__link" data-automation-id="uploader" href="" routerLink="/uploader">Uploader</a>
-                <a class="mdl-navigation__link" data-automation-id="activiti" href="" routerLink="/activiti">Activiti</a>
-                <a class="mdl-navigation__link" data-automation-id="webscript" href="" routerLink="/webscript">Webscript</a>
-                <a class="mdl-navigation__link" data-automation-id="login" href="" routerLink="/login">Login</a>
-                <a class="mdl-navigation__link" data-automation-id="about" href="" routerLink="/about">About</a>
+                <a class="mdl-navigation__link" data-automation-id="files" href="" routerLink="/patients">Patients</a>
+                <a class="mdl-navigation__link" data-automation-id="files" href="" routerLink="/files">Files</a>
+                <!--<a class="mdl-navigation__link" data-automation-id="datatable" href="" routerLink="/datatable">DataTable</a>-->
+                <!--<a class="mdl-navigation__link" data-automation-id="uploader" href="" routerLink="/uploader">Uploader</a>-->
+                <!--<a class="mdl-navigation__link" data-automation-id="activiti" href="" routerLink="/activiti">Activiti</a>-->
+                <!--<a class="mdl-navigation__link" data-automation-id="webscript" href="" routerLink="/webscript">Webscript</a>-->
+                <!--<a class="mdl-navigation__link" data-automation-id="login" href="" routerLink="/login">Login</a>-->
+                <!--<a class="mdl-navigation__link" data-automation-id="about" href="" routerLink="/about">About</a>-->
             </nav>
 
             <!-- Right aligned menu below button -->
@@ -35,18 +36,20 @@
                 <li *ngIf="!isLoggedIn()" class="mdl-menu__item">More</li>
                 <a *ngIf="!isLoggedIn()" class="mdl-menu__item" routerLink="/login">Login</a>
                 <li *ngIf="isLoggedIn()" class="mdl-menu__item" (click)="onLogout($event)">Logout</li>
+                <a class="mdl-menu__item" routerLink="/about">About</a>
             </ul>
         </div>
     </header>
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Components List</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="" routerLink="/files" (click)="hideDrawer()">DocumentList Demo</a>
-            <a class="mdl-navigation__link" href="" routerLink="/datatable" (click)="hideDrawer()">DataTable Demo</a>
-            <a class="mdl-navigation__link" href="" routerLink="/uploader" (click)="hideDrawer()">Uploader Demo</a>
-            <a class="mdl-navigation__link" href="" routerLink="/login" (click)="hideDrawer()">Login Demo</a>
-            <a class="mdl-navigation__link" href="" routerLink="/activiti" (click)="hideDrawer()">Activiti Components Demo</a>
-            <a class="mdl-navigation__link" href="" routerLink="/webscript" (click)="hideDrawer()">Webscript</a>
+            <a class="mdl-navigation__link" href="" routerLink="/patients" (click)="hideDrawer()">Patients</a>
+            <a class="mdl-navigation__link" href="" routerLink="/files" (click)="hideDrawer()">Files</a>
+            <!--<a class="mdl-navigation__link" href="" routerLink="/datatable" (click)="hideDrawer()">DataTable Demo</a>-->
+            <!--<a class="mdl-navigation__link" href="" routerLink="/uploader" (click)="hideDrawer()">Uploader Demo</a>-->
+            <a class="mdl-navigation__link" href="" routerLink="/login" (click)="hideDrawer()">Login</a>
+            <!--<a class="mdl-navigation__link" href="" routerLink="/activiti" (click)="hideDrawer()">Activiti Components Demo</a>-->
+            <!--<a class="mdl-navigation__link" href="" routerLink="/webscript" (click)="hideDrawer()">Webscript</a>-->
             <a class="mdl-navigation__link" href="" routerLink="/about" (click)="hideDrawer()">About</a>
         </nav>
         <span class="mdl-layout-title">ECM host</span>

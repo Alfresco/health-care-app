@@ -26,12 +26,14 @@ import {
     ActivitiDemoComponent,
     WebscriptComponent,
     AboutComponent,
-    FormViewer
+    FormViewer,
+    PatientsComponent
 } from './components/index';
 
 export const routes: RouterConfig = [
-    { path: 'home', component: FilesComponent },
+    { path: 'home', component: PatientsComponent },
     { path: 'files', component: FilesComponent },
+    { path: 'patients', component: PatientsComponent },
     { path: 'datatable', component: DataTableDemoComponent },
     { path: '', component: LoginDemoComponent },
     { path: 'uploader', component: UploadButtonComponent },
