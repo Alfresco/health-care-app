@@ -1,0 +1,6 @@
+*.log
+node_modules
+workspace.xml
+.idea/
+dist/
+!systemjs.config.js
