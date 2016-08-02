@@ -21,16 +21,14 @@ import {
     DOCUMENT_LIST_DIRECTIVES,
     DOCUMENT_LIST_PROVIDERS,
     DocumentActionsService,
-    DocumentList,
-    ContentActionHandler,
-    DocumentActionModel,
-    FolderActionModel
+    DocumentList
 } from 'ng2-alfresco-documentlist';
 import {
     MDL,
     AlfrescoContentService,
     CONTEXT_MENU_DIRECTIVES,
-    AlfrescoPipeTranslate
+    AlfrescoPipeTranslate,
+    AlfrescoAuthenticationService
 } from 'ng2-alfresco-core';
 import { PaginationComponent } from 'ng2-alfresco-datatable';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
@@ -62,9 +60,6 @@ export class PatientsComponent implements OnInit {
     fileName: string;
     mimeType: string;
     fileShowed: boolean = false;
-    multipleFileUpload: boolean = false;
-    folderUpload: boolean = false;
-    acceptedFilesTypeShow: boolean = false;
 
     acceptedFilesType: string = '.jpg,.pdf,.js';
 
@@ -74,20 +69,8 @@ export class PatientsComponent implements OnInit {
     constructor(private contentService: AlfrescoContentService,
                 private documentActions: DocumentActionsService,
                 private formService: FormService,
-                private router: Router) {
-        documentActions.setHandler('my-handler', this.myDocumentActionHandler.bind(this));
-    }
-
-    myDocumentActionHandler(obj: any) {
-        window.alert('my custom action handler');
-    }
-
-    myCustomAction1(event) {
-        alert('Custom document action for ' + event.value.entry.name);
-    }
-
-    myFolderAction1(event) {
-        alert('Custom folder action for ' + event.value.entry.name);
+                private router: Router,
+                private authService: AlfrescoAuthenticationService) {
     }
 
     showFile(event) {
@@ -107,50 +90,30 @@ export class PatientsComponent implements OnInit {
         }
     }
 
-    toggleMultipleFileUpload() {
-        this.multipleFileUpload = !this.multipleFileUpload;
-        return this.multipleFileUpload;
-    }
-
-    toggleFolder() {
-        this.multipleFileUpload = false;
-        this.folderUpload = !this.folderUpload;
-        return this.folderUpload;
-    }
-
-    toggleAcceptedFilesType() {
-        this.acceptedFilesTypeShow = !this.acceptedFilesTypeShow;
-        return this.acceptedFilesTypeShow;
-    }
-
     ngOnInit() {
-        this.formService.getProcessDefinitions().subscribe(
-            defs => this.setupBpmActions(defs || []),
-            err => console.log(err)
-        );
     }
 
-    viewActivitiForm(event?: any) {
-        this.router.navigate(['/activiti/tasks', '1']);
-    }
-
-    private setupBpmActions(actions: any[]) {
-        actions.map(def => {
-            let documentAction = new DocumentActionModel();
-            documentAction.title = 'Activiti: ' + (def.name || 'Unknown process');
-            documentAction.handler = this.getBpmActionHandler(def);
-            this.documentList.actions.push(documentAction);
-
-            let folderAction = new FolderActionModel();
-            folderAction.title = 'Activiti: ' + (def.name || 'Unknown process');
-            folderAction.handler = this.getBpmActionHandler(def);
-            this.documentList.actions.push(folderAction);
-        });
-    }
-
-    private getBpmActionHandler(processDefinition: any): ContentActionHandler {
-        return function (obj: any, target?: any) {
-            window.alert(`Starting BPM process: ${processDefinition.id}`);
-        }.bind(this);
+    onCreateFolderClick(folderName: string) {
+        if (folderName) {
+            let body = {
+                name: folderName,
+                nodeType: 'hc:patientFolder',
+                properties: {
+                    'hc:doctor': 'John Doe'
+                },
+                relativePath: this.currentPath
+            };
+            let opts = {};
+            this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+                (data) => {
+                    console.log(data);
+                    this.documentList.reload();
+                },
+                (err) => {
+                    window.alert('See console output for error details');
+                    console.log(err);
+                }
+            );
+        }
     }
 }
