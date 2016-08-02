@@ -76,18 +76,23 @@ export class UploadButtonComponent {
     @Output()
     onSuccess = new EventEmitter();
 
+    @Output()
+    onError = new EventEmitter();
+
+    @Output()
+    createFolder = new EventEmitter();
+
     translate: AlfrescoTranslationService;
 
 
     constructor(public el: ElementRef,
                 private _uploaderService: UploadService,
                 translate: AlfrescoTranslationService) {
-        console.log('UploadComponent constructor', el);
 
         let formFields = this.createFormFields();
         this._uploaderService.setOptions(formFields);
         this.translate = translate;
-        this.translate.addTranslationFolder('node_modules/ng2-alfresco-upload');
+        this.translate.addTranslationFolder('node_modules/ng2-alfresco-upload/dist/src');
     }
 
     /**
@@ -126,6 +131,7 @@ export class UploadButtonComponent {
                     error => {
                     let errorMessagePlaceholder = this.getErrorMessage(error.response);
                     if (errorMessagePlaceholder) {
+                        this.onError.emit({value: errorMessagePlaceholder});
                         let errorMessage = this.formatString(errorMessagePlaceholder, [directoryName]);
                         if (errorMessage) {
                             this._showErrorNotificationBar(errorMessage);
@@ -220,7 +226,7 @@ export class UploadButtonComponent {
                 timeout: 3000,
                 actionHandler: function () {
                     latestFilesAdded.forEach((uploadingFileModel: FileModel) => {
-                        uploadingFileModel.setAbort();
+                        uploadingFileModel.emitAbort();
                     });
                 },
                 actionText: actionTranslate.value

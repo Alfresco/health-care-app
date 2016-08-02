@@ -20,23 +20,53 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AlfrescoSettingsService {
 
-    static DEFAULT_HOST_ADDRESS: string = 'http://127.0.0.1:8080';
-    static DEFAULT_CONTEXT_PATH: string = '/alfresco';
-    static DEFAULT_BASE_API_PATH: string = '/api/-default-/public/alfresco/versions/1';
+    static DEFAULT_ECM_ADDRESS: string = 'http://127.0.0.1:8080';
+    static DEFAULT_BPM_ADDRESS: string = 'http://127.0.0.1:9999';
 
-    private _host: string = AlfrescoSettingsService.DEFAULT_HOST_ADDRESS;
-    private _contextPath = AlfrescoSettingsService.DEFAULT_CONTEXT_PATH;
-    private _apiBasePath: string = AlfrescoSettingsService.DEFAULT_BASE_API_PATH;
+    static DEFAULT_ECM_CONTEXT_PATH: string = '/alfresco';
+    static DEFAULT_BPM_CONTEXT_PATH: string = '/activiti-app';
 
-    public get host(): string {
-        return this._host;
+    static DEFAULT_ECM_BASE_API_PATH: string = '/api/-default-/public/alfresco/versions/1';
+
+    private _ecmHost: string = AlfrescoSettingsService.DEFAULT_ECM_ADDRESS;
+    private _bpmHost: string = AlfrescoSettingsService.DEFAULT_BPM_ADDRESS;
+
+    private _ecmContextPath = AlfrescoSettingsService.DEFAULT_ECM_CONTEXT_PATH;
+    private _bpmContextPath = AlfrescoSettingsService.DEFAULT_BPM_CONTEXT_PATH;
+
+    private _apiECMBasePath: string = AlfrescoSettingsService.DEFAULT_ECM_BASE_API_PATH;
+
+    private providers: string[] = ['ECM', 'BPM'];
+
+    public get ecmHost(): string {
+        return this._ecmHost;
     }
 
-    public set host(value: string) {
-        this._host = value;
+    public set ecmHost(value: string) {
+        this._ecmHost = value;
     }
 
-    getApiBaseUrl(): string {
-        return this._host + this._contextPath + this._apiBasePath;
+    public get bpmHost(): string {
+        return this._bpmHost;
+    }
+
+    public set bpmHost(value: string) {
+        this._bpmHost = value;
+    }
+
+    public getBPMApiBaseUrl(): string {
+        return this._bpmHost + this._bpmContextPath;
+    }
+
+    public getECMApiBaseUrl(): string {
+        return this._ecmHost + this._ecmContextPath + this._apiECMBasePath;
+    }
+
+    public getProviders(): string [] {
+        return this.providers;
+    }
+
+    public setProviders(providers: string []) {
+        this.providers = providers;
     }
 }

@@ -17,7 +17,7 @@
 
 import { Component } from '@angular/core';
 import { AlfrescoLoginComponent } from 'ng2-alfresco-login';
-import { Router, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
+import { ROUTER_DIRECTIVES, Router } from '@angular/router';
 
 declare let __moduleName: string;
 
@@ -30,16 +30,43 @@ declare let __moduleName: string;
 })
 export class LoginDemoComponent {
 
+    providers: string [] = ['ECM'];
+
     constructor(public router: Router) {
     }
 
     onLogin($event) {
         console.log($event);
-        this.router.navigate(['Home']);
+        this.router.navigate(['/home']);
     }
 
     onError($event) {
         console.log($event);
+    }
+
+    toggleECM(checked) {
+        if (checked) {
+            this.providers.push('ECM');
+        } else {
+            this.removeElement('ECM');
+        }
+    }
+
+    toggleBPM(checked) {
+        if (checked) {
+            this.providers.push('BPM');
+        } else {
+            this.removeElement('BPM');
+        }
+    }
+
+    removeElement(el: string) {
+        for (let i = 0; i < this.providers.length; i++) {
+            if (this.providers[i] === el) {
+                this.providers.splice(i, 1);
+                return false;
+            }
+        }
     }
 
 }

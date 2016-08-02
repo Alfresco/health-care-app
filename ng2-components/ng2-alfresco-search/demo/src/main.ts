@@ -41,7 +41,7 @@ import {
                     operations.
                </div>
                <hr>
-                <div class="container" >
+                <div class="container" *ngIf="authenticated">
                     <alfresco-search-control [searchTerm]="searchTerm"
                         (searchChange)="searchTermChange($event);"></alfresco-search-control>
                     <alfresco-search [searchTerm]="searchTerm"></alfresco-search>
@@ -58,7 +58,7 @@ class SearchDemo implements OnInit {
 
     public searchTerm: string = 'test';
 
-    public host: string = 'http://devproducts-platform.alfresco.me';
+    public ecmHost: string = 'http://devproducts-platform.alfresco.me';
 
     token: string;
 
@@ -66,20 +66,13 @@ class SearchDemo implements OnInit {
                 private alfrescoSettingsService: AlfrescoSettingsService,
                 translation: AlfrescoTranslationService) {
 
-        alfrescoSettingsService.host = this.host;
-        if (localStorage.getItem('token')) {
-            this.token = localStorage.getItem('token');
-        }
+        alfrescoSettingsService.ecmHost = this.ecmHost;
 
         translation.addTranslationFolder();
     }
 
-    public updateToken(): void {
-        localStorage.setItem('token', this.token);
-    }
-
     public updateHost(): void {
-        this.alfrescoSettingsService.host = this.host;
+        this.alfrescoSettingsService.ecmHost = this.ecmHost;
         this.login();
     }
 
@@ -88,9 +81,10 @@ class SearchDemo implements OnInit {
     }
 
     login() {
-        this.authService.login('admin', 'admin').subscribe(
+        this.authService.login('admin', 'admin', ['ECM']).subscribe(
             token => {
                 console.log(token);
+                this.token = token;
                 this.authenticated = true;
             },
             error => {

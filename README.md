@@ -3,12 +3,16 @@
 [![Join the chat at https://gitter.im/Alfresco/alfresco-ng2-components](https://badges.gitter.im/Alfresco/alfresco-ng2-components.svg)](https://gitter.im/Alfresco/alfresco-ng2-components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <p>
-  <a title='Build Status' href="https://travis-ci.org/Alfresco/alfresco-ng2-components">
+  <a title='Build Status Travis' href="https://travis-ci.org/Alfresco/alfresco-ng2-components">
     <img src='https://travis-ci.org/Alfresco/alfresco-ng2-components.svg?branch=master'  alt='travis
     Status' />
   </a>
-  <a href='https://coveralls.io/github/Alfresco/alfresco-ng2-components'>
-    <img src='https://coveralls.io/repos/github/Alfresco/alfresco-ng2-components/badge.svg?t=NzxWxh' alt='Coverage Status' />
+  <a title='Build Status AppVeyor' href="https://ci.appveyor.com/project/alfresco/alfresco-ng2-components">
+    <img src='https://ci.appveyor.com/api/projects/status/github/Alfresco/alfresco-ng2-components'  alt='travis
+    Status' />
+  </a>
+  <a href='https://codecov.io/gh/Alfresco/alfresco-ng2-components'>
+    <img src='https://img.shields.io/codecov/c/github/Alfresco/alfresco-ng2-components/master.svg?maxAge=2592000' alt='Coverage Status' />
   </a>
   <a href='https://github.com/Alfresco/alfresco-ng2-components/blob/master/LICENSE'>
      <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
@@ -29,11 +33,7 @@
   
 <p align="center">
   <img title="alfresco" alt='alfresco' src='assets/alfresco.png'  width="280px" height="150px"></img>
-  <img title="angular2" alt='angular2' src='assets/angular2.png'  width="150px" height="150px"></img>
-</p>
-
-<p align="center">
-  <img title="browser stack" alt='browser stack' src='assets/browserstack.png'  width="350px" height="225px"></img>
+  <img title="angular2" alt='angular2' src='assets/angular2.png'  width="150px" height="150px"></img>    
 </p>
 
 ## Introduction
@@ -55,6 +55,7 @@ The following is a list of some of the components that you can use when building
 - [Viewer](ng2-components/ng2-alfresco-viewer/README.md)
 - [Login](ng2-components/ng2-alfresco-login/README.md)
 - [Upload](ng2-components/ng2-alfresco-upload/README.md)
+- [Webscript viewer](ng2-components/ng2-alfresco-webscript/README.md)
 
 You can browse all the components at the following [page](http://devproducts.alfresco.com/).
 

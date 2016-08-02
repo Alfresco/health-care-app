@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FORM_DIRECTIVES, ControlGroup, FormBuilder, Validators } from '@angular/common';
 import {
     AlfrescoTranslationService,
@@ -40,6 +40,9 @@ export class AlfrescoLoginComponent {
     baseComponentPath = __moduleName.replace('/alfresco-login.component.js', '');
 
     isPasswordShow: boolean = false;
+
+    @Input()
+    providers: string [] ;
 
     @Output()
     onSuccess = new EventEmitter();
@@ -85,11 +88,10 @@ export class AlfrescoLoginComponent {
             }
         };
 
-        translate.addTranslationFolder('node_modules/ng2-alfresco-login');
+        translate.addTranslationFolder('node_modules/ng2-alfresco-login/dist/src');
 
         this.form.valueChanges.subscribe(data => this.onValueChanged(data));
 
-        // this.onValueChanged(null);
     }
 
     /**
@@ -102,7 +104,7 @@ export class AlfrescoLoginComponent {
         if (event) {
             event.preventDefault();
         }
-        this.auth.login(value.username, value.password)
+        this.auth.login(value.username, value.password, this.providers)
             .subscribe(
                 (token: any) => {
                     this.success = true;

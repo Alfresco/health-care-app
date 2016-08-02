@@ -4,15 +4,14 @@
   "version": "0.2.0",
   "author": "Alfresco Software, Ltd.",
   "scripts": {
+    "postinstall": "typings install",
     "clean": "rimraf node_modules typings",
-    "start": "npm run tslint && typings install && concurrently \"npm run tsc:w\" \"license-check\"  \"npm run serve\" ",
+    "start": "npm run tslint && concurrently \"npm run tsc:w\" \"license-check\"  \"npm run serve\" ",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "serve": "node browser-sync-config.js",
+    "serve": "wsrv -o -s -l -p 3000 -a 0.0.0.0 -x ./server/versions.js",
     "typings": "typings install",
-    "tslint": "npm run tslint-src && npm run tslint-root",
-    "tslint-src": "tslint -c tslint.json app/{,**/}**.ts",
-    "tslint-root": "tslint -c tslint.json *.ts",
+    "tslint": "tslint -c tslint.json *.ts && tslint -c tslint.json app/{,**/}**.ts",
     "licensecheck": "license-check"
   },
   "repository": {
@@ -75,34 +74,30 @@
     "pdfjs-dist": "1.5.258",
     "flag-icon-css": "2.3.0",
 
-    "alfresco-js-api": "0.1.0",
+    "alfresco-js-api": "0.2.1",
     "ng2-alfresco-core": "0.2.0",
     "ng2-alfresco-datatable": "0.2.0",
     "ng2-alfresco-documentlist": "0.2.0",
     "ng2-alfresco-login": "0.2.0",
     "ng2-alfresco-search": "0.2.0",
     "ng2-alfresco-upload": "0.2.0",
-    "ng2-alfresco-viewer": "0.2.0"
+    "ng2-alfresco-viewer": "0.2.0",
+    "ng2-activiti-form": "0.2.0",
+    "ng2-activiti-tasklist": "0.2.0",
+    "ng2-alfresco-webscript": "0.2.0"
   },
   "devDependencies": {
-    "browser-sync": "2.10.0",
     "concurrently": "2.0.0",
-    "connect-history-api-fallback": "1.2.0",
     "license-check": "1.1.5",
     "tslint": "3.8.1",
     "typescript": "1.8.10",
-    "typings": "1.0.4"
+    "typings": "1.0.4",
+    "wsrv": "0.1.4"
   },
   "license-check-config": {
     "src": [
-      "**/*.js",
-      "**/*.ts",
-      "!/**/coverage/**/*",
-      "!/**/demo/**/*",
-      "!/**/node_modules/**/*",
-      "!/**/typings/**/*",
-      "!*.js",
-      "!app/js/xml2json.js"
+      "./app/**/*.js",
+      "!./app/js/xml2json.js"
     ],
     "path": "assets/license_header.txt",
     "blocking": true,

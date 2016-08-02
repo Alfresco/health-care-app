@@ -1,11 +1,15 @@
 # Alfresco Login Component for Angular 2
 <p>
-  <a title='Build Status' href="https://travis-ci.org/Alfresco/alfresco-ng2-components">
+  <a title='Build Status Travis' href="https://travis-ci.org/Alfresco/alfresco-ng2-components">
     <img src='https://travis-ci.org/Alfresco/alfresco-ng2-components.svg?branch=master'  alt='travis
     Status' />
   </a>
-  <a href='https://coveralls.io/github/Alfresco/alfresco-ng2-components'>
-    <img src='https://coveralls.io/repos/github/Alfresco/alfresco-ng2-components/badge.svg?t=NzxWxh' alt='Coverage Status' />
+  <a title='Build Status AppVeyor' href="https://ci.appveyor.com/project/alfresco/alfresco-ng2-components">
+    <img src='https://ci.appveyor.com/api/projects/status/github/Alfresco/alfresco-ng2-components'  alt='travis
+    Status' />
+  </a>
+  <a href='https://codecov.io/gh/Alfresco/alfresco-ng2-components'>
+    <img src='https://img.shields.io/codecov/c/github/Alfresco/alfresco-ng2-components/master.svg?maxAge=2592000' alt='Coverage Status' />
   </a>
   <a href='https://www.npmjs.com/package/ng2-alfresco-login'>
     <img src='https://img.shields.io/npm/dt/ng2-alfresco-login.svg' alt='npm downloads' />
@@ -46,7 +50,7 @@ Components included:
 Add the following dependency to your index.html:
 
 ```html
-<script src="node_modules/alfresco-js-api/bundle.js"></script>
+<script src="node_modules/alfresco-js-api/dist/alfresco-js-api.js"></script>
 ```
 
 The following component needs to be added to your systemjs.config: 
@@ -80,7 +84,7 @@ Also make sure you include these dependencies in your .html page:
 
 
 ```html
-<alfresco-login></alfresco-login>
+<alfresco-login providers=['ECM','BPM']></alfresco-login>
 ```
 
 Example of an App that use Alfresco login component :
@@ -100,7 +104,12 @@ import {
 
 @Component({
     selector: 'my-app',
-    template: '<alfresco-login (onSuccess)="mySuccessMethod($event)" (onError)="myErrorMethod($event)"></alfresco-login>',
+    template: '
+    <alfresco-login 
+        providers=['ECM'] 
+        (onSuccess)="mySuccessMethod($event)" 
+        (onError)="myErrorMethod($event)">
+    </alfresco-login>',
     directives: [AlfrescoLoginComponent]
 })
 export class AppComponent {
@@ -133,8 +142,14 @@ bootstrap(AppComponent, [
 
 #### Options
 
-**method**: {string} optional) default POST. The method attribute specifies how to send form-data
-The form-data can be sent as URL variables (with method="get") or as HTTP post transaction (with method="post").<br />
+**providers**: { string[] } optional) default ECM. 
+Using the providers attribute, you can specify in which system 
+(ECM or BPM) you want to be logged in.
+By selecting one of the options only the relative components  will be
+ accesible. For instance if you activate the ECM login then only the
+   ECM component will be visible,same behaviour for BPM selection.
+You can also specify ECM and BPM, in this case both system components
+ are accessible.<br />
 
 ## Build from sources
 Alternatively you can build component from sources with the following commands:
