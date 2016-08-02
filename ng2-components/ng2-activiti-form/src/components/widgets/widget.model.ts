@@ -128,9 +128,9 @@ export class FormFieldModel extends FormWidgetModel {
          */
         // TODO: needs review
         if (json.type === FormFieldTypes.DROPDOWN) {
-           if (value === '') {
-               value = 'empty';
-           }
+            if (value === '') {
+                value = 'empty';
+            }
         }
 
         /*
@@ -337,7 +337,7 @@ export class FormModel {
         return this._taskId;
     }
 
-    get taskName(): string{
+    get taskName(): string {
         return this._taskName;
     }
 
@@ -372,7 +372,7 @@ export class FormModel {
             this._id = json.id;
             this._name = json.name;
             this._taskId = json.taskId;
-            this._taskName = json.taskName || this.UNSET_TASK_NAME;
+            this._taskName = json.taskName || json.name || this.UNSET_TASK_NAME;
 
             let tabCache: WidgetModelCache<TabModel> = {};
 
@@ -383,7 +383,7 @@ export class FormModel {
                 return model;
             });
 
-            this.fields = (json.fields || []).map(obj => new ContainerModel(this, obj));
+            this.fields = (json.fields || json.formDefinition.fields || []).map(obj => new ContainerModel(this, obj));
             for (let i = 0; i < this.fields.length; i++) {
                 let field = this.fields[i];
                 if (field.tab) {
@@ -394,17 +394,33 @@ export class FormModel {
                 }
             }
 
-            let saveOutcome = new FormOutcomeModel(this, { id: '$save', name: 'Save' });
-            saveOutcome.isSystem = true;
+            if (this.isATaskForm()) {
+                let saveOutcome = new FormOutcomeModel(this, {id: '$save', name: 'Save'});
+                saveOutcome.isSystem = true;
 
-            let completeOutcome = new FormOutcomeModel(this, { id: '$complete', name: 'Complete' });
-            completeOutcome.isSystem = true;
+                let completeOutcome = new FormOutcomeModel(this, {id: '$complete', name: 'Complete'});
+                completeOutcome.isSystem = true;
 
-            let customOutcomes = (json.outcomes || []).map(obj => new FormOutcomeModel(this, obj));
+                let customOutcomes = (json.outcomes || []).map(obj => new FormOutcomeModel(this, obj));
 
-            this.outcomes = [saveOutcome].concat(
-                customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
-            );
+                this.outcomes = [saveOutcome].concat(
+                    customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
+                );
+            }else{
+                let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
+                saveOutcome.isSystem = true;
+
+                this.outcomes = [saveOutcome];
+            }
+
         }
+    }
+
+    /**
+     * Check if the form is associated to a task or if is only the form definition
+     * @returns {boolean}
+     */
+    private isATaskForm(): boolean {
+        return this._json.fields ? true : false;
     }
 }

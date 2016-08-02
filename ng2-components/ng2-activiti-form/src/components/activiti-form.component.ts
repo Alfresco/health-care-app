@@ -32,6 +32,16 @@ import { ContainerWidget } from './widgets/container/container.widget';
 declare let __moduleName: string;
 declare var componentHandler;
 
+/**
+ *
+ * ActivitiForm can show form 3 type of form:
+ *   1) Form attached to a task passing the {taskId}.
+ *   2) Form that are only defined with the {formId}, in this case you can pass also {saveOption} as parameter to tell what is the function
+ *      to call on the save action.
+ *   3) Form that are only defined with the {formName}, in this case you can pass also {saveOption} as parameter to tell what is the function
+ *      to call on the save action.
+ * @returns {ActivitiForm} .
+ */
 @Component({
     moduleId: __moduleName,
     selector: 'activiti-form',
@@ -45,6 +55,15 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Input()
     taskId: string;
 
+    @Input()
+    formId: string;
+
+    @Input()
+    formName: string;
+
+    @Input()
+    saveOption: Function;
+
     form: FormModel;
     debugMode: boolean = false;
 
@@ -52,11 +71,18 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         return this.form ? true : false;
     }
 
-    constructor(private formService: FormService) {}
+    constructor(private formService: FormService) {
+    }
 
     ngOnInit() {
         if (this.taskId) {
             this.loadForm(this.taskId);
+        }
+        if (this.formId) {
+            this.getFormDefinitionById(this.formId);
+        }
+        if (this.formName) {
+            this.getFormDefinitionByName(this.formName);
         }
     }
 
@@ -72,6 +98,16 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         if (taskId && taskId.currentValue) {
             this.loadForm(taskId.currentValue);
         }
+
+        let formId = changes['formId'];
+        if (this.formId && formId.currentValue) {
+            this.getFormDefinitionById(this.formId);
+        }
+
+        let formName = changes['formName'];
+        if (this.formName && formName.currentValue) {
+            this.getFormDefinitionByName(this.formName);
+        }
     }
 
 
@@ -86,6 +122,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                     return this.completeTaskForm();
                 }
 
+                if (outcome.id === '$custom') {
+                    this.saveOption(this.form.values);
+                }
             } else {
                 // Note: Activiti is using NAME field rather than ID for outcomes
                 if (outcome.name) {
@@ -99,6 +138,12 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         if (this.taskId) {
             this.loadForm(this.taskId);
         }
+        if (this.formId) {
+            this.getFormDefinitionById(this.formId);
+        }
+        if (this.formName) {
+            this.getFormDefinitionByName(this.formName);
+        }
     }
 
     private loadForm(taskId: string) {
@@ -106,6 +151,29 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             .getTaskForm(taskId)
             .subscribe(
                 form => this.form = new FormModel(form),
+                err => console.log(err)
+            );
+    }
+
+    private getFormDefinitionById(formId: string) {
+        this.formService
+            .getFormDefinitionById(formId)
+            .subscribe(
+                form => this.form = new FormModel(form),
+                err => console.log(err)
+            );
+    }
+
+    private getFormDefinitionByName(formName: string) {
+        this.formService
+            .getFormDefinitionByName(formName)
+            .subscribe(
+                id => {
+                    this.formService.getFormDefinitionById(id).subscribe(
+                        form => this.form = new FormModel(form),
+                        err => console.log(err)
+                    );
+                },
                 err => console.log(err)
             );
     }
@@ -131,5 +199,4 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                 (err) => window.alert(err)
             );
     }
-
 }

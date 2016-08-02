@@ -30,7 +30,8 @@ import {
     MDL,
     AlfrescoContentService,
     CONTEXT_MENU_DIRECTIVES,
-    AlfrescoPipeTranslate
+    AlfrescoPipeTranslate,
+    AlfrescoAuthenticationService
 } from 'ng2-alfresco-core';
 import { PaginationComponent } from 'ng2-alfresco-datatable';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
@@ -38,6 +39,7 @@ import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
 
 declare let __moduleName: string;
+declare let AlfrescoApi: any;
 
 @Component({
     moduleId: __moduleName,
@@ -74,7 +76,8 @@ export class FilesComponent implements OnInit {
     constructor(private contentService: AlfrescoContentService,
                 private documentActions: DocumentActionsService,
                 private formService: FormService,
-                private router: Router) {
+                private router: Router,
+                private authService: AlfrescoAuthenticationService) {
         documentActions.setHandler('my-handler', this.myDocumentActionHandler.bind(this));
     }
 
@@ -121,6 +124,14 @@ export class FilesComponent implements OnInit {
     toggleAcceptedFilesType() {
         this.acceptedFilesTypeShow = !this.acceptedFilesTypeShow;
         return this.acceptedFilesTypeShow;
+    }
+
+    createFolder(){
+        this.authService.getAlfrescoApi().nodes.createFolderAutoRename('newFolderName').then(function (data) {
+            console.log('The folder is created in root');
+        }, function (error) {
+            console.log('Error in creation of this folder or folder already exist' + error);
+        });
     }
 
     ngOnInit() {
