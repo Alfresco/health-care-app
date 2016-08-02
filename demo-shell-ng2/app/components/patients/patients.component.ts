@@ -34,6 +34,7 @@ import { PaginationComponent } from 'ng2-alfresco-datatable';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
+import { PatientModel } from './patient.model';
 
 declare let __moduleName: string;
 
@@ -66,11 +67,12 @@ export class PatientsComponent implements OnInit {
     @ViewChild(DocumentList)
     documentList: DocumentList;
 
+    newPatient: PatientModel;
+
     constructor(private contentService: AlfrescoContentService,
-                private documentActions: DocumentActionsService,
-                private formService: FormService,
                 private router: Router,
                 private authService: AlfrescoAuthenticationService) {
+        this.newPatient = new PatientModel();
     }
 
     showFile(event) {
@@ -93,19 +95,22 @@ export class PatientsComponent implements OnInit {
     ngOnInit() {
     }
 
-    onCreateFolderClick(folderName: string) {
-        if (folderName) {
+    onCreateNewPatientClick() {
+        if (this.newPatient && this.newPatient.folderName) {
             let body = {
-                name: folderName,
+                name: this.newPatient.folderName,
                 nodeType: 'hc:patientFolder',
                 properties: {
-                    'hc:doctor': 'John Doe'
+                    'hc:firstName': this.newPatient.firstName,
+                    'hc:lastName': this.newPatient.lastName,
+                    'hc:doctor': this.newPatient.doctor
                 },
                 relativePath: this.currentPath
             };
             let opts = {};
             this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
                 (data) => {
+                    this.newPatient = new PatientModel();
                     console.log(data);
                     this.documentList.reload();
                 },

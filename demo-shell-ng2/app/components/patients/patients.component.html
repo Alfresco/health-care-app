@@ -34,6 +34,18 @@
                         </content-column>
                         -->
                         <content-column
+                            title="First Name"
+                            key="properties.hc:firstName"
+                            sortable="true"
+                            class="desktop-only">
+                        </content-column>
+                        <content-column
+                            title="Last Name"
+                            key="properties.hc:lastName"
+                            sortable="true"
+                            class="desktop-only">
+                        </content-column>
+                        <content-column
                             title="Doctor"
                             key="properties.hc:doctor"
                             sortable="true"
@@ -43,7 +55,7 @@
                             title="{{'DOCUMENT_LIST.COLUMNS.CREATED_ON' | translate}}"
                             key="createdAt"
                             type="date"
-                            format="medium"
+                            format="shortDate"
                             sortable="true"
                             class="desktop-only">
                         </content-column>
@@ -79,19 +91,39 @@
 </div>
 
 <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--12-col">
-        <div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="folderName" #folderName>
-                <label class="mdl-textfield__label" for="folderName">Patient Name</label>
-            </div>
-        </div>
-        <div>
-            <button
-                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                (click)="onCreateFolderClick(folderName.value)">Create Patient Folder</button>
+    <div class="md-cell mdl-cell--12-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="patient-folderName" [(ngModel)]="newPatient.folderName">
+            <label class="mdl-textfield__label" for="patient-folderName">Folder Name</label>
         </div>
     </div>
+    <div class="md-cell mdl-cell--12-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="patient-firstName" [(ngModel)]="newPatient.firstName">
+            <label class="mdl-textfield__label" for="patient-firstName">First Name</label>
+        </div>
+    </div>
+    <div class="md-cell mdl-cell--12-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="patient-lastName" [(ngModel)]="newPatient.lastName">
+            <label class="mdl-textfield__label" for="patient-lastName">Last Name</label>
+        </div>
+    </div>
+    <div class="md-cell mdl-cell--12-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="patient-doctor" [(ngModel)]="newPatient.doctor">
+            <label class="mdl-textfield__label" for="patient-doctor">Doctor</label>
+        </div>
+    </div>
+
+    <div class="mdl-cell mdl-cell--12-col">
+        <button
+            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+            (click)="onCreateNewPatientClick()">
+            Create Patient
+        </button>
+    </div>
+
 </div>
 
 
