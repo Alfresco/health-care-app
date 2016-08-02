@@ -9,3 +9,4 @@ dist/
 # docker files
 docker-compose.yml
 Dockerfile
+!app/js/xml2json.js
