@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="visit_process" name="Visit_Process" isExecutable="true">
+    <startEvent id="start" activiti:initiator="initiator"/>
+    <sequenceFlow id="sequenceFlow1" sourceRef="start" targetRef="human-step-1470068201924-864"/>
+    <userTask id="human-step-1470068201924-864" name="Human step" activiti:assignee="${initiator}" activiti:formKey="7">
+      <extensionElements>
+        <modeler:allow-send-email xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:activiti-idm-assignee xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
+        <modeler:initiator-can-complete xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:initiator-can-complete>
+        <modeler:form-reference-id xmlns:modeler="http://activiti.com/modeler"><![CDATA[7]]></modeler:form-reference-id>
+        <modeler:form-reference-name xmlns:modeler="http://activiti.com/modeler"><![CDATA[User_Visit]]></modeler:form-reference-name>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusiveGateway1"/>
+    <exclusiveGateway id="exclusiveGateway2"/>
+    <sequenceFlow id="sequenceFlow2" sourceRef="human-step-1470068201924-864" targetRef="exclusiveGateway1"/>
+    <sequenceFlow id="sequenceFlow3" sourceRef="exclusiveGateway1" targetRef="exclusiveGateway2">
+      <extensionElements>
+        <modeler:conditionDefinition xmlns:modeler="http://activiti.com/modeler" modeler:index="0" modeler:outcomeFormId="7" modeler:outcomeFormName="User_Visit" modeler:rightOutcomeName="Follow up visit" modeler:rightOutcomeFormName="User_Visit" modeler:rightOutcomeFormId="7" modeler:operator="=="/>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'form7outcome') && form7outcome == 'Follow up visit')}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow4" sourceRef="exclusiveGateway1" targetRef="human-step-1470071982783-10">
+      <extensionElements>
+        <modeler:conditionDefinition xmlns:modeler="http://activiti.com/modeler" modeler:index="0" modeler:outcomeFormId="7" modeler:outcomeFormName="User_Visit" modeler:rightOutcomeName="Consult a Specialist" modeler:rightOutcomeFormName="User_Visit" modeler:rightOutcomeFormId="7" modeler:operator="=="/>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'form7outcome') && form7outcome == 'Consult a Specialist')}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="human-step-1470071982783-10" name="Human step" activiti:assignee="${initiator}" activiti:formKey="9">
+      <extensionElements>
+        <modeler:allow-send-email xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:activiti-idm-assignee xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
+        <modeler:initiator-can-complete xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:initiator-can-complete>
+        <modeler:form-reference-id xmlns:modeler="http://activiti.com/modeler"><![CDATA[9]]></modeler:form-reference-id>
+        <modeler:form-reference-name xmlns:modeler="http://activiti.com/modeler"><![CDATA[Specialist_Form]]></modeler:form-reference-name>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sequenceFlow5" sourceRef="exclusiveGateway1" targetRef="end-process-step-1470072312377-285">
+      <extensionElements>
+        <modeler:conditionDefinition xmlns:modeler="http://activiti.com/modeler" modeler:index="0" modeler:outcomeFormId="7" modeler:outcomeFormName="User_Visit" modeler:rightOutcomeName="Emergency" modeler:rightOutcomeFormName="User_Visit" modeler:rightOutcomeFormId="7" modeler:operator="=="/>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'form7outcome') && form7outcome == 'Emergency')}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="end-process-step-1470072312377-285" name="Dead Patient"/>
+    <sequenceFlow id="sequenceFlow6" sourceRef="human-step-1470071982783-10" targetRef="exclusiveGateway2"/>
+    <sequenceFlow id="sequenceFlow7" sourceRef="exclusiveGateway2" targetRef="human-step-1470071920169-454"/>
+    <userTask id="human-step-1470071920169-454" name="Human step" activiti:assignee="${initiator}" activiti:formKey="8">
+      <extensionElements>
+        <modeler:allow-send-email xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:activiti-idm-assignee xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
+        <modeler:initiator-can-complete xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:initiator-can-complete>
+        <modeler:form-reference-id xmlns:modeler="http://activiti.com/modeler"><![CDATA[8]]></modeler:form-reference-id>
+        <modeler:form-reference-name xmlns:modeler="http://activiti.com/modeler"><![CDATA[Follow_Up_Visit]]></modeler:form-reference-name>
+      </extensionElements>
+    </userTask>
+    <endEvent id="end"/>
+    <sequenceFlow id="sequenceFlow8" sourceRef="human-step-1470071920169-454" targetRef="end"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_visit_process">
+    <bpmndi:BPMNPlane bpmnElement="visit_process" id="BPMNPlane_visit_process">
+      <bpmndi:BPMNShape bpmnElement="human-step-1470071982783-10" id="BPMNShape_human-step-1470071982783-10">
+        <omgdc:Bounds height="60.0" width="100.0" x="320.0" y="100.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="30.0" width="30.0" x="0.0" y="118.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGateway2" id="BPMNShape_exclusiveGateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="470.0" y="46.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="human-step-1470068201924-864" id="BPMNShape_human-step-1470068201924-864">
+        <omgdc:Bounds height="60.0" width="100.0" x="80.0" y="103.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end-process-step-1470072312377-285" id="BPMNShape_end-process-step-1470072312377-285">
+        <omgdc:Bounds height="30.0" width="30.0" x="355.0" y="260.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="30.0" width="30.0" x="710.0" y="52.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="human-step-1470071920169-454" id="BPMNShape_human-step-1470071920169-454">
+        <omgdc:Bounds height="60.0" width="100.0" x="560.0" y="37.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusiveGateway1" id="BPMNShape_exclusiveGateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="230.0" y="111.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow3" id="BPMNEdge_sequenceFlow3">
+        <omgdi:waypoint x="270.0" y="131.0"/>
+        <omgdi:waypoint x="282.0" y="131.0"/>
+        <omgdi:waypoint x="282.0" y="66.0"/>
+        <omgdi:waypoint x="470.0" y="66.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow4" id="BPMNEdge_sequenceFlow4">
+        <omgdi:waypoint x="270.0" y="131.0"/>
+        <omgdi:waypoint x="284.0" y="131.0"/>
+        <omgdi:waypoint x="284.0" y="130.0"/>
+        <omgdi:waypoint x="320.0" y="130.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow5" id="BPMNEdge_sequenceFlow5">
+        <omgdi:waypoint x="270.0" y="131.0"/>
+        <omgdi:waypoint x="282.0" y="131.0"/>
+        <omgdi:waypoint x="282.0" y="275.0"/>
+        <omgdi:waypoint x="355.0" y="275.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow6" id="BPMNEdge_sequenceFlow6">
+        <omgdi:waypoint x="420.0" y="130.0"/>
+        <omgdi:waypoint x="432.0" y="130.0"/>
+        <omgdi:waypoint x="432.0" y="66.0"/>
+        <omgdi:waypoint x="470.0" y="66.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow1" id="BPMNEdge_sequenceFlow1">
+        <omgdi:waypoint x="30.0" y="133.0"/>
+        <omgdi:waypoint x="80.0" y="133.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow2" id="BPMNEdge_sequenceFlow2">
+        <omgdi:waypoint x="180.0" y="133.0"/>
+        <omgdi:waypoint x="192.0" y="133.0"/>
+        <omgdi:waypoint x="192.0" y="131.0"/>
+        <omgdi:waypoint x="230.0" y="131.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow7" id="BPMNEdge_sequenceFlow7">
+        <omgdi:waypoint x="510.0" y="66.0"/>
+        <omgdi:waypoint x="522.0" y="66.0"/>
+        <omgdi:waypoint x="522.0" y="67.0"/>
+        <omgdi:waypoint x="560.0" y="67.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sequenceFlow8" id="BPMNEdge_sequenceFlow8">
+        <omgdi:waypoint x="660.0" y="67.0"/>
+        <omgdi:waypoint x="710.0" y="67.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
