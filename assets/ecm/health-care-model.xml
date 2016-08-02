@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model name="hc:healthCareModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+   <description>Health Care Model</description>
+   <author>Alfresco London Team</author>
+   <version>1.0</version>
+
+   <imports>
+      <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+      <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+   </imports>
+
+   <namespaces>
+      <namespace uri="http://www.alfresco.org/healthcare/model/content/1.0" prefix="hc"/>
+   </namespaces>
+
+   <types>
+        <type name="hc:patientFolder">
+            <parent>cm:folder</parent>
+            <properties>
+                <property name="hc:firstName">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:lastName">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:dateOfBirth">
+                    <type>d:date</type>
+                </property>
+                <property name="hc:address">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:email">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:telephone">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:cellPhone">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:nextOfKin">
+                    <type>d:text</type>
+                </property>
+                <property name="hc:doctor">
+                    <type>d:text</type>
+                </property>
+            </properties>
+        </type>
+   </types>
+</model>
