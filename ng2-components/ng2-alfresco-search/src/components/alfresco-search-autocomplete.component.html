@@ -1,0 +1,10 @@
+<table data-automation-id="autocomplete_results" *ngIf="results && results.length && searchTerm" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+    <tbody>
+    <tr *ngFor="let result of results; let idx = index" (click)="onItemClick(result, $event)"
+        attr.data-automation-id="autocomplete_result_for_{{result.entry.name}}" >
+        <td class="img-td"><img src="{{getMimeTypeIcon(result)}}" alt="{{getMimeTypeKey(result)|translate}}" /></td>
+        <td><div class="truncate" ><b>{{result.entry.name}}</b></div><div class="truncate">{{result.entry.createdByUser.displayName}}</div></td>
+    </tr>
+    </tbody>
+</table>
+<p data-automation-id="autocomplete_error_message" *ngIf="errorMessage">{{ 'SEARCH.RESULTS.ERROR' | translate:{errorMessage: errorMessage} }}</p>
