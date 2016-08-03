@@ -23,11 +23,13 @@ import { UploadService } from 'ng2-alfresco-upload';
 import { AppComponent } from './app.component';
 
 import { appRouterProviders } from './app.routes';
+import { NotificationService } from './services/notification.service';
 
 bootstrap(AppComponent, [
     appRouterProviders,
     HTTP_PROVIDERS,
     ALFRESCO_CORE_PROVIDERS,
     ALFRESCO_SEARCH_PROVIDERS,
-    UploadService
+    UploadService,
+    NotificationService
 ]).catch(err => console.error(err));

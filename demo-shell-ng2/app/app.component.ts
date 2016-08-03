@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ROUTER_DIRECTIVES, Router } from '@angular/router';
 
 import {
@@ -27,8 +27,10 @@ import {
 } from 'ng2-alfresco-core';
 
 import { SearchBarComponent } from './components/index';
+import { NotificationService } from './services/notification.service';
 
 declare var document: any;
+declare let componentHandler: any;
 
 @Component({
     selector: 'alfresco-app',
@@ -38,6 +40,10 @@ declare var document: any;
     pipes: [AlfrescoPipeTranslate]
 })
 export class AppComponent {
+
+    @ViewChild('notificationBar')
+    notificationBar: any;
+
     translate: AlfrescoTranslationService;
     searchTerm: string = '';
 
@@ -47,12 +53,18 @@ export class AppComponent {
     constructor(public auth: AlfrescoAuthenticationService,
                 public router: Router,
                 translate: AlfrescoTranslationService,
-                public alfrescoSettingsService: AlfrescoSettingsService) {
+                public alfrescoSettingsService: AlfrescoSettingsService,
+                private notificationService: NotificationService) {
         this.setEcmHost();
         this.setBpmHost();
 
         this.translate = translate;
         this.translate.addTranslationFolder();
+
+        notificationService.notifications.subscribe(
+            message => {
+                this.showNotificationBar(message);
+            });
     }
 
     public onChangeECMHost(event: KeyboardEvent): void {
@@ -115,6 +127,19 @@ export class AppComponent {
             this.bpmHost = localStorage.getItem(`bpmHost`);
         } else {
             this.alfrescoSettingsService.bpmHost = this.bpmHost;
+        }
+    }
+
+    private showNotificationBar(message: string) {
+        if (componentHandler) {
+            componentHandler.upgradeAllRegistered();
+        }
+
+        if (this.notificationBar.nativeElement.MaterialSnackbar) {
+            this.notificationBar.nativeElement.MaterialSnackbar.showSnackbar({
+                message: message,
+                timeout: 3000
+            });
         }
     }
 }

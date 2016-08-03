@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, ContentChild } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
+import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 declare let __moduleName: string;
 declare let AlfrescoApi: any;
@@ -36,7 +38,8 @@ export class CreatePatientComponent {
 
     metadata: any = {};
 
-    constructor(private authService: AlfrescoAuthenticationService) {
+    constructor(private authService: AlfrescoAuthenticationService, private router: Router,
+                private notificationService: NotificationService) {
     }
 
     saveMetadata(data: any) {
@@ -55,12 +58,12 @@ export class CreatePatientComponent {
 
         let opts = {};
 
+        let self = this;
         this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
             (data) => {
-                console.log('The folder is created in root', data);
-                console.log(data.entry.id);
-                console.log(data.entry.name);
-                console.log(data.entry.nodeType);
+                console.log('The folder created', data);
+                self.router.navigate(['/patients']);
+                this.notificationService.sendNotification('User Created');
             },
             (err) => {
                 window.alert('See console output for error details');
