@@ -41,7 +41,7 @@ export const routes: RouterConfig = [
     { path: 'uploader', component: UploadButtonComponent },
     { path: 'login', component: LoginDemoComponent },
     { path: 'search', component: SearchComponent },
-    { path: 'activiti', component: ActivitiDemoComponent },
+    { path: 'visits', component: ActivitiDemoComponent },
     { path: 'activiti/tasks/:id', component: FormViewer },
     { path: 'webscript', component: WebscriptComponent },
     { path: 'about', component: AboutComponent },
