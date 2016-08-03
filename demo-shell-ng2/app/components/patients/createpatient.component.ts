@@ -18,45 +18,28 @@
 import { Component } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
-import { Http } from '@angular/http';
 
 declare let __moduleName: string;
 declare let AlfrescoApi: any;
 
 @Component({
     moduleId: __moduleName,
-    selector: 'createuser-component',
-    templateUrl: './createuser.component.html',
-    styleUrls: ['./createuser.component.css'],
+    selector: 'createpatient-component',
+    templateUrl: './createpatient.component.html',
+    styleUrls: ['./createpatient.component.css'],
     providers: [FormService],
     directives: [ActivitiForm]
 })
-export class CreateUser {
+export class CreatePatientComponent {
 
     currentPath: string = '/Sites/swsdp/documentLibrary';
 
     metadata: any = {};
 
-    constructor(private http: Http, private authService: AlfrescoAuthenticationService) {
-
-        var fileOrFolderId = 'd5250698-0092-4073-a62a-6b4251831e08';
-        var self = this;
-        this.authService.getAlfrescoApi().nodes.getNodeInfo(fileOrFolderId).then(function (data) {
-            console.log(data.properties);
-
-            for (var key in data.properties) {
-                console.log(key + ' => ' + data[key]);
-                self.metadata [key.replace('hc:','')] = data.properties[key];
-            }
-
-        }, function (error) {
-            console.log('This node does not exist');
-        });
-
+    constructor(private authService: AlfrescoAuthenticationService) {
     }
 
     saveMetadata(data: any) {
-        console.log(data);
         let body = {
             name: data.firstName,
             nodeType: 'hc:patientFolder',
@@ -65,7 +48,6 @@ export class CreateUser {
         };
 
         for (var key in data) {
-            console.log(key + ' => ' + data[key]);
             body.properties['hc:' + key] = data[key];
         }
 

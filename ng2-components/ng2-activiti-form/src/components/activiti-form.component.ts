@@ -69,7 +69,6 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Output()
     saveOption = new EventEmitter();
 
-
     form: FormModel;
     debugMode: boolean = false;
 
@@ -165,7 +164,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getFormDefinitionById(this.formId)
             .subscribe(
-                form => this.form = new FormModel(form, this.data),
+                form => this.form = new FormModel(form, this.data, this.saveOption),
                 err => console.log(err)
             );
     }
@@ -176,7 +175,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             .subscribe(
                 id => {
                     this.formService.getFormDefinitionById(id).subscribe(
-                        form => this.form = new FormModel(form, this.data),
+                        form => this.form = new FormModel(form, this.data, this.saveOption),
                         err => console.log(err)
                     );
                 },

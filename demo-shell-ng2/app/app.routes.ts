@@ -27,9 +27,10 @@ import {
     WebscriptComponent,
     AboutComponent,
     FormViewer,
-    PatientsComponent
+    PatientsComponent,
+    CreatePatientComponent,
+    PatientDetailsComponent
 } from './components/index';
-import { CreateUser } from './components/createuser/createuser.component';
 
 export const routes: RouterConfig = [
     { path: 'home', component: PatientsComponent },
@@ -44,7 +45,8 @@ export const routes: RouterConfig = [
     { path: 'activiti/tasks/:id', component: FormViewer },
     { path: 'webscript', component: WebscriptComponent },
     { path: 'about', component: AboutComponent },
-    { path: 'createuser', component: CreateUser }
+    { path: 'createpatient', component: CreatePatientComponent },
+    { path: 'patientdetails/:id', component: PatientDetailsComponent }
 ];
 
 export const appRouterProviders = [

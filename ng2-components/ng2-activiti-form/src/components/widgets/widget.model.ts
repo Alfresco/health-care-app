@@ -365,7 +365,7 @@ export class FormModel {
         return this.outcomes && this.outcomes.length > 0;
     }
 
-    constructor(json?: any, data?: any) {
+    constructor(json?: any, data?: any, saveOption?:any) {
         if (json) {
             this._json = json;
 
@@ -407,10 +407,12 @@ export class FormModel {
                     customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
                 );
             } else {
-                let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
-                saveOutcome.isSystem = true;
+                if(saveOption && saveOption.observers.length > 0){
+                    let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
+                    saveOutcome.isSystem = true;
 
-                this.outcomes = [saveOutcome];
+                    this.outcomes = [saveOutcome];
+                }
 
                 if (data) {
                     this.updateFormValueWithProvaidedDataModel(data);

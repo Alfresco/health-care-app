@@ -20,7 +20,6 @@ import { Router } from '@angular/router';
 import {
     DOCUMENT_LIST_DIRECTIVES,
     DOCUMENT_LIST_PROVIDERS,
-    DocumentActionsService,
     DocumentList
 } from 'ng2-alfresco-documentlist';
 import {
@@ -74,6 +73,10 @@ export class PatientsComponent implements OnInit {
                 private router: Router,
                 private authService: AlfrescoAuthenticationService) {
         this.newPatient = new PatientModel();
+    }
+
+    public patientDetails(event: any): void{
+        this.router.navigate(['/patientdetails', event.value.entry.id]);
     }
 
     showFile(event) {

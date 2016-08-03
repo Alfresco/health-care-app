@@ -26,3 +26,5 @@ export { WebscriptComponent } from './webscript/webscript.component';
 export { AboutComponent } from './about/about.component';
 export { FilesComponent } from './files/files.component';
 export { PatientsComponent } from './patients/patients.component';
+export { CreatePatientComponent } from './patients/createpatient.component';
+export { PatientDetailsComponent } from './patients/patientdetails.component';
