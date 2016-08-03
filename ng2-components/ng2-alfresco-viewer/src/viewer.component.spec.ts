@@ -23,7 +23,7 @@ import { EventMock } from './assets/event.mock';
  describe('ViewerComponent', () => {
 
      describe('View', () => {
-         it('shadow overlay should be present if overlay is true', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+         it('shadow overlay should be present if is overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
              return tcb
                  .createAsync(ViewerComponent)
                  .then((fixture) => {
@@ -38,13 +38,45 @@ import { EventMock } from './assets/event.mock';
                  });
          }));
 
-         it('Name File should be present', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+         it('header should be present if is overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+             return tcb
+                 .createAsync(ViewerComponent)
+                 .then((fixture) => {
+                     let element = fixture.nativeElement;
+                     let component = fixture.componentInstance;
+                     component.urlFile = 'fake-url-file';
+                     component.overlayMode = true;
+
+                     fixture.detectChanges();
+
+                     expect(element.querySelector('header')).not.toBeNull();
+                 });
+         }));
+
+
+         it('header should be NOT be present if is not overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+             return tcb
+                 .createAsync(ViewerComponent)
+                 .then((fixture) => {
+                     let element = fixture.nativeElement;
+                     let component = fixture.componentInstance;
+                     component.urlFile = 'fake-url-file';
+                     component.overlayMode = false;
+
+                     fixture.detectChanges();
+
+                     expect(element.querySelector('header')).toBeNull();
+                 });
+         }));
+
+         it('Name File should be present if is overlay mode ', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
              return tcb
                  .createAsync(ViewerComponent)
                  .then((fixture) => {
                      let element = fixture.nativeElement;
                      let component = fixture.componentInstance;
                      component.urlFile = 'http://localhost:9876/fake-url-file.pdf';
+                     component.overlayMode = true;
 
                      component.ngOnChanges().then(() => {
                          fixture.detectChanges();
@@ -70,19 +102,36 @@ import { EventMock } from './assets/event.mock';
                  });
          }));
 
-         it('Close button should be present', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+         it('Close button should be present if overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
              return tcb
                  .createAsync(ViewerComponent)
                  .then((fixture) => {
                      let element = fixture.nativeElement;
                      let component = fixture.componentInstance;
                      component.urlFile = 'fake-url-file';
+                     component.overlayMode = true;
 
                      fixture.detectChanges();
 
                      expect(element.querySelector('#viewer-close-button')).not.toBeNull();
                  });
          }));
+
+         it('Close button should be not present if is not overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+             return tcb
+                 .createAsync(ViewerComponent)
+                 .then((fixture) => {
+                     let element = fixture.nativeElement;
+                     let component = fixture.componentInstance;
+                     component.urlFile = 'fake-url-file';
+                     component.overlayMode = false;
+
+                     fixture.detectChanges();
+
+                     expect(element.querySelector('#viewer-close-button')).toBeNull();
+                 });
+         }));
+
 
          it('Click on close button should hide the viewer', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
              return tcb
@@ -91,11 +140,29 @@ import { EventMock } from './assets/event.mock';
                      let element = fixture.nativeElement;
                      let component = fixture.componentInstance;
                      component.urlFile = 'fake-url-file';
+                     component.overlayMode = true;
 
                      fixture.detectChanges();
                      element.querySelector('#viewer-close-button').click();
                      fixture.detectChanges();
                      expect(element.querySelector('#viewer-main-container')).toBeNull();
+                 });
+         }));
+
+         it('Esc button should not  hide the viewerls if is not overlay mode', inject([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+             return tcb
+                 .createAsync(ViewerComponent)
+                 .then((fixture) => {
+                     let element = fixture.nativeElement;
+                     let component = fixture.componentInstance;
+                     component.overlayMode = false;
+
+                     component.urlFile = 'fake-url-file';
+
+                     fixture.detectChanges();
+                     EventMock.keyDown(27);
+                     fixture.detectChanges();
+                     expect(element.querySelector('#viewer-main-container')).not.toBeNull();
                  });
          }));
 
@@ -106,6 +173,7 @@ import { EventMock } from './assets/event.mock';
                      let element = fixture.nativeElement;
                      let component = fixture.componentInstance;
                      component.urlFile = 'fake-url-file';
+                     component.overlayMode = true;
 
                      fixture.detectChanges();
                      EventMock.keyDown(27);
