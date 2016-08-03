@@ -35,7 +35,18 @@ export class CreateUser {
 
     currentPath: string = '/Sites/swsdp/documentLibrary';
 
+    metadata: any;
+
     constructor(private http: Http, private authService: AlfrescoAuthenticationService) {
+
+        var fileOrFolderId = 'd5250698-0092-4073-a62a-6b4251831e08';
+        var self = this;
+        this.authService.getAlfrescoApi().nodes.getNodeInfo(fileOrFolderId).then(function (data) {
+            console.log(data.properties);
+            self.metadata = data.properties;
+        }, function (error) {
+            console.log('This node does not exist');
+        });
 
     }
 

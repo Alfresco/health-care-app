@@ -36,7 +36,7 @@ declare var componentHandler;
  *
  * ActivitiForm can show form 3 type of form:
  *   1) Form attached to a task passing the {taskId}.
- *   2) Form that are only defined with the {formId}, 
+ *   2) Form that are only defined with the {formId},
  *      in this case you can pass also {saveOption} as parameter to tell what is the function
  *      to call on the save action.
  *   3) Form that are only defined with the {formName},
@@ -63,6 +63,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Input()
     formName: string;
 
+    @Input()
+    data: any;
+
     @Output()
     saveOption = new EventEmitter();
 
@@ -82,10 +85,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             this.loadForm(this.taskId);
         }
         if (this.formId) {
-            this.getFormDefinitionById(this.formId);
+            this.getFormDefinitionById();
         }
         if (this.formName) {
-            this.getFormDefinitionByName(this.formName);
+            this.getFormDefinitionByName();
         }
     }
 
@@ -103,13 +106,13 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         }
 
         let formId = changes['formId'];
-        if (this.formId && formId.currentValue) {
-            this.getFormDefinitionById(this.formId);
+        if (formId && formId.currentValue) {
+            this.getFormDefinitionById();
         }
 
         let formName = changes['formName'];
-        if (this.formName && formName.currentValue) {
-            this.getFormDefinitionByName(this.formName);
+        if (formName && formName.currentValue) {
+            this.getFormDefinitionByName();
         }
     }
 
@@ -142,10 +145,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             this.loadForm(this.taskId);
         }
         if (this.formId) {
-            this.getFormDefinitionById(this.formId);
+            this.getFormDefinitionById();
         }
         if (this.formName) {
-            this.getFormDefinitionByName(this.formName);
+            this.getFormDefinitionByName();
         }
     }
 
@@ -158,22 +161,22 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             );
     }
 
-    private getFormDefinitionById(formId: string) {
+    private getFormDefinitionById() {
         this.formService
-            .getFormDefinitionById(formId)
+            .getFormDefinitionById(this.formId)
             .subscribe(
-                form => this.form = new FormModel(form),
+                form => this.form = new FormModel(form, this.data),
                 err => console.log(err)
             );
     }
 
-    private getFormDefinitionByName(formName: string) {
+    private getFormDefinitionByName() {
         this.formService
-            .getFormDefinitionByName(formName)
+            .getFormDefinitionByName(this.formName)
             .subscribe(
                 id => {
                     this.formService.getFormDefinitionById(id).subscribe(
-                        form => this.form = new FormModel(form),
+                        form => this.form = new FormModel(form, this.data),
                         err => console.log(err)
                     );
                 },

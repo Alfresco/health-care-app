@@ -365,7 +365,7 @@ export class FormModel {
         return this.outcomes && this.outcomes.length > 0;
     }
 
-    constructor(json?: any) {
+    constructor(json?: any, data?: any) {
         if (json) {
             this._json = json;
 
