@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import {
     DOCUMENT_LIST_DIRECTIVES,
@@ -34,6 +34,7 @@ import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
+import { TagModel } from './tag.model';
 
 declare let __moduleName: string;
 
@@ -69,9 +70,13 @@ export class PatientsComponent implements OnInit {
     newPatient: PatientModel;
     debugMode: boolean = false;
 
+    tags: TagModel[] = [];
+    selectedNodeId: string;
+
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
-                private authService: AlfrescoAuthenticationService) {
+                private authService: AlfrescoAuthenticationService,
+                private ngZone: NgZone) {
         this.newPatient = new PatientModel();
     }
 
@@ -97,6 +102,47 @@ export class PatientsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getTags().then(
+            res => this.tags = res || [],
+            this.handleError
+        );
+    }
+
+    onNodeClicked(event?: any) {
+        console.log(event);
+        if (event && event.value) {
+            this.selectedNodeId = event.value.entry.id;
+        }
+    }
+
+    setNodeTags(nodeId: string, value: string) {
+        if (nodeId && value) {
+            let tags = value.split(',').map(val => {
+                return {
+                    tag: val.trim()
+                }
+            });
+
+            this.authService.getAlfrescoApi().tags.addTag(nodeId, tags).then(
+                data => {
+                    console.log(data);
+                    // TODO: share seems to have issues with returning newly created tags
+                    /*
+                    this.getTags().then(
+                        res => {
+                            console.log('after tags updated');
+                            console.log(res);
+                            this.tags = res || [];
+                            this.documentList.reload();
+                        },
+                        this.handleError
+                    );
+                    */
+                    window.alert('Done');
+                },
+                this.handleError
+            );
+        }
     }
 
     onCreateNewPatientClick() {
@@ -112,17 +158,37 @@ export class PatientsComponent implements OnInit {
                 relativePath: this.currentPath
             };
             let opts = {};
+            // TODO: move to separate service
             this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
                 (data) => {
                     this.newPatient = new PatientModel();
                     console.log(data);
                     this.documentList.reload();
                 },
-                (err) => {
-                    window.alert('See console output for error details');
-                    console.log(err);
-                }
+                this.handleError
             );
         }
+    }
+
+    // TODO: move to separate service
+    private getTags(): Promise<TagModel[]> {
+        return new Promise<TagModel[]>((resolve, reject) => {
+            this.authService.getAlfrescoApi().tags.getTags().then(
+                data => {
+                    let entries = data.list.entries || [];
+                    let tags = entries.map(obj => <TagModel> obj.entry);
+                    resolve(tags);
+                },
+                err => {
+                    reject(err);
+                }
+            );
+        });
+
+    }
+
+    private handleError(err) {
+        window.alert('See console output for error details');
+        console.log(err);
     }
 }

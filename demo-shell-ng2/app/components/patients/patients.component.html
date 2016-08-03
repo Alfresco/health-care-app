@@ -1,5 +1,14 @@
 <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--12-col">
+    <div class="mdl-cell mdl-cell--1-col">
+        <h4>Tags</h4>
+        <ul class="mdl-list">
+            <li *ngFor="let tag of tags" class="mdl-list__item">
+                <span class="mdl-list__item-primary-content">{{tag.tag}}</span>
+                <span class="mdl-list__item-secondary-action">(0)</span>
+            </li>
+        </ul>
+    </div>
+    <div class="mdl-cell mdl-cell--11-col">
         <div class="container">
             <alfresco-upload-drag-area
                 [showUploadDialog]="true"
@@ -16,7 +25,8 @@
                     [contextMenuActions]="true"
                     [contentActions]="true"
                     (preview)="showFile($event)"
-                    (folderChange)="onFolderChanged($event)">
+                    (folderChange)="onFolderChanged($event)"
+                    (nodeClick)="onNodeClicked($event)">
                     <content-columns>
                         <content-column key="$thumbnail" type="image"></content-column>
                         <content-column
@@ -95,6 +105,26 @@
     </div>
 </div>
 
+<!-- Example for associating tags with node -->
+<div class="mdl-grid" *ngIf="selectedNodeId">
+    <div class="md-cell mdl-cell--12-col">
+        <div>
+            Selected node: {{selectedNodeId}}
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="node-tags" #nodeTags>
+            <label class="mdl-textfield__label" for="node-tags">Tags</label>
+        </div>
+        <button
+            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+            (click)="setNodeTags(selectedNodeId, nodeTags.value)">
+            Set Tags
+        </button>
+    </div>
+</div>
+
+<!-- Example for creating a custom folder type with properties -->
+<!--
 <div class="mdl-grid">
     <div class="md-cell mdl-cell--12-col">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -128,8 +158,9 @@
             Create Patient
         </button>
     </div>
-
 </div>
+-->
+
 
 <!--
 For debugging and data visualisation purposes,
