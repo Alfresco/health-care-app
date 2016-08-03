@@ -2,8 +2,10 @@
     <div class="mdl-cell mdl-cell--1-col">
         <h4>Tags</h4>
         <ul class="mdl-list">
-            <li *ngFor="let tag of tags" class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">{{tag.tag}}</span>
+            <li *ngFor="let filter of tagFilters" class="mdl-list__item">
+                <span class="mdl-list__item-primary-content">
+                    <a href="#" (click)="$event.preventDefault()">{{filter.tag}}</a>
+                </span>
                 <span class="mdl-list__item-secondary-action">(0)</span>
             </li>
         </ul>

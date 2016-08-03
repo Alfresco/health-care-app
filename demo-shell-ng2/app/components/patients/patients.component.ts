@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
     DOCUMENT_LIST_DIRECTIVES,
@@ -34,7 +34,8 @@ import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
-import { TagModel } from './tag.model';
+import { TagModel, TagCache, TagFilter } from './tag.model';
+import { TagService } from './tag.service';
 
 declare let __moduleName: string;
 
@@ -51,10 +52,11 @@ declare let __moduleName: string;
         CONTEXT_MENU_DIRECTIVES,
         PaginationComponent
     ],
-    providers: [DOCUMENT_LIST_PROVIDERS, FormService],
+    providers: [DOCUMENT_LIST_PROVIDERS, FormService, TagService],
     pipes: [AlfrescoPipeTranslate]
 })
 export class PatientsComponent implements OnInit {
+
     currentPath: string = '/Sites/swsdp/documentLibrary';
 
     urlFile: string;
@@ -70,13 +72,14 @@ export class PatientsComponent implements OnInit {
     newPatient: PatientModel;
     debugMode: boolean = false;
 
-    tags: TagModel[] = [];
+    tags: TagCache = {};
+    tagFilters: TagFilter[] = [];
     selectedNodeId: string;
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
-                private authService: AlfrescoAuthenticationService,
-                private ngZone: NgZone) {
+                private tagService: TagService,
+                private authService: AlfrescoAuthenticationService) {
         this.newPatient = new PatientModel();
     }
 
@@ -102,8 +105,11 @@ export class PatientsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getTags().then(
-            res => this.tags = res || [],
+        this.tagService.getTags().then(
+            (tags: TagModel[]) => {
+                this.tagFilters = tags.map((tag) => new TagFilter(tag.id, tag.tag));
+                tags.forEach(tag => this.tags[tag.id] = tag);
+            },
             this.handleError
         );
     }
@@ -123,7 +129,7 @@ export class PatientsComponent implements OnInit {
                 }
             });
 
-            this.authService.getAlfrescoApi().tags.addTag(nodeId, tags).then(
+            this.tagService.addTags(nodeId, tags).then(
                 data => {
                     console.log(data);
                     // TODO: share seems to have issues with returning newly created tags
@@ -170,25 +176,7 @@ export class PatientsComponent implements OnInit {
         }
     }
 
-    // TODO: move to separate service
-    private getTags(): Promise<TagModel[]> {
-        return new Promise<TagModel[]>((resolve, reject) => {
-            this.authService.getAlfrescoApi().tags.getTags().then(
-                data => {
-                    let entries = data.list.entries || [];
-                    let tags = entries.map(obj => <TagModel> obj.entry);
-                    resolve(tags);
-                },
-                err => {
-                    reject(err);
-                }
-            );
-        });
-
-    }
-
     private handleError(err) {
-        window.alert('See console output for error details');
         console.log(err);
     }
 }

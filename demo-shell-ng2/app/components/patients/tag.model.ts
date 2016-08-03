@@ -18,4 +18,21 @@
 export class TagModel {
     id: string;
     tag: string;
+
+    constructor(id: string, tag: string) {
+        this.id = id;
+        this.tag = tag;
+    }
+}
+
+export interface TagCache {
+    [key: string]: TagModel;
+}
+
+export class TagFilter extends TagModel {
+    count: number = 0;
+
+    constructor(id: string, tag: string) {
+        super(id, tag);
+    }
 }
