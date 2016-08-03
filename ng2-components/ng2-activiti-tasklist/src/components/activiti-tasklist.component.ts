@@ -55,6 +55,8 @@ export class ActivitiTaskList implements OnInit {
     @Output()
     onError: EventEmitter<string> = new EventEmitter<string>();
 
+    @Input()
+    appId: string;
     data: DataTableAdapter;
 
     tasks: ObjectDataTableAdapter;

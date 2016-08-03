@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, Output, EventEmitter, OnInit} from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { AlfrescoTranslationService, AlfrescoAuthenticationService, AlfrescoPipeTranslate } from 'ng2-alfresco-core';
 import { ActivitiTaskListService } from './../services/activiti-tasklist.service';
 import { FilterModel } from '../models/filter.model';
@@ -30,7 +30,7 @@ declare let __moduleName: string;
     moduleId: __moduleName,
     templateUrl: './activiti-filters.component.html',
     providers: [ActivitiTaskListService],
-    pipes: [ AlfrescoPipeTranslate ]
+    pipes: [AlfrescoPipeTranslate]
 
 })
 export class ActivitiFilters implements OnInit {
@@ -44,12 +44,16 @@ export class ActivitiFilters implements OnInit {
     @Output()
     onError: EventEmitter<string> = new EventEmitter<string>();
 
+    @Input()
+    appId: string;
+
     private filterObserver: Observer<FilterModel>;
     filter$: Observable<FilterModel>;
 
     currentFilter: FilterModel;
 
     filters: FilterModel [] = [];
+
     /**
      * Constructor
      * @param auth
@@ -58,7 +62,7 @@ export class ActivitiFilters implements OnInit {
     constructor(private auth: AlfrescoAuthenticationService,
                 private translate: AlfrescoTranslationService,
                 public activiti: ActivitiTaskListService) {
-        this.filter$ = new Observable<FilterModel>(observer =>  this.filterObserver = observer).share();
+        this.filter$ = new Observable<FilterModel>(observer => this.filterObserver = observer).share();
 
         if (translate) {
             translate.addTranslationFolder('node_modules/ng2-activiti-tasklist');
@@ -78,7 +82,7 @@ export class ActivitiFilters implements OnInit {
      * @param tasks
      */
     private load() {
-        this.activiti.getTaskListFilters().subscribe(
+        this.activiti.getTaskListFilters(this.appId).subscribe(
             (res: FilterModel[]) => {
                 res.forEach((filter) => {
                     this.filterObserver.next(filter);

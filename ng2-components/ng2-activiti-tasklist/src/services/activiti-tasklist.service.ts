@@ -36,14 +36,14 @@ export class ActivitiTaskListService {
      * Retrive all the Tasks filters
      * @returns {Observable<any>}
      */
-    getTaskListFilters(): Observable<any> {
-        return Observable.fromPromise(this.callApiTaskFilters())
+    getTaskListFilters(appId?: string): Observable<any> {
+        return Observable.fromPromise(this.callApiTaskFilters(appId))
             .map(res => res.json())
             .map((response: any) => {
                 let filters: FilterModel[] = [];
                 response.data.forEach((filter) => {
                     let filterModel = new FilterModel(filter.name, filter.recent, filter.icon,
-                        filter.filter.name, filter.filter.state, filter.filter.assignment);
+                        filter.filter.name, filter.filter.state, filter.filter.assignment, appId);
                     filters.push(filterModel);
                 });
                 return filters;
@@ -170,8 +170,13 @@ export class ActivitiTaskListService {
             .post(url, data, options).toPromise();
     }
 
-    private callApiTaskFilters() {
-        let url = this.alfrescoSettingsService.getBPMApiBaseUrl() + `/api/enterprise/filters/tasks`;
+    private callApiTaskFilters(appId?: string) {
+        let url = this.alfrescoSettingsService.getBPMApiBaseUrl();
+        if (appId) {
+            url = url + `/api/enterprise/filters/tasks?appId=${appId}`;
+        } else {
+            url = url + `/api/enterprise/filters/tasks`;
+        }
         let headers = new Headers({
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache'
