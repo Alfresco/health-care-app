@@ -35,7 +35,7 @@ export class CreateUser {
 
     currentPath: string = '/Sites/swsdp/documentLibrary';
 
-    metadata: any;
+    metadata: any = {};
 
     constructor(private http: Http, private authService: AlfrescoAuthenticationService) {
 
@@ -43,7 +43,12 @@ export class CreateUser {
         var self = this;
         this.authService.getAlfrescoApi().nodes.getNodeInfo(fileOrFolderId).then(function (data) {
             console.log(data.properties);
-            self.metadata = data.properties;
+
+            for (var key in data.properties) {
+                console.log(key + ' => ' + data[key]);
+                self.metadata [key.replace('hc:','')] = data.properties[key];
+            }
+
         }, function (error) {
             console.log('This node does not exist');
         });

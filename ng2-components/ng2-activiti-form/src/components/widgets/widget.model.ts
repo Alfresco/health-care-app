@@ -406,11 +406,36 @@ export class FormModel {
                 this.outcomes = [saveOutcome].concat(
                     customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
                 );
-            }else{
+            } else {
                 let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
                 saveOutcome.isSystem = true;
 
                 this.outcomes = [saveOutcome];
+
+                if (data) {
+                    this.updateFormValueWithProvaidedDataModel(data);
+                }
+            }
+
+        }
+    }
+
+    private updateFormValueWithProvaidedDataModel(data: any) {
+        for (let i = 0; i < this.fields.length; i++) {
+            let containerModel = this.fields[i];
+            if(containerModel){
+                for (let i = 0; i < containerModel.columns.length; i++) {
+                    let containerModelColumn = containerModel.columns[i];
+                    if(containerModelColumn) {
+                        for (let i = 0; i < containerModelColumn.fields.length; i++) {
+                            let formField = containerModelColumn.fields[i];
+                            if(data[formField.id]){
+                                formField.value = data[formField.id];
+                            }
+                            console.log(formField.name);
+                        }
+                    }
+                }
             }
 
         }
