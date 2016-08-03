@@ -48,7 +48,9 @@ export class CreatePatientComponent {
         };
 
         for (var key in data) {
-            body.properties['hc:' + key] = data[key];
+            if(data[key]){
+                body.properties['hc:' + key] = data[key];
+            }
         }
 
         let opts = {};
