@@ -68,6 +68,7 @@ export class PatientsComponent implements OnInit {
     documentList: DocumentList;
 
     newPatient: PatientModel;
+    debugMode: boolean = false;
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,

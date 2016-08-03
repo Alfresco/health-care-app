@@ -126,6 +126,21 @@
 
 </div>
 
+<!--
+For debugging and data visualisation purposes,
+will be removed during future revisions
+-->
+<div class="patients-debug-container">
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1" [class.is-checked]="debugMode">
+        <input type="checkbox" id="switch-1" class="mdl-switch__input" [(ngModel)]="debugMode">
+        <span class="mdl-switch__label"></span>
+        <span class="debug-toggle-text">Debug mode</span>
+    </label>
+
+    <div *ngIf="debugMode">
+        <pre>{{documentList.data.getRows() | json}}</pre>
+    </div>
+</div>
 
 <context-menu-holder></context-menu-holder>
 
