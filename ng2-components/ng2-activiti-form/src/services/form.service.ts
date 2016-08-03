@@ -107,7 +107,8 @@ export class FormService {
     }
 
     getFormDefinitionByName(name: string): Observable<any> {
-        let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/app/rest/models?filter=myReusableForms&filterText=${name}&modelType=2`;
+        let url = `${this.alfrescoSettingsService.bpmHost}` +
+            `/activiti-app/app/rest/models?filter=myReusableForms&filterText=${name}&modelType=2`;
         let options = this.getRequestOptions();
 
         return this.http

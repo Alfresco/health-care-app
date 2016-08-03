@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
-import { Response, Http, Headers, RequestOptions } from '@angular/http';
+import { Http } from '@angular/http';
 
 declare let __moduleName: string;
 declare let AlfrescoApi: any;
@@ -33,28 +33,39 @@ declare let AlfrescoApi: any;
 })
 export class CreateUser {
 
+    currentPath: string = '/Sites/swsdp/documentLibrary';
+
     constructor(private http: Http, private authService: AlfrescoAuthenticationService) {
 
     }
 
-    createFolder(folderName:string){
-        this.authService.getAlfrescoApi().nodes.createFolderAutoRename(folderName).then(function (data) {
-            console.log('The folder is created in root', data);
-            console.log(data.entry.id);
-            console.log(data.entry.name);
-            console.log(data.entry.nodeType);
-        }, function (error) {
-            console.log('Error in creation of this folder or folder already exist' + error);
-        });
-    }
-
-    custom(data: any){
+    saveMetadata(data: any) {
         console.log(data);
-        let body = JSON.stringify(data);
+        let body = {
+            name: data.firstName,
+            nodeType: 'hc:patientFolder',
+            properties: {},
+            relativePath: this.currentPath
+        };
 
-        return this.http
-            .post('http://supermario.com', body);
+        for (var key in data) {
+            console.log(key + ' => ' + data[key]);
+            body.properties['hc:' + key] = data[key];
+        }
 
-        this.createFolder(data.value.name);
+        let opts = {};
+
+        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+            (data) => {
+                console.log('The folder is created in root', data);
+                console.log(data.entry.id);
+                console.log(data.entry.name);
+                console.log(data.entry.nodeType);
+            },
+            (err) => {
+                window.alert('See console output for error details');
+                console.log(err);
+            }
+        );
     }
 }

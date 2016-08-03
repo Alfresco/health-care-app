@@ -19,7 +19,7 @@ import {
     Component,
     OnInit, AfterViewChecked, OnChanges,
     SimpleChange,
-    Input
+    Input, Output, EventEmitter
 } from '@angular/core';
 import { MATERIAL_DESIGN_DIRECTIVES } from 'ng2-alfresco-core';
 
@@ -36,9 +36,11 @@ declare var componentHandler;
  *
  * ActivitiForm can show form 3 type of form:
  *   1) Form attached to a task passing the {taskId}.
- *   2) Form that are only defined with the {formId}, in this case you can pass also {saveOption} as parameter to tell what is the function
+ *   2) Form that are only defined with the {formId}, 
+ *      in this case you can pass also {saveOption} as parameter to tell what is the function
  *      to call on the save action.
- *   3) Form that are only defined with the {formName}, in this case you can pass also {saveOption} as parameter to tell what is the function
+ *   3) Form that are only defined with the {formName},
+ *      in this case you can pass also {saveOption} as parameter to tell what is the function
  *      to call on the save action.
  * @returns {ActivitiForm} .
  */
@@ -61,8 +63,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Input()
     formName: string;
 
-    @Input()
-    saveOption: Function;
+    @Output()
+    saveOption = new EventEmitter();
+
 
     form: FormModel;
     debugMode: boolean = false;
@@ -123,7 +126,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                 }
 
                 if (outcome.id === '$custom') {
-                    this.saveOption(this.form.values);
+                    this.saveOption.emit(this.form.values);
                 }
             } else {
                 // Note: Activiti is using NAME field rather than ID for outcomes
