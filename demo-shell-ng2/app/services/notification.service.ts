@@ -21,13 +21,10 @@ import { Subject }    from 'rxjs/Subject';
 @Injectable()
 export class NotificationService {
 
-    // Observable string sources
-    private notificationsdSource = new Subject<string>();
+    notificationsdSource = new Subject<string>();
 
-    // Observable string streams
     notifications = this.notificationsdSource.asObservable();
 
-    // Service message commands
     sendNotification(message: string) {
         this.notificationsdSource.next(message);
     }
