@@ -45,6 +45,9 @@ export * from './src/services/document-list.service';
 export * from './src/models/content-action.model';
 export * from './src/models/document-library.model';
 
+// data
+export * from './src/data/share-datatable-adapter';
+
 export const DOCUMENT_LIST_DIRECTIVES: [any] = [
     DocumentList,
     ContentColumn,

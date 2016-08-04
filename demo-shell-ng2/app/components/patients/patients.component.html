@@ -26,6 +26,7 @@
                     [currentFolderPath]="currentPath"
                     [contextMenuActions]="true"
                     [contentActions]="true"
+                    [rowFilter]="tagFilter"
                     (preview)="showFile($event)"
                     (folderChange)="onFolderChanged($event)"
                     (nodeClick)="onNodeClicked($event)">

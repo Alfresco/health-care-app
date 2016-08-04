@@ -36,6 +36,7 @@ import { FormService } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
 import { TagModel, TagCache, TagFilter } from './tag.model';
 import { TagService } from './tag.service';
+import { ShareDataRow, RowFilter } from 'ng2-alfresco-documentlist';
 
 declare let __moduleName: string;
 
@@ -75,6 +76,10 @@ export class PatientsComponent implements OnInit {
     tags: TagCache = {};
     tagFilters: TagFilter[] = [];
     selectedNodeId: string;
+
+    tagFilter(row: ShareDataRow) {
+        return row;
+    }
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,

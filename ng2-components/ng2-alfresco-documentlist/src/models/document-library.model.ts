@@ -53,7 +53,7 @@ export class MinimalNodeEntryEntity {
     createdByUser: UserInfo;
     content: ContentInfo;
     path: PathInfoEntity;
-    properties: any;
+    properties: NodeProperties = {};
 }
 
 export class UserInfo {
@@ -77,4 +77,8 @@ export class PathInfoEntity {
 export class PathElementEntity {
     id: string;
     name: string;
+}
+
+export interface NodeProperties {
+    [key: string]: any;
 }
