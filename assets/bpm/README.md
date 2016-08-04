@@ -2,9 +2,9 @@
 
 Import process into Activiti for `Health Care Express Appliction` (Alfresco AppFest)
 
-## Create user 'visitor':
+## Create user 'visitor'
 
-Follow steps below to create 'visitor' user required
+Follow steps below to create 'visitor' user required.
 
     1. Login as admin
     2. Go to identity management > users > create user 
@@ -14,17 +14,24 @@ Follow steps below to create 'visitor' user required
     - First name: 'visitor'
     - Last name: 'visitor'
     4. Go to capabilities, add newly created user to all groups
-    4. Login as user created
-    5. Go to identity management > personal 
-    6. Change email to 'visitor' 
+    5. Login as user created
+    6. Go to identity management > personal 
+    7. Change email to 'visitor' 
 
 ## Import process
 
-_You can use the following steps to deploy and activate the model for demo environment.
-Note that it was tested only with internal v.5.2 docker image._
+Follow steps below to import process.
 
-- Compile and run 'Demo App' for ng2-components
-- Navigate to `/Data Dictionary/Models` and drop `health-care-model.xml` there to upload it
-- Navigate to [Model and Messages Console](http://localhost:8080/alfresco/s/admin/admin-repoconsole)
-- Execute `activate model health-care-model.xml` command
-- (optional) Ensure the model is loaded via `show models` command, it should have `IsLoaded: Y` in the list
+    1. Login as admin
+    2. Go to kickstart app > processes > import process
+    3. Import file 'Health Care Express app.bpmn20.xml' ('/health-care-app/assets/bpm/process')
+    4. Click 'validate' 
+    5. For all users tasks that cannot be validate, select task and choose 'Assignment'
+    6. Ensure assignment is set to 'Assigned to single user' and select user creates 'visitor' and save
+
+## Resolve exclusive gateway validation error
+
+    1. Edit process 'Health Care Express app'
+    2. Select 'Determine next visit type' user task > referenced form > reselect form 'Determine visit type' > save
+    3. Select 'Emergency response' user task > referenced form > reselect form 'Emergency response detail' > save
+
