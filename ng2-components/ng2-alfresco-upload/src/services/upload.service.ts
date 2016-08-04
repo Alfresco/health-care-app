@@ -95,7 +95,7 @@ export class UploadService {
             let _queue = this.queue;
 
             let promiseUpload = this.authService.getAlfrescoApi().
-                upload.uploadFile(uploadingFileModel.file, directory)
+                upload.uploadFile(uploadingFileModel.file, directory, null, null, {autoRename: true})
                 .on('progress', (progress: any) => {
                     uploadingFileModel.setProgres(progress);
                     if (_filesUploadObserverProgressBar) {
@@ -116,20 +116,13 @@ export class UploadService {
                 })
                 .on('success', (data: any) => {
                     elementEmit.emit({
-                        value: 'File uploaded'
+                        value: data
                     });
                     uploadingFileModel.onFinished(
                         data.status,
                         data.statusText,
                         data.response
                     );
-
-                    _filesUploadObserverProgressBar.next(_queue);
-                    if (!uploadingFileModel.abort && !uploadingFileModel.error) {
-                        if (this.totalCompletedObserver) {
-                            this.totalCompletedObserver.next(++this.totalCompleted);
-                        }
-                    }
                 });
 
             uploadingFileModel.setPromiseUpload(promiseUpload);

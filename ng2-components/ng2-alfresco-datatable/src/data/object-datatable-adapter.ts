@@ -189,6 +189,8 @@ export class ObjectDataColumn implements DataColumn {
     title: string;
     srTitle: string;
     cssClass: string;
+    customData: string;
+
 
     constructor(obj: any) {
         this.key = obj.key;
@@ -197,5 +199,6 @@ export class ObjectDataColumn implements DataColumn {
         this.title = obj.title;
         this.srTitle = obj.srTitle;
         this.cssClass = obj.cssClass;
+        this.customData = obj.customData;
     }
 }

@@ -40,6 +40,7 @@ export interface DataColumn {
     title?: string;
     srTitle?: string;
     cssClass?: string;
+    customData?: string;
 }
 
 export class DataSorting {

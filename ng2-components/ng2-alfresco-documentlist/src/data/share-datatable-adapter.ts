@@ -130,37 +130,7 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
         }
 
         if (col.type === 'image') {
-
-            if (col.key === '$thumbnail') {
-                let node = (<ShareDataRow> row).node;
-
-                if (node.entry.isFolder) {
-                    return `${this.basePath}/img/ft_ic_folder.svg`;
-                }
-
-                if (node.entry.isFile) {
-
-                    if (this.thumbnails) {
-                        if (this.documentListService) {
-                            return this.documentListService.getDocumentThumbnailUrl(node);
-                        }
-                        return null;
-                    }
-
-                    if (node.entry.content) {
-                        let mimeType = node.entry.content.mimeType;
-                        if (mimeType) {
-                            let icon = this.documentListService.getMimeTypeIcon(mimeType);
-                            if (icon) {
-                                return `${this.basePath}/img/${icon}`;
-                            }
-                        }
-                    }
-                }
-
-                return `${this.basePath}/img/ft_ic_miscellaneous.svg`;
-            }
-
+            return `http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
         }
 
         return value;
@@ -218,7 +188,7 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
                     skipCount: this._skipCount
                 })
                 .subscribe(val => this.loadPage(<NodePaging>val),
-                error => console.error(error));
+                    error => console.error(error));
         }
     }
 

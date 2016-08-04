@@ -190,30 +190,6 @@ export class PatientsComponent implements OnInit {
         }
     }
 
-    onCreateNewPatientClick() {
-        if (this.newPatient && this.newPatient.folderName) {
-            let body = {
-                name: this.newPatient.folderName,
-                nodeType: 'hc:patientFolder',
-                properties: {
-                    'hc:firstName': this.newPatient.firstName,
-                    'hc:lastName': this.newPatient.lastName,
-                    'hc:doctor': this.newPatient.doctor
-                },
-                relativePath: this.currentPath
-            };
-            let opts = {};
-            // TODO: move to separate service
-            this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
-                (data) => {
-                    this.newPatient = new PatientModel();
-                    console.log(data);
-                    this.documentList.reload();
-                },
-                this.handleError
-            );
-        }
-    }
 
     scheduleAppointment(event?: any) {
         // TODO: invoke corresponding process

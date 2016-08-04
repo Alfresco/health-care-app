@@ -172,7 +172,11 @@ export class DataTableComponent implements OnInit, AfterViewChecked {
     }
 
     iconAltTextKey(value: string) {
-        return 'ICONS.' + value.substring(value.lastIndexOf('/') + 1).replace(/\.[a-z]+/, '');
+        if(value){
+            return 'ICONS.' + value.substring(value.lastIndexOf('/') + 1).replace(/\.[a-z]+/, '');
+        }else{
+            return 'ICONS.';
+        }
     }
 
     isColumnSorted(col: DataColumn, direction: string) {

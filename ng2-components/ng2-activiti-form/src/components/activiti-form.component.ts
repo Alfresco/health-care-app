@@ -34,7 +34,7 @@ declare var componentHandler;
 
 /**
  *
- * ActivitiForm can show form 3 type of form:
+ * ActivitiForm can show 3 type of forms:
  *   1) Form attached to a task passing the {taskId}.
  *   2) Form that are only defined with the {formId}, in this case you can pass also other 2 parameters:
  *      - {saveOption} as parameter to tell what is the function to call on the save action.
@@ -42,6 +42,9 @@ declare var componentHandler;
  *   3) Form that are only defined with the {formName}, in this case you can pass also other 2 parameters:
  *      - {saveOption} as parameter to tell what is the function to call on the save action.
  *      - {data} to fill the form field with some data, the id of the form must to match the name of the field of the provided data object.
+ *
+ *   {showTitle} boolean - to hide the title of the form pass false;
+ *
  * @returns {ActivitiForm} .
  */
 @Component({
@@ -66,6 +69,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Input()
     data: any;
 
+    @Input()
+    showTitle: boolean = true;
+
     @Output()
     saveOption = new EventEmitter();
 
@@ -74,6 +80,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
 
     hasForm(): boolean {
         return this.form ? true : false;
+    }
+
+    isTitleEnabled(): boolean {
+        return this.form.taskName && this.showTitle;
     }
 
     constructor(private formService: FormService) {

@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import { Component, ContentChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 
 declare let __moduleName: string;
 declare let AlfrescoApi: any;
@@ -30,7 +31,7 @@ declare let AlfrescoApi: any;
     templateUrl: './createpatient.component.html',
     styleUrls: ['./createpatient.component.css'],
     providers: [FormService],
-    directives: [ActivitiForm]
+    directives: [ALFRESCO_ULPOAD_COMPONENTS, ActivitiForm]
 })
 export class CreatePatientComponent {
 
@@ -38,13 +39,20 @@ export class CreatePatientComponent {
 
     metadata: any = {};
 
+    photoNode: string = "";
+
     constructor(private authService: AlfrescoAuthenticationService, private router: Router,
                 private notificationService: NotificationService) {
     }
 
+    public fileUploaded(data){
+        this.photoNode = data.value.entry.id;
+        console.log(this.photoNode);
+    }
+
     saveMetadata(data: any) {
         let body = {
-            name: data.firstName,
+            name: this.photoNode,
             nodeType: 'hc:patientFolder',
             properties: {},
             relativePath: this.currentPath
@@ -55,7 +63,6 @@ export class CreatePatientComponent {
                 body.properties['hc:' + key] = data[key];
             }
         }
-
         let opts = {};
 
         let self = this;

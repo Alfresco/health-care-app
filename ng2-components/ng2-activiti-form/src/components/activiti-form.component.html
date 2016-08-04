@@ -3,9 +3,8 @@
         <h3 style="text-align: center">Please select a Task</h3>
     </div>
     <div *ngIf="hasForm()">
-
         <div class="mdl-card mdl-shadow--2dp activiti-form-container">
-            <div *ngIf="form.taskName" class="mdl-card__title">
+            <div *ngIf="isTitleEnabled()" class="mdl-card__title">
                 <h2 class="mdl-card__title-text">{{form.taskName}}</h2>
             </div>
             <div class="mdl-card__media">

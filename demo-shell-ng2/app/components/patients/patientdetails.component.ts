@@ -42,6 +42,8 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     nodeId: string;
 
+    photoNodeId: string;
+
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private authService: AlfrescoAuthenticationService) {
@@ -64,7 +66,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
         this.nodeId = nodeId;
         this.authService.getAlfrescoApi().nodes.getNodeInfo(this.nodeId).then(function (data) {
             console.log(data.properties);
-
+            self.photoNodeId = data.name;
             for (var key in data.properties) {
                 console.log(key + ' => ' + data[key]);
                 self.metadata [key.replace('hc:','')] = data.properties[key];

@@ -1,1 +1,8 @@
-<activiti-form [formName]="'Health_User_Form'" [data]="metadata" ></activiti-form>
+<div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Patient Details</h2>
+</div>
+<div>
+    <img class="image-cell"
+         src="http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/{{photoNodeId}}/content?attachment=false">
+</div>
+<activiti-form [formName]="'Health_User_Form'" [data]="metadata" [showTitle]="false"  ></activiti-form>
