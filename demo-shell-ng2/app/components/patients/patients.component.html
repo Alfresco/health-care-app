@@ -1,16 +1,30 @@
 <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--1-col">
+    <div class="mdl-cell mdl-cell--2-col">
         <h4>Tags</h4>
+        <button
+            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+            (click)="resetFilters()">
+            Show All
+        </button>
         <ul class="mdl-list">
             <li *ngFor="let filter of tagFilters" class="mdl-list__item">
                 <span class="mdl-list__item-primary-content">
-                    <a href="#" (click)="$event.preventDefault()">{{filter.tag}}</a>
+                    <label [attr.for]="'chk-' + filter.id"
+                           class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                           [class.is-checked]="filter.isSelected">
+                        <input type="checkbox"
+                               [attr.id]="'chk-' + filter.id"
+                               class="mdl-checkbox__input"
+                               [(ngModel)]="filter.isSelected"
+                               (change)="onFilterChanged($event)">
+                        <span class="mdl-checkbox__label">{{filter.tag}}</span>
+                    </label>
                 </span>
-                <span class="mdl-list__item-secondary-action">(0)</span>
+                <!--<span class="mdl-list__item-secondary-action">(0)</span>-->
             </li>
         </ul>
     </div>
-    <div class="mdl-cell mdl-cell--11-col">
+    <div class="mdl-cell mdl-cell--10-col">
         <div class="container">
             <alfresco-upload-drag-area
                 [showUploadDialog]="true"

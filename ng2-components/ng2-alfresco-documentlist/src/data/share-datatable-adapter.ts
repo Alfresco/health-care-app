@@ -304,5 +304,5 @@ export class ShareDataRow implements DataRow {
 }
 
 export interface RowFilter {
-    (value: ShareDataRow, index: number, array: ShareDataRow[]): any;
+    (value: ShareDataRow, index: number, array: ShareDataRow[]): boolean;
 }

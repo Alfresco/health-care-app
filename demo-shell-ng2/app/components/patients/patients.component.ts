@@ -76,19 +76,52 @@ export class PatientsComponent implements OnInit {
     tags: TagCache = {};
     tagFilters: TagFilter[] = [];
     selectedNodeId: string;
-
-    tagFilter(row: ShareDataRow) {
-        return row;
-    }
+    tagFilter: RowFilter;
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
                 private tagService: TagService,
                 private authService: AlfrescoAuthenticationService) {
         this.newPatient = new PatientModel();
+
+        this.tagFilter = (row: ShareDataRow) => {
+            let selectedTags = this.tagFilters
+                .filter(f => f.isSelected)
+                .map(f => f.id);
+
+            if (selectedTags.length > 0) {
+                let properties = row.node.entry.properties;
+                if (properties) {
+                    let tags = properties['cm:taggable'];
+                    if (tags && tags instanceof Array && tags.length > 0) {
+
+                        let result = false;
+
+                        for (let i = 0; i < selectedTags.length; i++) {
+                            if (tags.indexOf(selectedTags[i]) > -1) {
+                                result = true;
+                                break;
+                            }
+                        }
+
+                        return result;
+                    }
+                }
+                return false;
+            }
+
+            return true;
+        };
     }
 
-    public patientDetails(event: any): void{
+    resetFilters() {
+        if (this.tagFilters && this.tagFilters.length > 0) {
+            this.tagFilters.map(f => f.isSelected = false);
+            this.documentList.reload();
+        }
+    }
+
+    patientDetails(event: any) {
         this.router.navigate(['/patientdetails', event.value.entry.id]);
     }
 
@@ -106,17 +139,12 @@ export class PatientsComponent implements OnInit {
     onFolderChanged(event?: any) {
         if (event) {
             this.currentPath = event.path;
+            this.loadTags();
         }
     }
 
     ngOnInit() {
-        this.tagService.getTags().then(
-            (tags: TagModel[]) => {
-                this.tagFilters = tags.map((tag) => new TagFilter(tag.id, tag.tag));
-                tags.forEach(tag => this.tags[tag.id] = tag);
-            },
-            this.handleError
-        );
+        // this.loadTags();
     }
 
     onNodeClicked(event?: any) {
@@ -124,6 +152,12 @@ export class PatientsComponent implements OnInit {
         if (event && event.value) {
             this.selectedNodeId = event.value.entry.id;
         }
+    }
+
+    onFilterChanged(event) {
+        setTimeout(() => {
+            this.documentList.reload();
+        }, 500);
     }
 
     setNodeTags(nodeId: string, value: string) {
@@ -179,6 +213,16 @@ export class PatientsComponent implements OnInit {
                 this.handleError
             );
         }
+    }
+
+    private loadTags() {
+        this.tagService.getTags().then(
+            (tags: TagModel[]) => {
+                this.tagFilters = tags.map((tag) => new TagFilter(tag.id, tag.tag));
+                tags.forEach(tag => this.tags[tag.id] = tag);
+            },
+            this.handleError
+        );
     }
 
     private handleError(err) {

@@ -31,6 +31,7 @@ export interface TagCache {
 
 export class TagFilter extends TagModel {
     count: number = 0;
+    isSelected: boolean = false;
 
     constructor(id: string, tag: string) {
         super(id, tag);
