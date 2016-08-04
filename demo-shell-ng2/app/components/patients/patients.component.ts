@@ -36,7 +36,7 @@ import { FormService } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
 import { TagModel, TagCache, TagFilter } from './tag.model';
 import { TagService } from './tag.service';
-import { ShareDataRow, RowFilter } from 'ng2-alfresco-documentlist';
+import { ShareDataRow, RowFilter, MinimalNodeEntity } from 'ng2-alfresco-documentlist';
 
 declare let __moduleName: string;
 
@@ -75,7 +75,7 @@ export class PatientsComponent implements OnInit {
 
     tags: TagCache = {};
     tagFilters: TagFilter[] = [];
-    selectedNodeId: string;
+    selectedNode: MinimalNodeEntity;
     tagFilter: RowFilter;
 
     constructor(private contentService: AlfrescoContentService,
@@ -150,7 +150,7 @@ export class PatientsComponent implements OnInit {
     onNodeClicked(event?: any) {
         console.log(event);
         if (event && event.value) {
-            this.selectedNodeId = event.value.entry.id;
+            this.selectedNode = <MinimalNodeEntity> event.value;
         }
     }
 

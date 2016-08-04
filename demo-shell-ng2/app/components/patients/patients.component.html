@@ -122,24 +122,6 @@
     </div>
 </div>
 
-<!-- Example for associating tags with node -->
-<div class="mdl-grid" *ngIf="selectedNodeId">
-    <div class="md-cell mdl-cell--12-col">
-        <div>
-            Selected node: {{selectedNodeId}}
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="node-tags" #nodeTags>
-            <label class="mdl-textfield__label" for="node-tags">Tags</label>
-        </div>
-        <button
-            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-            (click)="setNodeTags(selectedNodeId, nodeTags.value)">
-            Set Tags
-        </button>
-    </div>
-</div>
-
 <!-- Example for creating a custom folder type with properties -->
 <!--
 <div class="mdl-grid">
@@ -189,6 +171,26 @@ will be removed during future revisions
         <span class="mdl-switch__label"></span>
         <span class="debug-toggle-text">Debug mode</span>
     </label>
+
+    <!-- Example for associating tags with node -->
+    <div *ngIf="debugMode">
+        <div class="mdl-grid" *ngIf="selectedNode">
+            <div class="md-cell mdl-cell--12-col">
+                <div>
+                    Selected node: {{ selectedNode.entry.name + ' (' + selectedNode.entry.id + ')' }}
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="node-tags" #nodeTags>
+                    <label class="mdl-textfield__label" for="node-tags">Tags</label>
+                </div>
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                    (click)="setNodeTags(selectedNode.entry.id, nodeTags.value)">
+                    Set Tags
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div *ngIf="debugMode">
         <pre>{{documentList.data.getRows() | json}}</pre>
