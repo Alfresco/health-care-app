@@ -92,6 +92,21 @@
                         <!-- folder actions -->
                         <content-action
                             target="folder"
+                            title="View details"
+                            (execute)="patientDetails($event)">
+                        </content-action>
+                        <content-action
+                            target="folder"
+                            title="Schedule an appointment"
+                            (execute)="scheduleAppointment($event)">
+                        </content-action>
+                        <content-action
+                            target="folder"
+                            title="Perform a visit"
+                            (execute)="performVisit($event)">
+                        </content-action>
+                        <content-action
+                            target="folder"
                             title="{{'DOCUMENT_LIST.ACTIONS.FOLDER.DELETE' | translate}}"
                             handler="delete">
                         </content-action>
@@ -105,11 +120,6 @@
                             target="document"
                             title="{{'DOCUMENT_LIST.ACTIONS.DOCUMENT.DELETE' | translate}}"
                             handler="delete">
-                        </content-action>
-                        <content-action
-                            target="folder"
-                            title="Detail"
-                            (execute)="patientDetails($event)">
                         </content-action>
                     </content-actions>
                 </alfresco-document-list>

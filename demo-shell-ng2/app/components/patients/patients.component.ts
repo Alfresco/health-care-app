@@ -215,6 +215,14 @@ export class PatientsComponent implements OnInit {
         }
     }
 
+    scheduleAppointment(event?: any) {
+        // TODO: invoke corresponding process
+    }
+
+    performVisit(event?: any) {
+        // TODO: invoke corresponding process
+    }
+
     private loadTags() {
         this.tagService.getTags().then(
             (tags: TagModel[]) => {
