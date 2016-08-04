@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,7 +32,7 @@ declare let AlfrescoApi: any;
     providers: [FormService],
     directives: [ActivitiForm]
 })
-export class PatientDetailsComponent {
+export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     private sub: Subscription;
 
@@ -51,6 +51,12 @@ export class PatientDetailsComponent {
         this.sub = this.route.params.subscribe(params => {
             this.retriveNodeMetadataFromEcm(params['id']);
         });
+    }
+
+    ngOnDestroy() {
+        if (this.sub) {
+            this.sub.unsubscribe();
+        }
     }
 
     private retriveNodeMetadataFromEcm(nodeId: string): void{
