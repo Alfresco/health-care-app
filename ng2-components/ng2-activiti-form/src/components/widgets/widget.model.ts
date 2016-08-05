@@ -441,6 +441,8 @@ export class FormModel {
                             let formField = containerModelColumn.fields[i];
                             if(data[formField.id]){
                                 formField.value = data[formField.id];
+                                formField.json.value = data[formField.id];
+                                // console.log(`Setting [${formField.id}] to [${formField.value}]`);
                             }
                         }
                     }
