@@ -26,7 +26,7 @@ declare let AlfrescoApi: any;
 
 @Component({
     moduleId: __moduleName,
-    selector: 'createpatient-component',
+    selector: 'patient-details',
     templateUrl: './patientdetails.component.html',
     styleUrls: ['./patientdetails.component.css'],
     providers: [FormService],

@@ -72,6 +72,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Input()
     showTitle: boolean = true;
 
+    @Input()
+    readOnly: boolean = false;
+
     @Output()
     saveOption = new EventEmitter();
 
@@ -127,7 +130,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
 
 
     onOutcomeClicked(outcome: FormOutcomeModel, event?: Event) {
-        if (outcome) {
+        if (!this.readOnly && outcome) {
             if (outcome.isSystem) {
                 if (outcome.id === '$save') {
                     return this.saveTaskForm();
@@ -165,7 +168,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getTaskForm(taskId)
             .subscribe(
-                form => this.form = new FormModel(form),
+                form => this.form = new FormModel(form, null, null, this.readOnly),
                 err => console.log(err)
             );
     }
@@ -174,7 +177,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getFormDefinitionById(this.formId)
             .subscribe(
-                form => this.form = new FormModel(form, this.data, this.saveOption),
+                form => this.form = new FormModel(form, this.data, this.saveOption, this.readOnly),
                 err => console.log(err)
             );
     }
@@ -185,7 +188,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             .subscribe(
                 id => {
                     this.formService.getFormDefinitionById(id).subscribe(
-                        form => this.form = new FormModel(form, this.data, this.saveOption),
+                        form => this.form = new FormModel(form, this.data, this.saveOption, this.readOnly),
                         err => console.log(err)
                     );
                 },

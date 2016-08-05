@@ -58,13 +58,13 @@ export interface FormFieldOption {
 export class FormFieldModel extends FormWidgetModel {
 
     private _value: string;
+    private _readOnly: boolean = false;
 
     fieldType: string;
     id: string;
     name: string;
     type: string;
     required: boolean;
-    readOnly: boolean;
     overrideId: boolean;
     tab: string;
     colspan: number = 1;
@@ -89,6 +89,13 @@ export class FormFieldModel extends FormWidgetModel {
         this.updateForm();
     }
 
+    get readOnly() {
+        if (this.form && this.form.readOnly) {
+            return true;
+        }
+        return this._readOnly;
+    }
+
     constructor(form: FormModel, json?: any) {
         super(form, json);
 
@@ -98,7 +105,7 @@ export class FormFieldModel extends FormWidgetModel {
             this.name = json.name;
             this.type = json.type;
             this.required = <boolean> json.required;
-            this.readOnly = <boolean> json.readOnly;
+            this._readOnly = <boolean> json.readOnly;
             this.overrideId = <boolean> json.overrideId;
             this.tab = json.tab;
             this.restUrl = json.restUrl;
@@ -341,6 +348,7 @@ export class FormModel {
         return this._taskName;
     }
 
+    readOnly: boolean = false;
     tabs: TabModel[] = [];
     fields: ContainerModel[] = [];
     outcomes: FormOutcomeModel[] = [];
@@ -365,7 +373,9 @@ export class FormModel {
         return this.outcomes && this.outcomes.length > 0;
     }
 
-    constructor(json?: any, data?: any, saveOption?:any) {
+    constructor(json?: any, data?: any, saveOption?: any, readOnly: boolean = false) {
+        this.readOnly = readOnly;
+
         if (json) {
             this._json = json;
 

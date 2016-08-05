@@ -5,4 +5,9 @@
     <img class="image-cell"
          src="{{alfrescoSettingsService.ecmHost}}/alfresco/api/-default-/public/alfresco/versions/1/nodes/{{photoNodeId}}/content?attachment=false">
 </div>
-<activiti-form [formName]="'Health_User_Form'" [data]="metadata" [showTitle]="false"  ></activiti-form>
+<activiti-form
+    [readOnly]="true"
+    [formName]="'Health_User_Form'"
+    [data]="metadata"
+    [showTitle]="false">
+</activiti-form>
