@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160804081537031" modeler:modelId="28" modeler:modelVersion="1" modeler:modelLastUpdated="1470239979945">
-  <process id="HealthCareExpressappembedded" name="Health Care Express app embedded" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20160805121914574" modeler:modelId="54" modeler:modelVersion="3" modeler:modelLastUpdated="1470399087868" modeler:originalModelId="28" modeler:originalModelVersion="3">
+  <process id="HealthCareExpressVisitationLog" name="Health Care Express Visitation Log" isExecutable="true">
     <extensionElements>
-      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="testVariable" modeler:variableType="string"/>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="PVForVitoToPopulate" modeler:variableType="string"/>
     </extensionElements>
-    <startEvent id="startEvent1"/>
-    <userTask id="sid-5000A660-A5AF-40EE-BA4D-73C5A164697E" name="Determine next visit type" default="sid-C0EDFCFC-852A-4E07-981D-5F3475F230FA" activiti:assignee="2" activiti:formKey="32">
+    <userTask id="sid-5000A660-A5AF-40EE-BA4D-73C5A164697E" name="Determine next visit type" default="sid-C0EDFCFC-852A-4E07-981D-5F3475F230FA" activiti:assignee="2" activiti:formKey="47">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[32]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[47]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Determine visit type]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -18,10 +17,11 @@
       </extensionElements>
     </userTask>
     <exclusiveGateway id="sid-A288F4A9-913D-400E-A0EE-4534AA38CED4" name="Type of visit"/>
-    <userTask id="sid-6A756769-3B86-4E77-AE47-A3D41D83EC9F" name="Follow up visit" default="sid-ED7B3DF6-0DE4-4372-91AF-9A49C3AF0A34" activiti:assignee="2" activiti:formKey="33">
+    <userTask id="sid-6A756769-3B86-4E77-AE47-A3D41D83EC9F" name="Follow up visit" default="sid-ED7B3DF6-0DE4-4372-91AF-9A49C3AF0A34" activiti:assignee="2" activiti:formKey="48">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[33]]></modeler:form-reference-id>
+        <modeler:email-template email-template-type="custom" email-template-subject="Follow up visit"><![CDATA[This is a reminder to follow up on patient]]></modeler:email-template>
+        <modeler:form-reference-id><![CDATA[48]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Schedule visit]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -30,10 +30,11 @@
         <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="sid-B078C373-AC87-4028-875B-4765E08106B0" name="Referral to GP/nurse/specialist" activiti:assignee="2" activiti:formKey="34">
+    <userTask id="sid-B078C373-AC87-4028-875B-4765E08106B0" name="Referral to GP/nurse/specialist" activiti:assignee="2" activiti:formKey="49">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[34]]></modeler:form-reference-id>
+        <modeler:email-template email-template-type="custom" email-template-subject="Referral"><![CDATA[This is a reminder to follow up on a referral]]></modeler:email-template>
+        <modeler:form-reference-id><![CDATA[49]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Referral]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -42,10 +43,10 @@
         <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="sid-C4A7A9D9-3DA4-414F-891B-8948AE477B17" name="Emergency response" activiti:assignee="2" activiti:formKey="35">
+    <userTask id="sid-C4A7A9D9-3DA4-414F-891B-8948AE477B17" name="Emergency response" activiti:assignee="2" activiti:formKey="50">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[35]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[50]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Emergency response detail]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -55,10 +56,10 @@
       </extensionElements>
     </userTask>
     <exclusiveGateway id="sid-AC99F33B-C5E2-4AFE-857A-00DC1FCD8A1F"/>
-    <userTask id="sid-A7E137D9-59A9-4AEE-AB15-5A385C836673" name="Treatment notes" activiti:assignee="2" activiti:formKey="37">
+    <userTask id="sid-A7E137D9-59A9-4AEE-AB15-5A385C836673" name="Treatment notes" activiti:assignee="2" activiti:formKey="52">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[37]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[52]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Emergency treatment notes]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -71,10 +72,10 @@
     <sequenceFlow id="sid-5A2CD9C2-1657-49AF-BC93-210D7B172090" sourceRef="sid-C4A7A9D9-3DA4-414F-891B-8948AE477B17" targetRef="sid-AC99F33B-C5E2-4AFE-857A-00DC1FCD8A1F"/>
     <sequenceFlow id="sid-EEC08977-3695-49AE-9B3D-F413CF94DC76" sourceRef="sid-B078C373-AC87-4028-875B-4765E08106B0" targetRef="sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0"/>
     <sequenceFlow id="sid-ED7B3DF6-0DE4-4372-91AF-9A49C3AF0A34" sourceRef="sid-6A756769-3B86-4E77-AE47-A3D41D83EC9F" targetRef="sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0"/>
-    <userTask id="sid-3D83CD1C-5C84-485F-B389-8823FC737E55" name="Record vitals" activiti:assignee="2" activiti:formKey="31">
+    <userTask id="sid-3D83CD1C-5C84-485F-B389-8823FC737E55" name="Record vitals" activiti:assignee="2" activiti:formKey="46">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[31]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[46]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Record vitals]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -85,10 +86,10 @@
     </userTask>
     <sequenceFlow id="sid-0B1868A4-E82E-4FF3-94E2-1342456D1F19" sourceRef="sid-3D83CD1C-5C84-485F-B389-8823FC737E55" targetRef="sid-5000A660-A5AF-40EE-BA4D-73C5A164697E"/>
     <sequenceFlow id="sid-C0EDFCFC-852A-4E07-981D-5F3475F230FA" sourceRef="sid-5000A660-A5AF-40EE-BA4D-73C5A164697E" targetRef="sid-A288F4A9-913D-400E-A0EE-4534AA38CED4"/>
-    <userTask id="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4" name="Record/update patients details" activiti:assignee="2" activiti:formKey="30">
+    <userTask id="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4" name="Record/update patients details" activiti:assignee="2" activiti:formKey="45">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[30]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[45]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Visit]]></modeler:form-reference-name>
         <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email><![CDATA[visitor]]></modeler:assignee-info-email>
@@ -97,24 +98,10 @@
         <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="sid-D509BBF2-5CAC-4F50-9F27-DC2E9544AB03" sourceRef="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4" targetRef="sid-3D83CD1C-5C84-485F-B389-8823FC737E55"/>
-    <userTask id="sid-18C50512-AC38-4F96-A72E-F5D17B388571" name="Create visit" activiti:assignee="1" activiti:formKey="29">
+    <userTask id="sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0" name="Visit completion" activiti:assignee="$INITIATOR" activiti:formKey="51">
       <extensionElements>
         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[29]]></modeler:form-reference-id>
-        <modeler:form-reference-name><![CDATA[Create visit]]></modeler:form-reference-name>
-        <modeler:activiti-idm-assignee><![CDATA[true]]></modeler:activiti-idm-assignee>
-        <modeler:assignee-info-email><![CDATA[admin]]></modeler:assignee-info-email>
-        <modeler:assignee-info-lastname><![CDATA[Administrator]]></modeler:assignee-info-lastname>
-        <modeler:initiator-can-complete><![CDATA[false]]></modeler:initiator-can-complete>
-      </extensionElements>
-    </userTask>
-    <sequenceFlow id="sid-B2C0E13E-FFDF-4372-9DB4-159F889437D7" sourceRef="startEvent1" targetRef="sid-18C50512-AC38-4F96-A72E-F5D17B388571"/>
-    <sequenceFlow id="sid-DE9F6B2C-6D0E-406B-95E5-E181CA798D66" sourceRef="sid-18C50512-AC38-4F96-A72E-F5D17B388571" targetRef="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4"/>
-    <userTask id="sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0" name="Visit completion" activiti:assignee="$INITIATOR" activiti:formKey="36">
-      <extensionElements>
-        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
-        <modeler:form-reference-id><![CDATA[36]]></modeler:form-reference-id>
+        <modeler:form-reference-id><![CDATA[51]]></modeler:form-reference-id>
         <modeler:form-reference-name><![CDATA[Completed visit]]></modeler:form-reference-name>
         <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
       </extensionElements>
@@ -157,112 +144,113 @@
       </extensionElements>
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'hospital_no') && hospital_no == true)}]]></conditionExpression>
     </sequenceFlow>
+    <sequenceFlow id="sid-DF56D923-5A16-49BF-B8AC-E3A73A0DD2AF" sourceRef="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4" targetRef="sid-3D83CD1C-5C84-485F-B389-8823FC737E55"/>
+    <startEvent id="sid-F23018ED-E392-44D8-9915-EFDAF3314560" name="Create visit" activiti:formKey="44">
+      <extensionElements>
+        <modeler:form-reference-id><![CDATA[44]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[Create visit]]></modeler:form-reference-name>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="sid-09A1166A-92AC-4389-95CE-275A10C84E1A" sourceRef="sid-F23018ED-E392-44D8-9915-EFDAF3314560" targetRef="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4"/>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_HealthCareExpressappembedded">
-    <bpmndi:BPMNPlane bpmnElement="HealthCareExpressappembedded" id="BPMNPlane_HealthCareExpressappembedded">
-      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
-        <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="255.0"/>
-      </bpmndi:BPMNShape>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_HealthCareExpressVisitationLog">
+    <bpmndi:BPMNPlane bpmnElement="HealthCareExpressVisitationLog" id="BPMNPlane_HealthCareExpressVisitationLog">
       <bpmndi:BPMNShape bpmnElement="sid-5000A660-A5AF-40EE-BA4D-73C5A164697E" id="BPMNShape_sid-5000A660-A5AF-40EE-BA4D-73C5A164697E">
-        <omgdc:Bounds height="80.0" width="100.0" x="690.0" y="234.5"/>
+        <omgdc:Bounds height="80.0" width="100.0" x="689.7616921627704" y="175.40263241994515"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-A288F4A9-913D-400E-A0EE-4534AA38CED4" id="BPMNShape_sid-A288F4A9-913D-400E-A0EE-4534AA38CED4">
-        <omgdc:Bounds height="40.0" width="40.0" x="840.0" y="254.5"/>
+        <omgdc:Bounds height="40.0" width="40.0" x="839.7616921627704" y="195.40263241994515"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-6A756769-3B86-4E77-AE47-A3D41D83EC9F" id="BPMNShape_sid-6A756769-3B86-4E77-AE47-A3D41D83EC9F">
-        <omgdc:Bounds height="80.0" width="100.0" x="1038.6333312988281" y="84.5"/>
+        <omgdc:Bounds height="79.99999999999994" width="100.0" x="1038.3950234615984" y="25.402632419945206"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-B078C373-AC87-4028-875B-4765E08106B0" id="BPMNShape_sid-B078C373-AC87-4028-875B-4765E08106B0">
-        <omgdc:Bounds height="79.0" width="142.0" x="1035.0" y="235.0"/>
+        <omgdc:Bounds height="79.0" width="142.0" x="1034.7616921627703" y="175.90263241994515"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-C4A7A9D9-3DA4-414F-891B-8948AE477B17" id="BPMNShape_sid-C4A7A9D9-3DA4-414F-891B-8948AE477B17">
-        <omgdc:Bounds height="80.0" width="100.0" x="1020.0" y="380.0"/>
+        <omgdc:Bounds height="80.00000000000011" width="99.99999999999989" x="1019.7616921627704" y="320.9026324199451"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-AC99F33B-C5E2-4AFE-857A-00DC1FCD8A1F" id="BPMNShape_sid-AC99F33B-C5E2-4AFE-857A-00DC1FCD8A1F">
-        <omgdc:Bounds height="40.0" width="40.0" x="1215.0" y="400.0"/>
+        <omgdc:Bounds height="40.0" width="40.0" x="1214.7616921627703" y="340.9026324199451"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-A7E137D9-59A9-4AEE-AB15-5A385C836673" id="BPMNShape_sid-A7E137D9-59A9-4AEE-AB15-5A385C836673">
-        <omgdc:Bounds height="80.00000000000006" width="100.0" x="1555.5555509768724" y="499.9999985282804"/>
+        <omgdc:Bounds height="80.00000000000011" width="100.0" x="1555.3172431396426" y="440.9026309482256"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-E12BC140-0A54-4E77-B318-77B37EE09659" id="BPMNShape_sid-E12BC140-0A54-4E77-B318-77B37EE09659">
-        <omgdc:Bounds height="28.0" width="28.0" x="1728.3951272996642" y="368.19184918290705"/>
+        <omgdc:Bounds height="28.0" width="28.0" x="1728.1568194624344" y="309.09448160285217"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-3D83CD1C-5C84-485F-B389-8823FC737E55" id="BPMNShape_sid-3D83CD1C-5C84-485F-B389-8823FC737E55">
-        <omgdc:Bounds height="80.0" width="100.0" x="540.0" y="230.0"/>
+        <omgdc:Bounds height="80.0" width="100.0" x="539.7616921627704" y="170.90263241994515"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-E180865E-3B09-4480-9F03-94D7E8A51EC4" id="BPMNShape_sid-E180865E-3B09-4480-9F03-94D7E8A51EC4">
-        <omgdc:Bounds height="80.0" width="100.0" x="377.25" y="233.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-18C50512-AC38-4F96-A72E-F5D17B388571" id="BPMNShape_sid-18C50512-AC38-4F96-A72E-F5D17B388571">
-        <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="230.0"/>
+        <omgdc:Bounds height="80.0" width="100.0" x="377.0116921627704" y="173.90263241994515"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0" id="BPMNShape_sid-ABD132F5-357A-4E2E-A28E-FDA4573FD4D0">
-        <omgdc:Bounds height="74.38369836581404" width="94.00530395721057" x="1555.5555509768724" y="345.0"/>
+        <omgdc:Bounds height="74.3836983658141" width="94.00530395721057" x="1555.3172431396426" y="285.9026324199451"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="sid-D509BBF2-5CAC-4F50-9F27-DC2E9544AB03" id="BPMNEdge_sid-D509BBF2-5CAC-4F50-9F27-DC2E9544AB03">
-        <omgdi:waypoint x="477.25" y="272.0783410138249"/>
-        <omgdi:waypoint x="540.0" y="270.9216589861751"/>
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="sid-F23018ED-E392-44D8-9915-EFDAF3314560" id="BPMNShape_sid-F23018ED-E392-44D8-9915-EFDAF3314560">
+        <omgdc:Bounds height="30.0" width="30.0" x="180.0" y="200.40263241994515"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="sid-BFDA6400-E71F-415C-AB9C-FC217344F511" id="BPMNEdge_sid-BFDA6400-E71F-415C-AB9C-FC217344F511">
-        <omgdi:waypoint x="871.8143459915611" y="282.6856540084388"/>
-        <omgdi:waypoint x="1020.0" y="385.3571428571429"/>
+        <omgdi:waypoint x="871.5760381543315" y="223.58828642838398"/>
+        <omgdi:waypoint x="1019.7616921627704" y="326.25977527708807"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-DE9F6B2C-6D0E-406B-95E5-E181CA798D66" id="BPMNEdge_sid-DE9F6B2C-6D0E-406B-95E5-E181CA798D66">
-        <omgdi:waypoint x="295.0" y="270.8230452674897"/>
-        <omgdi:waypoint x="377.25" y="272.1769547325103"/>
+      <bpmndi:BPMNEdge bpmnElement="sid-DF56D923-5A16-49BF-B8AC-E3A73A0DD2AF" id="BPMNEdge_sid-DF56D923-5A16-49BF-B8AC-E3A73A0DD2AF">
+        <omgdi:waypoint x="477.0116921627704" y="212.98097343377003"/>
+        <omgdi:waypoint x="539.7616921627704" y="211.82429140612027"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-09A1166A-92AC-4389-95CE-275A10C84E1A" id="BPMNEdge_sid-09A1166A-92AC-4389-95CE-275A10C84E1A">
+        <omgdi:waypoint x="210.0" y="215.40263241994515"/>
+        <omgdi:waypoint x="377.0116921627704" y="215.40263241994515"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-415B57C3-D69B-4E64-B491-A45EBD8B7796" id="BPMNEdge_sid-415B57C3-D69B-4E64-B491-A45EBD8B7796">
-        <omgdi:waypoint x="1235.261041052275" y="400.2610410522749"/>
-        <omgdi:waypoint x="1235.5" y="382.191849182907"/>
-        <omgdi:waypoint x="1555.5555509768724" y="382.19184918290705"/>
+        <omgdi:waypoint x="1235.0227332150453" y="341.16367347222"/>
+        <omgdi:waypoint x="1235.2616921627703" y="323.09448160285217"/>
+        <omgdi:waypoint x="1555.3172431396426" y="323.09448160285217"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-4FE17370-4F0D-4A05-B7C8-5E5986C8B40D" id="BPMNEdge_sid-4FE17370-4F0D-4A05-B7C8-5E5986C8B40D">
-        <omgdi:waypoint x="1649.560854934083" y="382.19184918290705"/>
-        <omgdi:waypoint x="1728.3951272996642" y="382.19184918290705"/>
+        <omgdi:waypoint x="1649.3225470968532" y="323.09448160285217"/>
+        <omgdi:waypoint x="1728.1568194624344" y="323.09448160285217"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-ED7B3DF6-0DE4-4372-91AF-9A49C3AF0A34" id="BPMNEdge_sid-ED7B3DF6-0DE4-4372-91AF-9A49C3AF0A34">
-        <omgdi:waypoint x="1138.6333312988281" y="149.57096497900864"/>
-        <omgdi:waypoint x="1555.5555509768724" y="358.62381234938425"/>
+        <omgdi:waypoint x="1138.3950234615984" y="90.47359739895377"/>
+        <omgdi:waypoint x="1555.3172431396426" y="299.52644476932926"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-0B1868A4-E82E-4FF3-94E2-1342456D1F19" id="BPMNEdge_sid-0B1868A4-E82E-4FF3-94E2-1342456D1F19">
-        <omgdi:waypoint x="640.0" y="271.5"/>
-        <omgdi:waypoint x="690.0" y="273.0"/>
+        <omgdi:waypoint x="639.7616921627704" y="212.40263241994515"/>
+        <omgdi:waypoint x="689.7616921627704" y="213.90263241994515"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-5A2CD9C2-1657-49AF-BC93-210D7B172090" id="BPMNEdge_sid-5A2CD9C2-1657-49AF-BC93-210D7B172090">
-        <omgdi:waypoint x="1120.0" y="420.0"/>
-        <omgdi:waypoint x="1215.0" y="420.0"/>
+        <omgdi:waypoint x="1119.7616921627703" y="360.9026324199452"/>
+        <omgdi:waypoint x="1214.7616921627703" y="360.9026324199451"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-2DAA8C62-1D49-41F7-B8AB-60E6C9794B53" id="BPMNEdge_sid-2DAA8C62-1D49-41F7-B8AB-60E6C9794B53">
-        <omgdi:waypoint x="880.0" y="274.5"/>
-        <omgdi:waypoint x="1035.0" y="274.5"/>
+        <omgdi:waypoint x="879.7616921627704" y="215.40263241994515"/>
+        <omgdi:waypoint x="1034.7616921627703" y="215.40263241994515"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-C0EDFCFC-852A-4E07-981D-5F3475F230FA" id="BPMNEdge_sid-C0EDFCFC-852A-4E07-981D-5F3475F230FA">
-        <omgdi:waypoint x="790.0" y="274.5"/>
-        <omgdi:waypoint x="840.0" y="274.5"/>
+        <omgdi:waypoint x="789.7616921627704" y="215.40263241994515"/>
+        <omgdi:waypoint x="839.7616921627704" y="215.40263241994515"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-4D32DF07-1B3B-45E8-BA13-3A151FA48A32" id="BPMNEdge_sid-4D32DF07-1B3B-45E8-BA13-3A151FA48A32">
-        <omgdi:waypoint x="1250.1075877686296" y="424.8924122313703"/>
-        <omgdi:waypoint x="1555.5555509768724" y="523.8080944788159"/>
+        <omgdi:waypoint x="1249.8692799314" y="365.7950446513155"/>
+        <omgdi:waypoint x="1555.3172431396426" y="464.710726898761"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-0CE63329-9954-439E-AED7-F9EE13387524" id="BPMNEdge_sid-0CE63329-9954-439E-AED7-F9EE13387524">
-        <omgdi:waypoint x="1253.134618205718" y="418.1346182057179"/>
-        <omgdi:waypoint x="1555.5555509768724" y="387.02668442946447"/>
+        <omgdi:waypoint x="1252.8963103684882" y="359.03725062566303"/>
+        <omgdi:waypoint x="1555.3172431396426" y="327.9293168494096"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-ACED2741-5226-42C4-B62E-9964B6B06186" id="BPMNEdge_sid-ACED2741-5226-42C4-B62E-9964B6B06186">
-        <omgdi:waypoint x="872.0767672784932" y="266.5767672784932"/>
-        <omgdi:waypoint x="1038.6333312988281" y="157.30361597932261"/>
+        <omgdi:waypoint x="871.8384594412636" y="207.47939969843836"/>
+        <omgdi:waypoint x="1038.3950234615984" y="98.2062483992678"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-EEC08977-3695-49AE-9B3D-F413CF94DC76" id="BPMNEdge_sid-EEC08977-3695-49AE-9B3D-F413CF94DC76">
-        <omgdi:waypoint x="1177.0" y="289.89823780269313"/>
-        <omgdi:waypoint x="1555.5555509768724" y="371.99807435862834"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-B2C0E13E-FFDF-4372-9DB4-159F889437D7" id="BPMNEdge_sid-B2C0E13E-FFDF-4372-9DB4-159F889437D7">
-        <omgdi:waypoint x="105.0" y="270.0"/>
-        <omgdi:waypoint x="195.0" y="270.0"/>
+        <omgdi:waypoint x="1176.7616921627703" y="230.80087022263825"/>
+        <omgdi:waypoint x="1555.3172431396426" y="312.9007067785734"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-7021AB54-9AA7-4028-97C0-EE767D2BB432" id="BPMNEdge_sid-7021AB54-9AA7-4028-97C0-EE767D2BB432">
-        <omgdi:waypoint x="1604.7958061769166" y="499.9999985282804"/>
-        <omgdi:waypoint x="1603.264610805914" y="419.38369836581404"/>
+        <omgdi:waypoint x="1604.5574983396868" y="440.9026309482256"/>
+        <omgdi:waypoint x="1603.0263029686844" y="360.2863307857592"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
