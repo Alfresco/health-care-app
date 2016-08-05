@@ -17,4 +17,4 @@ Follow steps below to create 'visitor' user required.
     7. Change email to 'visitor' 
 
 ## Import app 
-    1. Import app into Activiti for `visit.zip` (Alfresco AppFest)
+    1. Import app `visit.zip` into Activit (Alfresco AppFest)
