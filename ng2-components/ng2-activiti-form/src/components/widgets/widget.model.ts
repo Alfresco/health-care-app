@@ -394,6 +394,9 @@ export class FormModel {
             });
 
             this.fields = (json.fields || json.formDefinition.fields || []).map(obj => new ContainerModel(this, obj));
+            if (data) {
+                this.updateFormValueWithProvaidedDataModel(data);
+            }
             for (let i = 0; i < this.fields.length; i++) {
                 let field = this.fields[i];
                 if (field.tab) {
@@ -417,18 +420,13 @@ export class FormModel {
                     customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
                 );
             } else {
-                if(saveOption && saveOption.observers.length > 0){
+                if (saveOption && saveOption.observers.length > 0) {
                     let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
                     saveOutcome.isSystem = true;
 
                     this.outcomes = [saveOutcome];
                 }
-
-                if (data) {
-                    this.updateFormValueWithProvaidedDataModel(data);
-                }
             }
-
         }
     }
 

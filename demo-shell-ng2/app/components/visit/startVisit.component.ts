@@ -48,36 +48,61 @@ export class StartVisitComponent {
 
     errorMessage: string;
 
-    processName : string = "TEST";
+    processName: string = "TEST";
 
-    process:  IProcess;
+    process: IProcess;
 
-    defList: IProcess[];
+    taskId: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private processService: ProcessService,
                 private authService: AlfrescoAuthenticationService) {
-               }
+    }
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
-                               this.retriveNodeMetadataFromEcm(params['id']);
-                           });
+            this.retriveNodeMetadataFromEcm(params['id']);
+        });
 
-        this.processService.getStartFormForProcess("TEST:4:62").subscribe(
-                             defList => this.defList = defList,
-                             error =>  this.errorMessage = <any>error
-                          );
-        this.processService.startProcessByID("TEST:4:62")
-                            .subscribe(
-                               defList => this.defList = defList,
-                               error =>  this.errorMessage = <any>error
-                            );
+
+        this.processService.startProcessByID("health_care_express_process:3:10004", "Health Care Express process");
+        let self = this;
+        this.processService.getDeployedApplications("Visit").subscribe(
+            application => {
+                console.log("I'm the application hello", application);
+                this.processService.getProcessDefinitionByApplication(application).subscribe(
+                    process => {
+                        console.log("this is the process", process);
+                        self.processService.startProcessByID(process.id, process.name).subscribe(
+                            startedProcess => {
+                                console.log(startedProcess);
+                                this.processService.getTaskIdFromProcessID(process.id, application.id, startedProcess.id).subscribe(
+                                    response => {
+                                        console.log(response.data[0].id);
+                                        self.taskId = response.data[0].id;
+                                    },
+                                    error => {
+                                        console.log(error)
+                                    }
+                                );
+                            },
+                            error => {
+                                console.log(error);
+                            }
+                        );
+                    },
+                    error => this.errorMessage = <any>error
+                );
+                console.log(application);
+            },
+            error => this.errorMessage = <any>error
+        );
+
 
     }
 
-    private retriveNodeMetadataFromEcm(nodeId: string): void{
+    private retriveNodeMetadataFromEcm(nodeId: string): void {
         var self = this;
         this.nodeId = nodeId;
         this.authService.getAlfrescoApi().nodes.getNodeInfo(this.nodeId).then(function (data) {
@@ -85,14 +110,13 @@ export class StartVisitComponent {
 
             for (var key in data.properties) {
                 console.log(key + ' => ' + data[key]);
-                self.metadata [key.replace('hc:','')] = data.properties[key];
+                self.metadata [key.replace('hc:', '')] = data.properties[key];
             }
 
         }, function (error) {
             console.log('This node does not exist');
         });
     }
-
 
 
 }

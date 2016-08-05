@@ -17,9 +17,8 @@
 
 import { Injectable } from '@angular/core';
 import { Response, Http, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import { AlfrescoAuthenticationService,AlfrescoSettingsService } from 'ng2-alfresco-core';
-// import { FormModel, FormOutcomeModel } from 'ng2-activiti-form';
+import { Observable } from 'rxjs/Observable';
+import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
 
 import { IProcess } from './process';
 
@@ -32,50 +31,65 @@ export class ProcessService {
                 private alfrescoSettingsService: AlfrescoSettingsService) {
     }
 
+    getDeployedApplications(name: string): Observable<IProcess[]> {
+        let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/runtime-app-definitions`;
+        let options = this.getRequestOptions();
+        return this.http
+            .get(url, options)
+            .map((response: Response) => response.json().data.find(p => p.name === name))
+            .do(data => console.log('Application: ' + JSON.stringify(data)))
+            .catch(this.handleError);
+    }
+
+
     getProcessDefinitions(): Observable<IProcess[]> {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/process-definitions`;
         let options = this.getRequestOptions();
         return this.http
             .get(url, options)
-            .map((response: Response) => <IProduct[]> response.json())
-            .do(data => console.log('All: ' +  JSON.stringify(data)))
+            .map((response: Response) => <IProcess[]> response.json())
+            .do(data => console.log('All: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
-    getProcessDefinitionByName(name: string): Observable<IProcess> {
-        console.log("NAME :"+name);
+    getProcessDefinitionByApplication(application: any): Observable<IProcess> {
         return this.getProcessDefinitions()
-            .map( (processes: IProduct[]) => <IProduct> processes.data.find(p => p.name === name))
-            .do(response => console.log('PEP: ' +  JSON.stringify(response)));
+            .map((processes: IProcess[]) => <IProcess> processes.data.find(p => p.deploymentId === application.deploymentId));
     }
 
     getStartFormForProcess(processDefinitionId: string): Observable<any> {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/process-definitions/${processDefinitionId}/start-form`;
         let options = this.getRequestOptions();
         return this.http
-                    .get(url, options)
-                    .map((response: Response) => response.json())
-                    .do(data => console.log('FORM: ' +  JSON.stringify(data)))
-                    .catch(this.handleError);
-    }
-
-    getStartFormForProcessNamed(processName: string): Observable<any>{
-        this.getProcessDefinitionByName(processName)
-            .map((process: IProcess) => <IProduct> this.getStartFormForProcess(process.id) )
-            .do(response => console.log('STPE: ' +  JSON.stringify(response)))
+            .get(url, options)
+            .map((response: Response) => response.json())
             .catch(this.handleError);
     }
 
-    startProcessByID(processDefinitionId : string) {
+    startProcessByID(processDefinitionId: string, processName: string): void {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/process-instances`;
         let options = this.getRequestOptions();
-        let body = JSON.stringify({ processDefinitionId:processDefinitionId, name:'TEST'});
+        let body = JSON.stringify({processDefinitionId: processDefinitionId, name: processName});
         console.log(body);
         return this.http
-                    .post(url, body, options)
-                    .map((response: Response) => response.json())
-                    .do(data => console.log('START PROCESS: ' +  JSON.stringify(data)))
-                    .catch(this.handleError);
+            .post(url, body, options)
+            .map(this.toJson)
+            .catch(this.handleError);
+    }
+
+    getTaskIdFromProcessID(processDefinitionId: string, appDefinitionId: string, processInstanceId: string): Observable<any> {
+        let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/tasks/query`;
+        let options = this.getRequestOptions();
+        let body = JSON.stringify({
+            processDefinitionId: processDefinitionId,
+            appDefinitionId: appDefinitionId,
+            processInstanceId: processInstanceId
+        });
+        console.log(body);
+        return this.http
+            .post(url, body, options)
+            .map(this.toJson)
+            .catch(this.handleError);
     }
 
 
@@ -92,19 +106,9 @@ export class ProcessService {
         return new RequestOptions({headers: headers});
     }
 
-    private getFormId(res: Response) {
-        let body = res.json();
-        return body.data[0].id || {};
-    }
-
     private toJson(res: Response) {
         let body = res.json();
         return body || {};
-    }
-
-    private toJsonArray(res: Response) {
-        let body = res.json();
-        return body.data || [];
     }
 
     private handleError(error: any) {
@@ -114,5 +118,4 @@ export class ProcessService {
         console.error(errMsg);
         return Observable.throw(errMsg);
     }
-
 }

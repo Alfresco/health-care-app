@@ -79,6 +79,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     saveOption = new EventEmitter();
 
     form: FormModel;
+
     debugMode: boolean = false;
 
     hasForm(): boolean {
@@ -165,10 +166,11 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     }
 
     private loadForm(taskId: string) {
+        let data = this.data;
         this.formService
             .getTaskForm(taskId)
             .subscribe(
-                form => this.form = new FormModel(form, null, null, this.readOnly),
+                form => form => this.form = new FormModel(form, data, null, this.readOnly),
                 err => console.log(err)
             );
     }
