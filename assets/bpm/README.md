@@ -1,7 +1,5 @@
 # Health Care Model
 
-Import app into Activiti for `visit.zip` (Alfresco AppFest)
-
 ## Create user 'visitor'
 
 Follow steps below to create 'visitor' user required.
@@ -18,3 +16,5 @@ Follow steps below to create 'visitor' user required.
     6. Go to identity management > personal 
     7. Change email to 'visitor' 
 
+## Import app 
+    1. Import app into Activiti for `visit.zip` (Alfresco AppFest)
