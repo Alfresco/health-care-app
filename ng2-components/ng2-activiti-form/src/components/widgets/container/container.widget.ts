@@ -46,7 +46,6 @@ export class ContainerWidget implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        console.log(this.content);
         // workaround for MDL issues with dynamic components
         if (componentHandler) {
             componentHandler.upgradeAllRegistered();

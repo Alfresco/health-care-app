@@ -139,13 +139,13 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         if (!this.readOnly && outcome) {
             if (outcome.isSystem) {
                 if (outcome.id === '$save') {
-                    return this.saveTaskForm();
                     this.saveOption.emit(this.form.values);
+                    return this.saveTaskForm();
                 }
 
                 if (outcome.id === '$complete') {
-                    return this.completeTaskForm();
                     this.saveOption.emit(this.form.values);
+                    return this.completeTaskForm();
                 }
 
                 if (outcome.id === '$custom') {
@@ -154,8 +154,8 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             } else {
                 // Note: Activiti is using NAME field rather than ID for outcomes
                 if (outcome.name) {
-                    return this.completeTaskForm(outcome.name);
                     this.saveOption.emit(this.form.values);
+                    return this.completeTaskForm(outcome.name);
                 }
             }
         }
