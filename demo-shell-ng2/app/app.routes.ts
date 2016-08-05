@@ -48,7 +48,7 @@ export const routes: RouterConfig = [
     { path: 'about', component: AboutComponent },
     { path: 'createpatient', component: CreatePatientComponent },
     { path: 'patientdetails/:id', component: PatientDetailsComponent },
-    { path: 'startVisit/:id', component: StartVisitComponent }
+    { path: 'startvisit/:id', component: StartVisitComponent }
 ];
 
 export const appRouterProviders = [

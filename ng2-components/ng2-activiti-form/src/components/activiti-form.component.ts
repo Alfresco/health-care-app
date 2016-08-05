@@ -43,7 +43,9 @@ declare var componentHandler;
  *      - {saveOption} as parameter to tell what is the function to call on the save action.
  *      - {data} to fill the form field with some data, the id of the form must to match the name of the field of the provided data object.
  *
- *   {showTitle} boolean - to hide the title of the form pass false;
+ *   {showTitle} boolean - to hide the title of the form pass false, default true;
+ *
+ *   {showRefreshButton} boolean - to hide the refresh button of the form pass false, default true;
  *
  * @returns {ActivitiForm} .
  */
@@ -74,6 +76,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
 
     @Input()
     readOnly: boolean = false;
+
+    @Input()
+    showRefreshButton: boolean = true;
 
     @Output()
     saveOption = new EventEmitter();
@@ -135,10 +140,12 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             if (outcome.isSystem) {
                 if (outcome.id === '$save') {
                     return this.saveTaskForm();
+                    this.saveOption.emit(this.form.values);
                 }
 
                 if (outcome.id === '$complete') {
                     return this.completeTaskForm();
+                    this.saveOption.emit(this.form.values);
                 }
 
                 if (outcome.id === '$custom') {
@@ -148,6 +155,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                 // Note: Activiti is using NAME field rather than ID for outcomes
                 if (outcome.name) {
                     return this.completeTaskForm(outcome.name);
+                    this.saveOption.emit(this.form.values);
                 }
             }
         }

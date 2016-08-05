@@ -20,7 +20,7 @@ import { Response, Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
 
-import { IProcess } from './process';
+import { Process } from './process.data';
 
 
 @Injectable()
@@ -31,7 +31,7 @@ export class ProcessService {
                 private alfrescoSettingsService: AlfrescoSettingsService) {
     }
 
-    getDeployedApplications(name: string): Observable<IProcess[]> {
+    getDeployedApplications(name: string): Observable<Process[]> {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/runtime-app-definitions`;
         let options = this.getRequestOptions();
         return this.http
@@ -42,19 +42,19 @@ export class ProcessService {
     }
 
 
-    getProcessDefinitions(): Observable<IProcess[]> {
+    getProcessDefinitions(): Observable<Process[]> {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/process-definitions`;
         let options = this.getRequestOptions();
         return this.http
             .get(url, options)
-            .map((response: Response) => <IProcess[]> response.json())
+            .map((response: Response) => <Process[]> response.json())
             .do(data => console.log('All: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
-    getProcessDefinitionByApplication(application: any): Observable<IProcess> {
+    getProcessDefinitionByApplication(application: any): Observable<Process> {
         return this.getProcessDefinitions()
-            .map((processes: IProcess[]) => <IProcess> processes.data.find(p => p.deploymentId === application.deploymentId));
+            .map((processes: Process[]) => <Process> processes.data.find(p => p.deploymentId === application.deploymentId));
     }
 
     getStartFormForProcess(processDefinitionId: string): Observable<any> {

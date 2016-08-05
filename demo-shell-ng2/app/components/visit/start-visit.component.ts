@@ -18,10 +18,9 @@
 import { Component } from '@angular/core';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Response, Http, Headers, RequestOptions } from '@angular/http';
 import { Subscription } from 'rxjs/Rx';
 import { ProcessService } from './process.service';
-import { IProcess } from './process';
+import { Process } from './process.data';
 
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
 
@@ -30,8 +29,8 @@ declare let AlfrescoApi: any;
 
 @Component({
     moduleId: __moduleName,
-    selector: 'startVisit-component',
-    templateUrl: './startVisit.component.html',
+    selector: 'start-visit-component',
+    templateUrl: './start-visit.component.html',
     providers: [ProcessService, FormService],
     directives: [ActivitiForm]
 })
@@ -50,7 +49,7 @@ export class StartVisitComponent {
 
     processName: string = "TEST";
 
-    process: IProcess;
+    process: Process;
 
     taskId: string;
 
@@ -98,8 +97,42 @@ export class StartVisitComponent {
             },
             error => this.errorMessage = <any>error
         );
+    }
 
+    saveMetadata(data: any) {
+        let name = '';
+        if (!this.photoNode) {
+            name = this.generateUuid();
+        } else {
+            name = this.photoNode;
+        }
 
+        let body = {
+            name: name,
+            nodeType: 'hc:patientFolder',
+            properties: {},
+            relativePath: this.currentPath
+        };
+
+        for (var key in data) {
+            if (data[key]) {
+                body.properties['hc:' + key] = data[key];
+            }
+        }
+        let opts = {};
+
+        let self = this;
+        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+            (data) => {
+                console.log('The folder created', data);
+                self.router.navigate(['/patients']);
+                this.notificationService.sendNotification('User Created');
+            },
+            (err) => {
+                window.alert('See console output for error details');
+                console.log(err);
+            }
+        );
     }
 
     private retriveNodeMetadataFromEcm(nodeId: string): void {

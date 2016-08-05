@@ -186,16 +186,16 @@ export class PatientsComponent implements OnInit {
                     console.log(data);
                     // TODO: share seems to have issues with returning newly created tags
                     /*
-                    this.getTags().then(
-                        res => {
-                            console.log('after tags updated');
-                            console.log(res);
-                            this.tags = res || [];
-                            this.documentList.reload();
-                        },
-                        this.handleError
-                    );
-                    */
+                     this.getTags().then(
+                     res => {
+                     console.log('after tags updated');
+                     console.log(res);
+                     this.tags = res || [];
+                     this.documentList.reload();
+                     },
+                     this.handleError
+                     );
+                     */
                     window.alert('Done');
                 },
                 this.handleError
@@ -205,11 +205,7 @@ export class PatientsComponent implements OnInit {
 
 
     scheduleAppointment(event?: any) {
-        // TODO: invoke corresponding process
-    }
-
-    performVisit(event: any) {
-       this.router.navigate(['/startVisit', event.value.entry.id]);
+        this.router.navigate(['/startvisit', event.value.entry.id]);
     }
 
     private loadTags() {

@@ -20,3 +20,11 @@
 .patients-debug-container .debug-toggle-text:hover {
     font-weight: bold;
 }
+
+alfresco-document-list >>> .image-cell {
+    width: 50px;
+    height: 50px;
+    cursor: default;
+    border-radius: 24px;
+}
+

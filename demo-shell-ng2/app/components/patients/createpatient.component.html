@@ -10,4 +10,5 @@
                         [staticTitle]="'Upload Photo'"
                         (onSuccess)="fileUploaded($event)">
 </alfresco-upload-button>
-<activiti-form [formName]="'Health_User_Form'" (saveOption)='saveMetadata($event)' [data]="metadata" [showTitle]="false" ></activiti-form>
+<activiti-form [formName]="'Health_User_Form'" (saveOption)='saveMetadata($event)' [data]="metadata" [showTitle]="false"
+               [showRefreshButton]="false" ></activiti-form>

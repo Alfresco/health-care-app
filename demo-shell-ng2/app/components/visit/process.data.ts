@@ -1,4 +1,4 @@
-export interface IProcess {
+export interface Process {
     category: string;
     deploymentId: string;
     description: string;
