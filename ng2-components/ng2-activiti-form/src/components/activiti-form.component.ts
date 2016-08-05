@@ -170,7 +170,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getTaskForm(taskId)
             .subscribe(
-                form => form => this.form = new FormModel(form, data, null, this.readOnly),
+                form => this.form = new FormModel(form, data, null, this.readOnly),
                 err => console.log(err)
             );
     }
