@@ -17,9 +17,9 @@
 
 import { Injectable } from '@angular/core';
 import { Response, Http, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { AlfrescoAuthenticationService,AlfrescoSettingsService } from 'ng2-alfresco-core';
-import { FormModel, FormOutcomeModel } from './widgets/widget.model';
+// import { FormModel, FormOutcomeModel } from 'ng2-activiti-form';
 
 import { IProcess } from './process';
 
@@ -66,7 +66,7 @@ export class ProcessService {
             .catch(this.handleError);
     }
 
-    startProcessByID(processDefinitionId : string): void {
+    startProcessByID(processDefinitionId : string) {
         let url = `${this.alfrescoSettingsService.bpmHost}/activiti-app/api/enterprise/process-instances`;
         let options = this.getRequestOptions();
         let body = JSON.stringify({ processDefinitionId:processDefinitionId, name:'TEST'});
