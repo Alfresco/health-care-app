@@ -133,16 +133,15 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
 
         if (col.type === 'image') {
 
-            let node = (<ShareDataRow> row).node;
-
             if (this.imageResolver) {
-                let resolved = this.imageResolver(node, col);
+                let resolved = this.imageResolver(row, col);
                 if (resolved) {
                     return resolved;
                 }
             }
 
             if (col.key === '$thumbnail') {
+                let node = (<ShareDataRow> row).node;
                 if (node.entry.isFolder) {
                     return `${this.basePath}/img/ft_ic_folder.svg`;
                 }
@@ -321,5 +320,5 @@ export interface RowFilter {
 }
 
 export interface ImageResolver {
-    (node: MinimalNodeEntity, column: DataColumn): string;
+    (row: DataRow, column: DataColumn): string;
 }

@@ -17,7 +17,7 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaginationComponent, DataColumn } from 'ng2-alfresco-datatable';
+import { PaginationComponent, DataColumn, DataRow } from 'ng2-alfresco-datatable';
 import {
     DOCUMENT_LIST_DIRECTIVES,
     DOCUMENT_LIST_PROVIDERS,
@@ -117,9 +117,11 @@ export class PatientsComponent implements OnInit {
             return true;
         };
 
-        this.folderImageResolver = (node: MinimalNodeEntity, col: DataColumn) => {
-            if (node && node.entry && node.entry.isFolder) {
-                return 'https://forums.alfresco.com/sites/forums/modules/gravatar/avatar.png';
+        this.folderImageResolver = (row: DataRow, col: DataColumn) => {
+            let isFolder = <boolean> row.getValue('isFolder');
+            if (isFolder) {
+                let value = row.getValue(col.key);
+                return `http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
             }
             return null;
         };
