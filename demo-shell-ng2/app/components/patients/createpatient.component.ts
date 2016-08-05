@@ -51,8 +51,15 @@ export class CreatePatientComponent {
     }
 
     saveMetadata(data: any) {
+        let name = '';
+        if(!this.photoNode){
+            name = this.generateUuid();
+        }else{
+            name = this.photoNode;
+        }
+
         let body = {
-            name: this.photoNode,
+            name: name,
             nodeType: 'hc:patientFolder',
             properties: {},
             relativePath: this.currentPath
@@ -77,5 +84,12 @@ export class CreatePatientComponent {
                 console.log(err);
             }
         );
+    }
+
+    private generateUuid(){
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
     }
 }
