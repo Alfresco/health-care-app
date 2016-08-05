@@ -121,6 +121,7 @@ export class PatientsComponent implements OnInit {
             if (node && node.entry && node.entry.isFolder) {
                 return 'https://forums.alfresco.com/sites/forums/modules/gravatar/avatar.png';
             }
+            return null;
         };
     }
 

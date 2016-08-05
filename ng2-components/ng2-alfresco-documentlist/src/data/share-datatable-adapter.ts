@@ -136,7 +136,10 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
             let node = (<ShareDataRow> row).node;
 
             if (this.imageResolver) {
-                return this.imageResolver(node, col);
+                let resolved = this.imageResolver(node, col);
+                if (resolved) {
+                    return resolved;
+                }
             }
 
             if (col.key === '$thumbnail') {
