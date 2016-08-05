@@ -195,8 +195,8 @@ export class PatientsComponent implements OnInit {
         // TODO: invoke corresponding process
     }
 
-    performVisit(event?: any) {
-        // TODO: invoke corresponding process
+    performVisit(event: any) {
+       this.router.navigate(['/startVisit', event.value.entry.id]);
     }
 
     private loadTags() {

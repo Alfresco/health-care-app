@@ -28,3 +28,4 @@ export { FilesComponent } from './files/files.component';
 export { PatientsComponent } from './patients/patients.component';
 export { CreatePatientComponent } from './patients/createpatient.component';
 export { PatientDetailsComponent } from './patients/patientdetails.component';
+export { StartVisitComponent } from './visit/startVisit.component';

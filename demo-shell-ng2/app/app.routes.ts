@@ -29,7 +29,8 @@ import {
     FormViewer,
     PatientsComponent,
     CreatePatientComponent,
-    PatientDetailsComponent
+    PatientDetailsComponent,
+    StartVisitComponent
 } from './components/index';
 
 export const routes: RouterConfig = [
@@ -46,7 +47,8 @@ export const routes: RouterConfig = [
     { path: 'webscript', component: WebscriptComponent },
     { path: 'about', component: AboutComponent },
     { path: 'createpatient', component: CreatePatientComponent },
-    { path: 'patientdetails/:id', component: PatientDetailsComponent }
+    { path: 'patientdetails/:id', component: PatientDetailsComponent },
+    { path: 'startVisit/:id', component: StartVisitComponent }
 ];
 
 export const appRouterProviders = [
