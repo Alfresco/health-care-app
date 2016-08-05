@@ -46,8 +46,10 @@ export class CreatePatientComponent {
     }
 
     public fileUploaded(data){
-        this.photoNode = data.value.entry.id;
-        console.log(this.photoNode);
+        if(data && data.value) {
+            this.photoNode = data.value.entry.id;
+            console.log(this.photoNode);
+        }
     }
 
     saveMetadata(data: any) {
