@@ -18,6 +18,7 @@
 import { Component, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
 import { ALFRESCO_TASKLIST_DIRECTIVES } from 'ng2-activiti-tasklist';
 import { ActivitiForm } from 'ng2-activiti-form';
+import { ProcessService } from '../visit/process.service';
 
 declare let __moduleName: string;
 declare var componentHandler;
@@ -27,6 +28,7 @@ declare var componentHandler;
     selector: 'activiti-demo',
     templateUrl: './activiti-demo.component.html',
     styleUrls: ['./activiti-demo.component.css'],
+    providers: [ProcessService],
     directives: [ALFRESCO_TASKLIST_DIRECTIVES, ActivitiForm]
 })
 export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
@@ -45,6 +47,8 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     taskFilter: any;
 
+    appId: string;
+
     setChoice($event) {
         this.currentChoice = $event.target.value;
     }
@@ -57,12 +61,21 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         return this.currentChoice === 'task-list';
     }
 
-    constructor() {
+    constructor(private processService: ProcessService) {
         console.log('Activiti demo component');
         this.schemaColumn = [
             {type: 'text', key: 'name', title: 'Name', cssClass: 'full-width name-column', sortable: true}
             // {type: 'text', key: 'created', title: 'Created', sortable: true}
         ];
+
+
+        let self = this;
+        this.processService.getDeployedApplications("Visit").subscribe(
+            application => {
+                self.appId = application.id;
+            },
+            error => this.errorMessage = <any>error
+        );
     }
 
     ngOnInit() {

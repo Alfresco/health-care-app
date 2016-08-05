@@ -65,7 +65,6 @@ export class StartVisitComponent {
         });
 
 
-        this.processService.startProcessByID("health_care_express_process:3:10004", "Health Care Express process");
         let self = this;
         this.processService.getDeployedApplications("Visit").subscribe(
             application => {
