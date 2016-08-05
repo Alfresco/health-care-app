@@ -17,10 +17,15 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { PaginationComponent, DataColumn } from 'ng2-alfresco-datatable';
 import {
     DOCUMENT_LIST_DIRECTIVES,
     DOCUMENT_LIST_PROVIDERS,
-    DocumentList
+    DocumentList,
+    ShareDataRow,
+    RowFilter,
+    MinimalNodeEntity,
+    ImageResolver
 } from 'ng2-alfresco-documentlist';
 import {
     MDL,
@@ -29,14 +34,12 @@ import {
     AlfrescoPipeTranslate,
     AlfrescoAuthenticationService
 } from 'ng2-alfresco-core';
-import { PaginationComponent } from 'ng2-alfresco-datatable';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
 import { TagModel, TagCache, TagFilter } from './tag.model';
 import { TagService } from './tag.service';
-import { ShareDataRow, RowFilter, MinimalNodeEntity } from 'ng2-alfresco-documentlist';
 
 declare let __moduleName: string;
 
@@ -77,6 +80,7 @@ export class PatientsComponent implements OnInit {
     tagFilters: TagFilter[] = [];
     selectedNode: MinimalNodeEntity;
     tagFilter: RowFilter;
+    folderImageResolver: ImageResolver;
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
@@ -111,6 +115,12 @@ export class PatientsComponent implements OnInit {
             }
 
             return true;
+        };
+
+        this.folderImageResolver = (node: MinimalNodeEntity, col: DataColumn) => {
+            if (node && node.entry && node.entry.isFolder) {
+                return 'https://forums.alfresco.com/sites/forums/modules/gravatar/avatar.png';
+            }
         };
     }
 

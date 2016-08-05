@@ -37,11 +37,12 @@
                     [contextMenuActions]="true"
                     [contentActions]="true"
                     [rowFilter]="tagFilter"
+                    [imageResolver]="folderImageResolver"
                     (preview)="showFile($event)"
                     (folderChange)="onFolderChanged($event)"
                     (nodeClick)="onNodeClicked($event)">
                     <content-columns>
-                        <content-column key="name" type="image" src="test"></content-column>
+                        <content-column key="name" type="image" key="$thumbnail"></content-column>
                         <!--
                         <content-column
                                 title="{{'DOCUMENT_LIST.COLUMNS.CREATED_BY' | translate}}"

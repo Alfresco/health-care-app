@@ -40,7 +40,9 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
     private columns: DataColumn[];
     private page: NodePaging;
     private currentPath: string;
+
     private filter: RowFilter;
+    private imageResolver: ImageResolver;
 
     private _count: number = 0;
     private _hasMoreItems: boolean = false;
@@ -130,7 +132,41 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
         }
 
         if (col.type === 'image') {
-            return `http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
+
+            let node = (<ShareDataRow> row).node;
+
+            if (this.imageResolver) {
+                return this.imageResolver(node, col);
+            }
+
+            if (col.key === '$thumbnail') {
+                if (node.entry.isFolder) {
+                    return `${this.basePath}/img/ft_ic_folder.svg`;
+                }
+
+                if (node.entry.isFile) {
+
+                    if (this.thumbnails) {
+                        if (this.documentListService) {
+                            return this.documentListService.getDocumentThumbnailUrl(node);
+                        }
+                        return null;
+                    }
+
+                    if (node.entry.content) {
+                        let mimeType = node.entry.content.mimeType;
+                        if (mimeType) {
+                            let icon = this.documentListService.getMimeTypeIcon(mimeType);
+                            if (icon) {
+                                return `${this.basePath}/img/${icon}`;
+                            }
+                        }
+                    }
+                }
+
+                return `${this.basePath}/img/ft_ic_miscellaneous.svg`;
+            }
+
         }
 
         return value;
@@ -198,6 +234,10 @@ export class ShareDataTableAdapter implements DataTableAdapter, PaginationProvid
         if (this.filter && this.currentPath) {
             this.loadPath(this.currentPath);
         }
+    }
+
+    setImageResolver(resolver: ImageResolver) {
+        this.imageResolver = resolver;
     }
 
     private loadPage(page: NodePaging) {
@@ -275,4 +315,8 @@ export class ShareDataRow implements DataRow {
 
 export interface RowFilter {
     (value: ShareDataRow, index: number, array: ShareDataRow[]): boolean;
+}
+
+export interface ImageResolver {
+    (node: MinimalNodeEntity, column: DataColumn): string;
 }

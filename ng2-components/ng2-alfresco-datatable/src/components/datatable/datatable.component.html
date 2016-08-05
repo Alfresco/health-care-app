@@ -47,8 +47,7 @@
             [context-menu]="getContextMenuActions(row, col)">
             <div *ngSwitchCase="'image'" class="cell-value">
                 <i *ngIf="isIconValue(row, col)" class="material-icons icon-cell">{{asIconValue(row, col)}}</i>
-                <img *ngIf="!isIconValue(row, col)" onerror="this.onerror=null;this.src='https://forums.alfresco.com/sites/forums/modules/gravatar/avatar.png';" class="image-cell" alt="{{iconAltTextKey(data.getValue(row, col))|translate}}"
-                     src="{{data.getValue(row, col)}}">
+                <img *ngIf="!isIconValue(row, col)" class="image-cell" alt="{{iconAltTextKey(data.getValue(row, col))|translate}}" src="{{data.getValue(row, col)}}">
             </div>
             <div *ngSwitchCase="'date'" class="cell-value" [attr.data-automation-id]="'date_' + data.getValue(row, col)">
                 {{data.getValue(row, col)}}

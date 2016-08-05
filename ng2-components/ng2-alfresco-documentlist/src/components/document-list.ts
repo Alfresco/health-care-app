@@ -49,7 +49,8 @@ import { ContentActionModel } from './../models/content-action.model';
 import {
     ShareDataTableAdapter,
     ShareDataRow,
-    RowFilter
+    RowFilter,
+    ImageResolver
 } from './../data/share-datatable-adapter';
 
 declare var componentHandler;
@@ -100,6 +101,13 @@ export class DocumentList implements OnInit, AfterViewInit, AfterViewChecked, Af
             this.data.setFilter(value);
         }
     };
+
+    @Input()
+    set imageResolver(value: ImageResolver) {
+        if (this.data) {
+            this.data.setImageResolver(value);
+        }
+    }
 
     @Output()
     nodeClick: EventEmitter<any> = new EventEmitter();
