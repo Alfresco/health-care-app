@@ -1,6 +1,6 @@
 # Health Care Model
 
-Import process into Activiti for `Health Care Express Appliction` (Alfresco AppFest)
+Import process into Activiti for `Health Care Express Visitation Log.bpmn20.xml` (Alfresco AppFest)
 
 ## Create user 'visitor'
 
