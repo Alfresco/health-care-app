@@ -45,6 +45,8 @@ export class StartVisitComponent {
 
     nodeId: string;
 
+    nodeName: string;
+
     errorMessage: string;
 
     processName: string = "TEST";
@@ -98,57 +100,27 @@ export class StartVisitComponent {
         );
     }
 
-    saveMetadata(data: any) {
-        let name = '';
-        if (!this.photoNode) {
-            name = this.generateUuid();
-        } else {
-            name = this.photoNode;
-        }
-
-        let body = {
-            name: name,
-            nodeType: 'hc:patientFolder',
-            properties: {},
-            relativePath: this.currentPath
-        };
-
-        for (var key in data) {
-            if (data[key]) {
-                body.properties['hc:' + key] = data[key];
-            }
-        }
-        let opts = {};
-
-        let self = this;
-        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
-            (data) => {
-                console.log('The folder created', data);
-                self.router.navigate(['/patients']);
-                this.notificationService.sendNotification('User Created');
-            },
-            (err) => {
-                window.alert('See console output for error details');
-                console.log(err);
-            }
-        );
-    }
-
     private retriveNodeMetadataFromEcm(nodeId: string): void {
         var self = this;
         this.nodeId = nodeId;
         this.authService.getAlfrescoApi().nodes.getNodeInfo(this.nodeId).then(function (data) {
             console.log(data.properties);
-
+            self.nodeName = data.name;
             for (var key in data.properties) {
                 console.log(key + ' => ' + data[key]);
                 self.metadata [key.replace('hc:', '')] = data.properties[key];
             }
+            self.metadata.nodeId = self.nodeName;
 
         }, function (error) {
             console.log('This node does not exist');
         });
     }
 
-
+    private generateUuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 }

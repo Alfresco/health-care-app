@@ -18,7 +18,12 @@
 import { ActivitiTaskList } from './src/components/activiti-tasklist.component';
 import { ActivitiTaskDetails } from './src/components/activiti-task-details.component';
 import { ActivitiFilters } from './src/components/activiti-filters.component';
+import { ActivitiTaskListService } from './src/services/activiti-tasklist.service';
+import { FilterModel } from './src/models/filter.model';
 
 export * from './src/components/activiti-tasklist.component';
 
 export const ALFRESCO_TASKLIST_DIRECTIVES: [any] = [ActivitiFilters, ActivitiTaskList, ActivitiTaskDetails];
+export const ACTIVITI_TASKLIST_SERVICE: [any] = [ActivitiTaskListService];
+export const FILTER_MODEL: [any] = [FilterModel];
+

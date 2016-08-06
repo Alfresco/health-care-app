@@ -19,6 +19,9 @@ import { Component, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
 import { ALFRESCO_TASKLIST_DIRECTIVES } from 'ng2-activiti-tasklist';
 import { ActivitiForm } from 'ng2-activiti-form';
 import { ProcessService } from '../visit/process.service';
+import { Observable } from 'rxjs/Rx';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { AlfrescoSettingsService, AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 
 declare let __moduleName: string;
 declare var componentHandler;
@@ -32,6 +35,8 @@ declare var componentHandler;
     directives: [ALFRESCO_TASKLIST_DIRECTIVES, ActivitiForm]
 })
 export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
+
+    currentPath: string = '/Sites/swsdp/documentLibrary';
 
     currentChoice: string = 'task-list';
 
@@ -61,7 +66,8 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         return this.currentChoice === 'task-list';
     }
 
-    constructor(private processService: ProcessService) {
+    constructor(private processService: ProcessService, private http: Http, public alfrescoSettingsService: AlfrescoSettingsService,
+                private authService: AlfrescoAuthenticationService) {
         console.log('Activiti demo component');
         this.schemaColumn = [
             {type: 'text', key: 'name', title: 'Name', cssClass: 'full-width name-column', sortable: true}
@@ -73,23 +79,84 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         this.processService.getDeployedApplications("Visit").subscribe(
             application => {
                 self.appId = application.id;
+                this.getTaskListFilters(application.id).subscribe(
+                    response => {
+                        this.taskFilter = response.data[0];
+                        this.activititasklist.load(response.data[0]);
+                    },
+                    error => console.log(error)
+                );
             },
             error => this.errorMessage = <any>error
         );
+    }
+
+    getTaskListFilters(appId?: string): Observable<any> {
+        return Observable.fromPromise(this.callApiTaskFilters(appId))
+            .map(res => res.json());
+    }
+
+    private callApiTaskFilters(appId?: string) {
+        let url = this.alfrescoSettingsService.getBPMApiBaseUrl();
+        if (appId) {
+            url = url + `/api/enterprise/filters/tasks?appId=${appId}`;
+        } else {
+            url = url + `/api/enterprise/filters/tasks`;
+        }
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+        });
+        let options = new RequestOptions({headers: headers});
+
+        return this.http
+            .get(url, options).toPromise();
+    }
+
+    saveMetadata(data: any) {
+
+        let body = {
+            name: this.generateUuid(),
+            nodeType: 'vs:visit',
+            properties: {
+                'vs:visittime': 'test'
+            },
+            relativePath: this.currentPath + '/' + data.nodeId
+        };
+
+        for (var key in data) {
+            if (data[key]) {
+                body.properties['vs:' + key] = data[key];
+            }
+        }
+
+        let opts = {};
+
+        let self = this;
+        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+            (data) => {
+                console.log(data);
+            },
+            (err) => {
+                window.alert('See console output for error details');
+                console.log(err);
+            }
+        );
+    }
+
+    private generateUuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 
     ngOnInit() {
 
     }
 
-    onFilterClick(event: any) {
-        this.taskFilter = event;
-        this.activititasklist.load(this.taskFilter);
-    }
-
     onRowClick(taskId) {
         this.currentTaskId = taskId;
-        this.activitidetails.loadDetails(this.currentTaskId);
     }
 
     ngAfterViewChecked() {
