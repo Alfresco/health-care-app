@@ -32,7 +32,8 @@ import {
     AlfrescoContentService,
     CONTEXT_MENU_DIRECTIVES,
     AlfrescoPipeTranslate,
-    AlfrescoAuthenticationService
+    AlfrescoAuthenticationService,
+    AlfrescoSettingsService
 } from 'ng2-alfresco-core';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
@@ -85,7 +86,8 @@ export class PatientsComponent implements OnInit {
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
                 private tagService: TagService,
-                private authService: AlfrescoAuthenticationService) {
+                private authService: AlfrescoAuthenticationService,
+                private alfrescoSettingsService: AlfrescoSettingsService) {
         this.newPatient = new PatientModel();
 
         this.tagFilter = (row: ShareDataRow) => {
@@ -121,7 +123,7 @@ export class PatientsComponent implements OnInit {
             let isFolder = <boolean> row.getValue('isFolder');
             if (isFolder) {
                 let value = row.getValue(col.key);
-                return `http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
+                return alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
             }
             return null;
         };
