@@ -420,17 +420,15 @@ export class FormModel {
             }
 
             if (this.isATaskForm()) {
-                let saveOutcome = new FormOutcomeModel(this, {id: '$save', name: 'Save'});
-                saveOutcome.isSystem = true;
+                // let saveOutcome = new FormOutcomeModel(this, {id: '$save', name: 'Save'});
+                // saveOutcome.isSystem = true;
 
                 let completeOutcome = new FormOutcomeModel(this, {id: '$complete', name: 'Complete'});
                 completeOutcome.isSystem = true;
 
                 let customOutcomes = (json.outcomes || []).map(obj => new FormOutcomeModel(this, obj));
 
-                this.outcomes = [saveOutcome].concat(
-                    customOutcomes.length > 0 ? customOutcomes : [completeOutcome]
-                );
+                this.outcomes = [completeOutcome];
             } else {
                 if (saveOption && saveOption.observers.length > 0) {
                     let saveOutcome = new FormOutcomeModel(this, {id: '$custom', name: 'Save'});
