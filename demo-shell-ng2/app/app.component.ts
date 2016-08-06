@@ -112,6 +112,14 @@ export class AppComponent {
         document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
     }
 
+    isAdmin(){
+        if(localStorage.getItem(`username`) === 'admin'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     private setEcmHost() {
         if (localStorage.getItem(`ecmHost`)) {
             this.alfrescoSettingsService.ecmHost = localStorage.getItem(`ecmHost`);

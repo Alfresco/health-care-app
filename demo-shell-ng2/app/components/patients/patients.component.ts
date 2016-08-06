@@ -129,6 +129,14 @@ export class PatientsComponent implements OnInit {
         };
     }
 
+    isAdmin(){
+        if(localStorage.getItem(`username`) === 'admin'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     resetFilters() {
         if (this.tagFilters && this.tagFilters.length > 0) {
             this.tagFilters.map(f => f.isSelected = false);

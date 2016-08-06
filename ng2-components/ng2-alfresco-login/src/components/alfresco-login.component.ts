@@ -111,6 +111,7 @@ export class AlfrescoLoginComponent {
                     this.onSuccess.emit({
                         value: 'Login OK'
                     });
+                    localStorage.setItem(`username`, value.username);
                 },
                 (err: any) => {
                     this.error = true;

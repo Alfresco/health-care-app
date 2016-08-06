@@ -93,12 +93,12 @@
                             title="View details"
                             (execute)="patientDetails($event)">
                         </content-action>
-                        <content-action
+                        <content-action *ngIf="isAdmin()"
                             target="folder"
                             title="Schedule an appointment"
                             (execute)="scheduleAppointment($event)">
                         </content-action>
-                        <content-action
+                        <content-action *ngIf="isAdmin()"
                             target="folder"
                             title="{{'DOCUMENT_LIST.ACTIONS.FOLDER.DELETE' | translate}}"
                             handler="delete">
@@ -109,7 +109,7 @@
                             title="{{'DOCUMENT_LIST.ACTIONS.DOCUMENT.DOWNLOAD' | translate}}"
                             handler="download">
                         </content-action>
-                        <content-action
+                        <content-action *ngIf="isAdmin()"
                             target="document"
                             title="{{'DOCUMENT_LIST.ACTIONS.DOCUMENT.DELETE' | translate}}"
                             handler="delete">
