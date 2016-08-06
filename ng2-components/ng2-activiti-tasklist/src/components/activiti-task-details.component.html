@@ -13,5 +13,7 @@
             <activiti-checklist [taskId]="taskId" #activitichecklist></activiti-checklist>
         </div>
     </div>
-    <activiti-form *ngIf="taskDetails.formKey" [taskId]="taskId" #activitiForm ></activiti-form>
+    <activiti-form *ngIf="taskDetails.formKey" [taskId]="taskId" (saveOption)='saveOptionEmitter($event)'
+                   (completeOption)='completeOptionEmitter($event)' #activitiForm
+    ></activiti-form>
 </div>

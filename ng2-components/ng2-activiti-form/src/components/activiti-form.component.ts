@@ -83,6 +83,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Output()
     saveOption = new EventEmitter();
 
+    @Output()
+    completeOption = new EventEmitter();
+
     form: FormModel;
 
     debugMode: boolean = false;
@@ -139,12 +142,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         if (!this.readOnly && outcome) {
             if (outcome.isSystem) {
                 if (outcome.id === '$save') {
-                    this.saveOption.emit(this.form.values);
                     return this.saveTaskForm();
                 }
 
                 if (outcome.id === '$complete') {
-                    this.saveOption.emit(this.form.values);
                     return this.completeTaskForm();
                 }
 
@@ -209,8 +210,8 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     private saveTaskForm() {
         this.formService.saveTaskForm(this.form.taskId, this.form.values).subscribe(
             (response) => {
-                console.log(response);
-                alert('Saved');
+                console.log('Saved task', response);
+                this.saveOption.emit(this.form.values);
             },
             (err) => window.alert(err)
         );
@@ -221,8 +222,8 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             .completeTaskForm(this.form.taskId, this.form.values, outcome)
             .subscribe(
                 (response) => {
-                    console.log(response);
-                    alert('Saved');
+                    console.log('Completed task', response);
+                    this.completeOption.emit(this.form.values);
                 },
                 (err) => window.alert(err)
             );

@@ -29,6 +29,7 @@ export class FormFieldTypes {
     static HYPERLINK: string = 'hyperlink';
     static RADIO_BUTTONS: string = 'radio-buttons';
     static DISPLAY_VALUE: string = 'readonly';
+    static READONLY_TEXT: string = 'readonly-text';
 }
 
 export class FormWidgetModel {
@@ -184,9 +185,20 @@ export class FormFieldModel extends FormWidgetModel {
                 this.form.values[this.id] = this.options[0].id;
             }
         } else {
-            this.form.values[this.id] = this.value;
+            if(!this.isIngonreType()){
+                this.form.values[this.id] = this.value;
+            }
         }
     }
+
+    private isIngonreType(): boolean{
+        if(this.type === FormFieldTypes.READONLY_TEXT){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 
 export class ContainerColumnModel {

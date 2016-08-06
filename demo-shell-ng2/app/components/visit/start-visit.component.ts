@@ -23,6 +23,7 @@ import { ProcessService } from './process.service';
 import { Process } from './process.data';
 
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
+import { NotificationService } from '../../services/notification.service';
 
 declare let __moduleName: string;
 declare let AlfrescoApi: any;
@@ -58,7 +59,8 @@ export class StartVisitComponent {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private processService: ProcessService,
-                private authService: AlfrescoAuthenticationService) {
+                private authService: AlfrescoAuthenticationService,
+                private notificationService: NotificationService) {
     }
 
     ngOnInit() {
@@ -98,6 +100,11 @@ export class StartVisitComponent {
             },
             error => this.errorMessage = <any>error
         );
+    }
+
+    public saveData(){
+        this.router.navigate(['/patients']);
+        this.notificationService.sendNotification('New Visit Created');
     }
 
     private retriveNodeMetadataFromEcm(nodeId: string): void {

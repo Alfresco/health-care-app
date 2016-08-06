@@ -10,7 +10,14 @@
                     </div>
                     <div class="mdl-cell mdl-cell--7-col task-column">
                         <span>Visit Details</span>
-                        <activiti-form [taskId]="currentTaskId" (saveOption)='saveMetadata($event)' #activitiForm ></activiti-form>
+                        <div *ngIf="isTaskCompleted()">
+                            <div class="completed-task">
+                                <span>Task Completed</span>
+                            </div>
+                        </div>
+                        <activiti-task-details  *ngIf="!isTaskCompleted()" [taskId]="currentTaskId"
+                                                (saveOption)='saveData($event)' (completeOption)='saveMetadata($event)'
+                                               #activitidetails></activiti-task-details>
                     </div>
                 </div>
             </div>

@@ -22,6 +22,7 @@ import { ProcessService } from '../visit/process.service';
 import { Observable } from 'rxjs/Rx';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { AlfrescoSettingsService, AlfrescoAuthenticationService } from 'ng2-alfresco-core';
+import { NotificationService } from '../../services/notification.service';
 
 declare let __moduleName: string;
 declare var componentHandler;
@@ -54,6 +55,8 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     appId: string;
 
+    taskCompleted: boolean = false;
+
     setChoice($event) {
         this.currentChoice = $event.target.value;
     }
@@ -67,7 +70,8 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
     }
 
     constructor(private processService: ProcessService, private http: Http, public alfrescoSettingsService: AlfrescoSettingsService,
-                private authService: AlfrescoAuthenticationService) {
+                private authService: AlfrescoAuthenticationService,
+                private notificationService: NotificationService) {
         console.log('Activiti demo component');
         this.schemaColumn = [
             {type: 'text', key: 'name', title: 'Name', cssClass: 'full-width name-column', sortable: true}
@@ -82,7 +86,7 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
                 this.getTaskListFilters(application.id).subscribe(
                     response => {
                         this.taskFilter = response.data[0];
-                        this.activititasklist.load(response.data[0]);
+                        this.activititasklist.load(this.taskFilter);
                     },
                     error => console.log(error)
                 );
@@ -113,6 +117,10 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
             .get(url, options).toPromise();
     }
 
+    saveData(data: any) {
+        this.notificationService.sendNotification('Task Saved');
+    }
+
     saveMetadata(data: any) {
 
         let body = {
@@ -132,10 +140,12 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
         let opts = {};
 
-        let self = this;
         this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
             (data) => {
                 console.log(data);
+                this.taskCompleted = true;
+                this.activititasklist.load(this.taskFilter);
+                this.notificationService.sendNotification('Task Completed');
             },
             (err) => {
                 window.alert('See console output for error details');
@@ -155,8 +165,14 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     }
 
+    isTaskCompleted() {
+        return this.taskCompleted;
+    }
+
     onRowClick(taskId) {
         this.currentTaskId = taskId;
+        this.taskCompleted = false;
+        this.activitidetails.loadDetails(this.currentTaskId);
     }
 
     ngAfterViewChecked() {
