@@ -17,7 +17,12 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { PaginationComponent, DataColumn, DataRow } from 'ng2-alfresco-datatable';
+import {
+    PaginationComponent,
+    DataColumn,
+    DataRow,
+    ObjectDataColumn
+} from 'ng2-alfresco-datatable';
 import {
     DOCUMENT_LIST_DIRECTIVES,
     DOCUMENT_LIST_PROVIDERS,
@@ -32,7 +37,6 @@ import {
     AlfrescoContentService,
     CONTEXT_MENU_DIRECTIVES,
     AlfrescoPipeTranslate,
-    AlfrescoAuthenticationService,
     AlfrescoSettingsService
 } from 'ng2-alfresco-core';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
@@ -62,7 +66,9 @@ declare let __moduleName: string;
 })
 export class PatientsComponent implements OnInit {
 
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    private DEFAULT_PATH: string = '/Sites/swsdp/documentLibrary';
+
+    currentPath: string = this.DEFAULT_PATH;
 
     urlFile: string;
     fileName: string;
@@ -83,10 +89,12 @@ export class PatientsComponent implements OnInit {
     tagFilter: RowFilter;
     folderImageResolver: ImageResolver;
 
+    private patientLayout: DataColumn[] = [];
+    private fileLayout: DataColumn[] = [];
+
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
                 private tagService: TagService,
-                private authService: AlfrescoAuthenticationService,
                 private alfrescoSettingsService: AlfrescoSettingsService) {
         this.newPatient = new PatientModel();
 
@@ -127,12 +135,15 @@ export class PatientsComponent implements OnInit {
             }
             return null;
         };
+
+        this.patientLayout = this.getPatientLayout();
+        this.fileLayout = this.getFileLayout();
     }
 
-    isAdmin(){
-        if(localStorage.getItem(`username`) === 'admin'){
+    isAdmin() {
+        if (localStorage.getItem(`username`) === 'admin') {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -163,6 +174,11 @@ export class PatientsComponent implements OnInit {
         if (event) {
             this.currentPath = event.path;
             this.loadTags();
+            if (this.currentPath === this.DEFAULT_PATH) {
+                this.documentList.data.setColumns(this.patientLayout);
+            } else {
+                this.documentList.data.setColumns(this.fileLayout);
+            }
         }
     }
 
@@ -230,5 +246,69 @@ export class PatientsComponent implements OnInit {
 
     private handleError(err) {
         console.log(err);
+    }
+
+    private getPatientLayout(): DataColumn[] {
+        return [
+            new ObjectDataColumn({
+                key: 'name',
+                type: 'image'
+            }),
+            new ObjectDataColumn({
+                title: 'First Name',
+                key: 'properties.hc:firstName',
+                sortable: true,
+                cssClass: 'desktop-only'
+            }),
+            new ObjectDataColumn({
+                title: 'Last Name',
+                key: 'properties.hc:lastName',
+                sortable: true,
+                cssClass: 'desktop-only'
+            }),
+            new ObjectDataColumn({
+                title: 'Doctor',
+                key: 'properties.hc:doctor',
+                sortable: true,
+                cssClass: 'desktop-only'
+            }),
+            new ObjectDataColumn({
+                title: 'Created On',
+                key: 'createdAt',
+                type: 'date',
+                format: 'shortDate',
+                sortable: true,
+                cssClass: 'desktop-only'
+            })
+        ];
+    }
+
+    private getFileLayout(): DataColumn[] {
+        return [
+            new ObjectDataColumn({
+                key: '$thumbnail',
+                type: 'image'
+            }),
+            new ObjectDataColumn({
+                title: 'Display Name',
+                key: 'name',
+                sortable: true,
+                cssClass: 'full-width ellipsis-cell'
+            }),
+            new ObjectDataColumn({
+                title: 'Created By',
+                key: 'createdByUser.displayName',
+                sortable: true,
+                cssClass: 'desktop-only'
+            }),
+            new ObjectDataColumn({
+                title: 'Created On',
+                key: 'createdAt',
+                type: 'date',
+                format: 'shortDate',
+                sortable: true,
+                cssClass: 'desktop-only'
+            })
+        ];
     }
 }

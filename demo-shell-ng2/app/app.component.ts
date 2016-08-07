@@ -112,10 +112,10 @@ export class AppComponent {
         document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
     }
 
-    isAdmin(){
-        if(localStorage.getItem(`username`) === 'admin'){
+    isAdmin() {
+        if (localStorage.getItem(`username`) === 'admin') {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
