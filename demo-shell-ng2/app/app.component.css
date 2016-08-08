@@ -3,3 +3,17 @@
         display: none;
     }
 }
+
+.profile-image {
+    text-align:center;
+    border-radius: 90%;
+    width:50px;
+    margin-right:0%;
+}
+
+.button-profile {
+    display:inline-block;
+    margin-right:-10px;
+    background-color: #0e2d40;
+    border:0px;
+}

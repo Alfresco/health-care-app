@@ -25,10 +25,13 @@
             </nav>
 
             <!-- Right aligned menu below button -->
-            <button id="demo-menu-lower-right" data-automation-id="right-action-menu"
-                    class="mdl-button mdl-js-button mdl-button--icon">
-                <i class="material-icons">more_vert</i>
-            </button>
+            <div id="img_container">
+                <button class="button-profile" id="demo-menu-lower-right" data-automation-id="right-action-menu">
+                    <img *ngIf="isLoggedIn() && isAdmin()" id="admin-img" src="app/img/admin.jpeg" class="profile-image"/>
+                    <img *ngIf="isLoggedIn() && !isAdmin()" id="visitor-img" src="app/img/visitor.jpg" class="profile-image"/>
+                </button>
+            </div>
+            <!--button id="demo-menu-lower-right" data-automation-id="right-action-menu"></button-->
 
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                 for="demo-menu-lower-right">
