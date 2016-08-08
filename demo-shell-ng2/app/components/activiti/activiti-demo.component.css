@@ -41,3 +41,12 @@
     text-align: center;
     height: 60px;
 }
+
+.upload-button{
+    float: right;
+    width: 100%;
+}
+
+alfresco-upload-button >>> form {
+    float: right;
+}
