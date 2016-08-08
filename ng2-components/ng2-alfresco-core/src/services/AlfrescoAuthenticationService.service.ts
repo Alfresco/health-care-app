@@ -56,6 +56,8 @@ export class AlfrescoAuthenticationService extends AlfrescoAuthenticationBase {
         if (providers.length === 0) {
             return Observable.throw('No providers defined');
         } else {
+            this.createProviderInstance(this.alfrescoSettingsService.getProviders());
+
             return this.performeLogin(username, password, providers);
         }
     }
@@ -105,7 +107,7 @@ export class AlfrescoAuthenticationService extends AlfrescoAuthenticationBase {
     }
 
     getAlfrescoApi(): any {
-        return  this.findProviderInstance('ECM').alfrescoApi;
+        return this.findProviderInstance('ECM').alfrescoApi;
     }
 
     /**
@@ -125,7 +127,7 @@ export class AlfrescoAuthenticationService extends AlfrescoAuthenticationBase {
      * @param type - providerName
      * @param ticket
      */
-   private performeSaveTicket(type: string, ticket: string) {
+    private performeSaveTicket(type: string, ticket: string) {
         let auth: AbstractAuthentication = this.findProviderInstance(type);
         if (auth) {
             auth.saveTicket(ticket);
@@ -156,6 +158,7 @@ export class AlfrescoAuthenticationService extends AlfrescoAuthenticationBase {
                 observableBatch.push(authInstance.logout());
             }
         });
+        this.providersInstance = [];
         return Observable.create(observer => {
             Observable.forkJoin(observableBatch).subscribe(
                 (response: any[]) => {
