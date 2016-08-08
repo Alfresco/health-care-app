@@ -86,6 +86,7 @@ export class PatientsComponent implements OnInit {
     tags: TagCache = {};
     tagFilters: TagFilter[] = [];
     selectedNode: MinimalNodeEntity;
+    selectedNodeProperties: NodePropertyModel[] = [];
     tagFilter: RowFilter;
     folderImageResolver: ImageResolver;
 
@@ -172,6 +173,9 @@ export class PatientsComponent implements OnInit {
 
     onFolderChanged(event?: any) {
         if (event) {
+            this.selectedNode = null;
+            this.selectedNodeProperties = null;
+
             this.currentPath = event.path;
             this.loadTags();
             if (this.currentPath === this.DEFAULT_PATH) {
@@ -189,7 +193,12 @@ export class PatientsComponent implements OnInit {
     onNodeClicked(event?: any) {
         console.log(event);
         if (event && event.value) {
+            this.selectedNodeProperties = null;
             this.selectedNode = <MinimalNodeEntity> event.value;
+            if (this.selectedNode) {
+                this.selectedNodeProperties = this.getNodeProperties(this.selectedNode);
+                console.log(this.selectedNodeProperties);
+            }
         }
     }
 
@@ -211,6 +220,8 @@ export class PatientsComponent implements OnInit {
                 data => {
                     console.log(data);
                     // TODO: share seems to have issues with returning newly created tags
+                    // it sometimes takes several seconds for changes to global tags to propagate
+                    // and become visible
                     /*
                      this.getTags().then(
                      res => {
@@ -232,6 +243,19 @@ export class PatientsComponent implements OnInit {
 
     scheduleAppointment(event?: any) {
         this.router.navigate(['/startvisit', event.value.entry.id]);
+    }
+
+    private getNodeProperties(node: MinimalNodeEntity): NodePropertyModel[] {
+        let result = [];
+
+        if (node && node.entry && node.entry.properties) {
+            let props = node.entry.properties;
+            Object.keys(props).forEach(key => {
+                result.push(new NodePropertyModel(key, props[key]));
+            });
+        }
+
+        return result;
     }
 
     private loadTags() {
@@ -310,5 +334,15 @@ export class PatientsComponent implements OnInit {
                 cssClass: 'desktop-only'
             })
         ];
+    }
+}
+
+class NodePropertyModel {
+    name: string;
+    value: string;
+
+    constructor(name: string, value: string) {
+        this.name = name;
+        this.value = value;
     }
 }

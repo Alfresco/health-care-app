@@ -24,7 +24,9 @@
             </li>
         </ul>
     </div>
-    <div class="mdl-cell mdl-cell--10-col">
+    <div class="mdl-cell"
+         [class.mdl-cell--10-col]="!selectedNodeProperties"
+         [class.mdl-cell--8-col]="selectedNodeProperties">
         <div style="padding-bottom: 4px;">
             <button
                 class="mdl-button mdl-js-button mdl-button--icon"
@@ -115,6 +117,16 @@
                 </alfresco-pagination>
             </alfresco-upload-drag-area>
         </div>
+    </div>
+    <div *ngIf="selectedNodeProperties" class="mdl-cell mdl-cell--2-col">
+        <ul class="mdl-list">
+            <li *ngFor="let prop of selectedNodeProperties" class="mdl-list__item mdl-list__item--two-line">
+                <span class="mdl-list__item-primary-content">
+                    <span>{{prop.name}}</span>
+                    <span class="mdl-list__item-sub-title">{{prop.value}}</span>
+                </span>
+            </li>
+        </ul>
     </div>
 </div>
 
