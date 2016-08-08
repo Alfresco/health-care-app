@@ -1,4 +1,9 @@
-<div *ngIf="!taskDetails">{{ 'TASK_DETAILS.MESSAGES.NONE' | translate }}</div>
+<div class="empty-task" *ngIf="!taskDetails">
+    <div class="title-empty-task center" Selecte a task>
+        Select a task
+    </div>
+    <img class="img-empty-task center" [src]="baseComponentPath + '/../assets/images/select-layers.svg'" alt="empty">
+</div>
 <div *ngIf="taskDetails">
     <h2 class="mdl-card__title-text">{{taskDetails.name}}</h2>
     <activiti-task-header [taskDetails]="taskDetails" #activitiheader></activiti-task-header>

@@ -50,3 +50,22 @@
 alfresco-upload-button >>> form {
     float: right;
 }
+
+activiti-task-details >>> .empty-task{
+    border: 2px dashed #999999;
+    text-align: center;
+    height: 100%;
+}
+
+activiti-task-details >>> .title-empty-task{
+    margin-top: 22px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: inherit;
+    line-height: normal;
+}
+
+activiti-task-details >>> .img-empty-task{
+    margin-top: 50px;
+    width: 250px;
+}

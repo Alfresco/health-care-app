@@ -66,6 +66,8 @@ export class ActivitiTaskDetails implements OnInit {
 
     taskPeople: User[] = [];
 
+    baseComponentPath = __moduleName.replace('/activiti-task-details.component.js', '');
+
     /**
      * Constructor
      * @param auth

@@ -6,7 +6,7 @@
          src="app/img/visit.jpg">
 </div>
 
-<div class="mdl-grid">
+<div class="mdl-grid" style="margin-top: 20px">
     <div class="mdl-cell mdl-cell--3-col">
         <activiti-tasklist *ngIf="isTaskListSelected()" [taskFilter]="taskFilter" [schemaColumn]="schemaColumn"
                            (rowClick)="onRowClick($event)" #activititasklist></activiti-tasklist>
