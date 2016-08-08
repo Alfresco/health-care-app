@@ -50,6 +50,16 @@
                     (preview)="showFile($event)"
                     (folderChange)="onFolderChanged($event)"
                     (nodeClick)="onNodeClicked($event)">
+                    <empty-folder-content>
+                        <template>
+                            <div style="text-align: center">
+                                <h1>No patient data available.</h1>
+                                <p>
+                                    Drop files here.
+                                </p>
+                            </div>
+                        </template>
+                    </empty-folder-content>
                     <!--
                     <content-columns>
                         <content-column key="name" type="image"></content-column>
