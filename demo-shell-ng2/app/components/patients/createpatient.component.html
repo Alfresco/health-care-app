@@ -3,7 +3,7 @@
 </div>
 <div class="user-image-wrap">
     <img class="image-cell"
-         src="app/img/anonymous.gif">
+         src="{{imgSrc}}">
 </div>
 <div class="upload-photo-button">
     <alfresco-upload-button [showUdoNotificationBar]="true"
@@ -12,7 +12,7 @@
                             [uploadFolders]="false"
                             [multipleFiles]="false"
                             [acceptedFilesType]="'.jpg,.gif,.png,.svg'"
-                            [staticTitle]="'Upload Photo'"
+                            [staticTitle]="'Upload Picture'"
                             (onSuccess)="fileUploaded($event)">
     </alfresco-upload-button>
 </div>

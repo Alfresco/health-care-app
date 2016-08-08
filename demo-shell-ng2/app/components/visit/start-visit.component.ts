@@ -32,6 +32,7 @@ declare let AlfrescoApi: any;
     moduleId: __moduleName,
     selector: 'start-visit-component',
     templateUrl: './start-visit.component.html',
+    styleUrls: ['./start-visit.component.css'],
     providers: [ProcessService, FormService],
     directives: [ActivitiForm]
 })

@@ -16,7 +16,7 @@
  */
 
 import { Component } from '@angular/core';
-import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
+import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
 import { FormService, ActivitiForm } from 'ng2-activiti-form';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -41,22 +41,26 @@ export class CreatePatientComponent {
 
     photoNode: string = "";
 
+    imgSrc: string = "app/img/anonymous.gif";
+
     constructor(private authService: AlfrescoAuthenticationService, private router: Router,
-                private notificationService: NotificationService) {
+                private notificationService: NotificationService,
+                private alfrescoSettingsService: AlfrescoSettingsService) {
     }
 
-    public fileUploaded(data){
-        if(data && data.value) {
+    public fileUploaded(data) {
+        if (data && data.value) {
             this.photoNode = data.value.entry.id;
+            this.imgSrc = this.alfrescoSettingsService.ecmHost + '/alfresco/api/-default-/public/alfresco/versions/1/nodes/' + data.value.entry.id + '/content?attachment=false';
             console.log(this.photoNode);
         }
     }
 
     saveMetadata(data: any) {
         let name = '';
-        if(!this.photoNode){
+        if (!this.photoNode) {
             name = this.generateUuid();
-        }else{
+        } else {
             name = this.photoNode;
         }
 
@@ -68,7 +72,7 @@ export class CreatePatientComponent {
         };
 
         for (var key in data) {
-            if(data[key]){
+            if (data[key]) {
                 body.properties['hc:' + key] = data[key];
             }
         }
@@ -88,9 +92,9 @@ export class CreatePatientComponent {
         );
     }
 
-    private generateUuid(){
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    private generateUuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
