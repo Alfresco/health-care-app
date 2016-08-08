@@ -9,7 +9,12 @@
     (rowDblClick)="onRowDblClick($event)">
     <no-content-template>
         <template>
-            <img [src]="baseComponentPath + '/img/document-list.empty-folder.png'">
+            <div style="text-align: center">
+                <h2>No patient data available.</h2>
+                <p>
+                    <img [src]="baseComponentPath + '/img/users.png'" style="width: 200px">
+                </p>
+            </div>
         </template>
     </no-content-template>
 </alfresco-datatable>
