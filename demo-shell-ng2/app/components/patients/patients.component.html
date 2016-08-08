@@ -122,7 +122,7 @@
         <ul class="mdl-list">
             <li *ngFor="let prop of selectedNodeProperties" class="mdl-list__item mdl-list__item--two-line">
                 <span class="mdl-list__item-primary-content">
-                    <span>{{prop.name}}</span>
+                    <span [title]="prop.fullName">{{prop.name}}</span>
                     <span class="mdl-list__item-sub-title">{{prop.value}}</span>
                 </span>
             </li>

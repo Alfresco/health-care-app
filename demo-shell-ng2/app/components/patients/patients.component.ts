@@ -338,11 +338,22 @@ export class PatientsComponent implements OnInit {
 }
 
 class NodePropertyModel {
+
+    prefix: string;
     name: string;
     value: string;
+    fullName: string;
 
     constructor(name: string, value: string) {
+        this.fullName = name;
         this.name = name;
+        if (name) {
+            let idx = name.indexOf(':');
+            if (idx > -1) {
+                this.prefix = name.substring(0, idx);
+                this.name = name.substring(idx + 1);
+            }
+        }
         this.value = value;
     }
 }
