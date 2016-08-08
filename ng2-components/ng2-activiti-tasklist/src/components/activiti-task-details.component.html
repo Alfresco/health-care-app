@@ -14,6 +14,6 @@
         </div>
     </div>
     <activiti-form *ngIf="taskDetails.formKey" [taskId]="taskId" (saveOption)='saveOptionEmitter($event)'
-                   (completeOption)='completeOptionEmitter($event)' #activitiForm
+                   (completeOption)='completeOptionEmitter($event)' (formLoaded)='formLoadedEmitter($event)' #activitiForm
     ></activiti-form>
 </div>

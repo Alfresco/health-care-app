@@ -57,6 +57,9 @@ export class ActivitiTaskDetails implements OnInit {
     @Output()
     completeOption = new EventEmitter();
 
+    @Output()
+    formLoaded = new EventEmitter();
+
     taskDetails: TaskDetailsModel;
 
     taskForm: FormModel;
@@ -90,6 +93,10 @@ export class ActivitiTaskDetails implements OnInit {
 
     completeOptionEmitter(data: any) {
         this.completeOption.emit(data);
+    }
+
+    formLoadedEmitter(data: any) {
+        this.formLoaded.emit(data);
     }
 
     loadDetails(taskId: string) {

@@ -86,6 +86,9 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
     @Output()
     completeOption = new EventEmitter();
 
+    @Output()
+    formLoaded = new EventEmitter();
+
     form: FormModel;
 
     debugMode: boolean = false;
@@ -179,7 +182,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getTaskForm(taskId)
             .subscribe(
-                form => this.form = new FormModel(form, data, null, this.readOnly),
+                form => {
+                    this.form = new FormModel(form, data, null, this.readOnly);
+                    this.formLoaded.emit(this.form.values);
+                },
                 err => console.log(err)
             );
     }
@@ -188,7 +194,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
         this.formService
             .getFormDefinitionById(this.formId)
             .subscribe(
-                form => this.form = new FormModel(form, this.data, this.saveOption, this.readOnly),
+                form => {
+                    this.form = new FormModel(form, this.data, this.saveOption, this.readOnly);
+                    this.formLoaded.emit(this.form.values);
+                },
                 err => console.log(err)
             );
     }
@@ -199,7 +208,10 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
             .subscribe(
                 id => {
                     this.formService.getFormDefinitionById(id).subscribe(
-                        form => this.form = new FormModel(form, this.data, this.saveOption, this.readOnly),
+                        form => {
+                            this.form = new FormModel(form, this.data, this.saveOption, this.readOnly);
+                            this.formLoaded.emit(this.form.values);
+                        },
                         err => console.log(err)
                     );
                 },
@@ -213,7 +225,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                 console.log('Saved task', response);
                 this.saveOption.emit(this.form.values);
             },
-            (err) => window.alert(err)
+            (err) => console.log(err)
         );
     }
 
@@ -225,7 +237,7 @@ export class ActivitiForm implements OnInit, AfterViewChecked, OnChanges {
                     console.log('Completed task', response);
                     this.completeOption.emit(this.form.values);
                 },
-                (err) => window.alert(err)
+                (err) => console.log(err)
             );
     }
 }
