@@ -65,14 +65,18 @@ export class FileUploadingDialogComponent implements OnInit {
                 this.filesUploadingList = fileList;
                 if (this.filesUploadingList.length > 0) {
                     this.isDialogActive = true;
-                    this.cd.detectChanges();
+                    if (this.cd) {
+                        this.cd.detectChanges();
+                    }
                 }
             });
         }
         if (this._uploaderService.totalCompleted$) {
             this._uploaderService.totalCompleted$.subscribe((total: number) => {
                 this.totalCompleted = total;
-                this.cd.detectChanges();
+                if (this.cd) {
+                    this.cd.detectChanges();
+                }
             });
         }
     }

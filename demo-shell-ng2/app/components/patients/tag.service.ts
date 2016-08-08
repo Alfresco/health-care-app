@@ -26,7 +26,7 @@ export class TagService {
 
     getTags(): Promise<TagModel[]> {
         return new Promise<TagModel[]>((resolve, reject) => {
-            this.authService.getAlfrescoApi().tags.getTags().then(
+            this.authService.getAlfrescoApi().core.tagsApi.getTags({}).then(
                 data => {
                     let entries = data.list.entries || [];
                     let tags = entries.map(obj => <TagModel> obj.entry);
@@ -39,7 +39,7 @@ export class TagService {
 
     addTags(nodeId: string, tags: { tag: string }[]): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.authService.getAlfrescoApi().tags.addTag(nodeId, tags).then(
+            this.authService.getAlfrescoApi().core.tagsApi.addTag(nodeId, tags).then(
                 data => resolve(data),
                 err => reject(err)
             );

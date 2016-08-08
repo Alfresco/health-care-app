@@ -23,6 +23,7 @@ import { Observable } from 'rxjs/Rx';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { AlfrescoSettingsService, AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { NotificationService } from '../../services/notification.service';
+import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 
 declare let __moduleName: string;
 declare var componentHandler;
@@ -33,11 +34,13 @@ declare var componentHandler;
     templateUrl: './activiti-demo.component.html',
     styleUrls: ['./activiti-demo.component.css'],
     providers: [ProcessService],
-    directives: [ALFRESCO_TASKLIST_DIRECTIVES, ActivitiForm]
+    directives: [ALFRESCO_ULPOAD_COMPONENTS, ALFRESCO_TASKLIST_DIRECTIVES, ActivitiForm]
 })
 export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     currentPath: string = '/Sites/swsdp/documentLibrary';
+
+    uploadPath: string;
 
     currentChoice: string = 'task-list';
 
@@ -57,6 +60,8 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     taskCompleted: boolean = false;
 
+    folderId: string;
+
     setChoice($event) {
         this.currentChoice = $event.target.value;
     }
@@ -67,6 +72,10 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     isTaskListSelected() {
         return this.currentChoice === 'task-list';
+    }
+
+    showUploader() {
+        return !this.isTaskCompleted() && this.currentTaskId;
     }
 
     constructor(private processService: ProcessService, private http: Http, public alfrescoSettingsService: AlfrescoSettingsService,
@@ -87,6 +96,7 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
                     response => {
                         this.taskFilter = response.data[0];
                         this.activititasklist.load(this.taskFilter);
+                        this.currentTaskId = null;
                     },
                     error => console.log(error)
                 );
@@ -121,26 +131,35 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         this.notificationService.sendNotification('Task Saved');
     }
 
+    formLoaded(data: any) {
+        console.log('formLoaded', data);
+
+        this.uploadPath = this.currentPath + '/' + data.nodeId + '/visit - ' + this.currentTaskId;
+
+        let body = {
+            name: 'visit - ' + this.currentTaskId,
+            nodeType: 'vsd:visitdata',
+            relativePath: this.currentPath + '/' + data.nodeId
+        };
+
+        this.createFolder(body, {});
+    }
+
     saveMetadata(data: any) {
 
         let body = {
-            name: this.generateUuid(),
-            nodeType: 'vs:visit',
-            properties: {
-                'vs:visittime': 'test'
-            },
+            name: 'visit - ' + this.currentTaskId,
+            properties: {},
             relativePath: this.currentPath + '/' + data.nodeId
         };
 
         for (var key in data) {
             if (data[key]) {
-                body.properties['vs:' + key] = data[key];
+                body.properties['vsd:' + key] = data[key];
             }
         }
 
-        let opts = {};
-
-        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+        this.authService.getAlfrescoApi().nodes.updateNode(this.folderId, body, {}).then(
             (data) => {
                 console.log(data);
                 this.taskCompleted = true;
@@ -148,16 +167,29 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
                 this.notificationService.sendNotification('Task Completed');
             },
             (err) => {
-                window.alert('See console output for error details');
                 console.log(err);
             }
         );
     }
 
-    private generateUuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
+    createFolder(body: any, opts: any) {
+        var self = this;
+        this.authService.getAlfrescoApi().core.searchApi.liveSearchNodes(this.currentTaskId, opts).then(function (data) {
+            if (data.list.entries.length === 0) {
+                self.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+                    (data) => {
+                        console.log('folderId', data.entry.id);
+                        self.folderId = data.entry.id;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            } else {
+                self.folderId = data.list.entries[0].entry.id;
+            }
+        }, function (error) {
+            console.error(error);
         });
     }
 
@@ -170,9 +202,13 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
     }
 
     onRowClick(taskId) {
-        this.currentTaskId = taskId;
-        this.taskCompleted = false;
-        this.activitidetails.loadDetails(this.currentTaskId);
+        if (taskId) {
+            this.currentTaskId = taskId;
+            this.taskCompleted = false;
+            if (this.activitidetails) {
+                this.activitidetails.loadDetails(taskId);
+            }
+        }
     }
 
     ngAfterViewChecked() {
