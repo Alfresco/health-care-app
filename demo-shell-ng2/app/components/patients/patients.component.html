@@ -119,6 +119,10 @@
         </div>
     </div>
     <div *ngIf="selectedNodeProperties" class="mdl-cell mdl-cell--2-col">
+        <div class="user-image-wrap">
+            <img _ngcontent-ksd-12="" class="image-cell" onerror="this.onerror=null;this.src='https://forums.alfresco.com/sites/forums/modules/gravatar/avatar.png';"
+                 src="http://127.0.0.1:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/{{selectedNodePropertiesName}}/content?attachment=false">
+        </div>
         <ul class="mdl-list">
             <li *ngFor="let prop of selectedNodeProperties" class="mdl-list__item mdl-list__item--two-line">
                 <span class="mdl-list__item-primary-content">

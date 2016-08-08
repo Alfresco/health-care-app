@@ -82,9 +82,9 @@ export class AppComponent {
     }
 
     isLoggedIn(): boolean {
-        if(localStorage.getItem('username')){
+        if (localStorage.getItem('username')) {
             return this.auth.isLoggedIn();
-        }else{
+        } else {
             return false;
         }
     }

@@ -87,6 +87,7 @@ export class PatientsComponent implements OnInit {
     tagFilters: TagFilter[] = [];
     selectedNode: MinimalNodeEntity;
     selectedNodeProperties: NodePropertyModel[] = [];
+    selectedNodePropertiesName: string;
     tagFilter: RowFilter;
     folderImageResolver: ImageResolver;
 
@@ -195,6 +196,7 @@ export class PatientsComponent implements OnInit {
         if (event && event.value) {
             this.selectedNodeProperties = null;
             this.selectedNode = <MinimalNodeEntity> event.value;
+            this.selectedNodePropertiesName = event.value.entry.name;
             if (this.selectedNode) {
                 this.selectedNodeProperties = this.getNodeProperties(this.selectedNode);
                 console.log(this.selectedNodeProperties);
