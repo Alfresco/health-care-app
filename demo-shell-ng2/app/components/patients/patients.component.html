@@ -100,6 +100,10 @@
                             title="Schedule an appointment"
                             (execute)="scheduleAppointment($event)">
                         </content-action>
+                        <content-action target="folder"
+                                        title="Add tag"
+                                        (execute)="addTag($event)">
+                        </content-action>
                         <content-action *ngIf="isAdmin()"
                             target="folder"
                             title="{{'DOCUMENT_LIST.ACTIONS.FOLDER.DELETE' | translate}}"
@@ -179,42 +183,27 @@
 </div>
 -->
 
+<dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Set Tags</h4>
+    <div class="mdl-dialog__content">
+        <div class="md-cell mdl-cell--12-col">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="node-tags" >
+                <label class="mdl-textfield__label" for="node-tags">Tags</label>
+            </div>
+        </div>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button save">Save</button>
+        <button type="button" class="mdl-button close">Close</button>
+    </div>
+</dialog>
 
 <!--
 For debugging and data visualisation purposes,
 will be removed during future revisions
 -->
-<!--<div class="patients-debug-container">-->
-    <!--<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1" [class.is-checked]="debugMode">-->
-        <!--<input type="checkbox" id="switch-1" class="mdl-switch__input" [(ngModel)]="debugMode">-->
-        <!--<span class="mdl-switch__label"></span>-->
-        <!--<span class="debug-toggle-text">Debug mode</span>-->
-    <!--</label>-->
 
-    <!--&lt;!&ndash; Example for associating tags with node &ndash;&gt;-->
-    <!--<div *ngIf="debugMode">-->
-        <!--<div class="mdl-grid" *ngIf="selectedNode">-->
-            <!--<div class="md-cell mdl-cell&#45;&#45;12-col">-->
-                <!--<div>-->
-                    <!--Selected node: {{ selectedNode.entry.name + ' (' + selectedNode.entry.id + ')' }}-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<input class="mdl-textfield__input" type="text" id="node-tags" #nodeTags>-->
-                    <!--<label class="mdl-textfield__label" for="node-tags">Tags</label>-->
-                <!--</div>-->
-                <!--<button-->
-                    <!--class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect"-->
-                    <!--(click)="setNodeTags(selectedNode.entry.id, nodeTags.value)">-->
-                    <!--Set Tags-->
-                <!--</button>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
-    <!--<div *ngIf="debugMode">-->
-        <!--<pre>{{documentList.data.getRows() | json}}</pre>-->
-    <!--</div>-->
-<!--</div>-->
 
 <context-menu-holder></context-menu-holder>
 

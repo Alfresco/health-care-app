@@ -213,6 +213,23 @@ export class PatientsComponent implements OnInit {
         }, 500);
     }
 
+    addTag(event){
+        let self = this;
+        let nodeId = event.value.entry.id;
+        let dialog = document.querySelector('dialog');
+        if (! dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
+        }
+        dialog.showModal();
+        dialog.querySelector('.close').addEventListener('click', function() {
+            dialog.close();
+        });
+        dialog.querySelector('.save').addEventListener('click', function() {
+            self.setNodeTags(nodeId, dialog.querySelector('#node-tags').value);
+            dialog.close();
+        });
+    }
+
     setNodeTags(nodeId: string, value: string) {
         if (nodeId && value) {
             let tags = value.split(',').map(val => {
@@ -238,7 +255,6 @@ export class PatientsComponent implements OnInit {
                      this.handleError
                      );
                      */
-                    window.alert('Done');
                 },
                 this.handleError
             );
