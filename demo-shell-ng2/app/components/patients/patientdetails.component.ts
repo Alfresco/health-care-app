@@ -44,6 +44,8 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     photoNodeId: string;
 
+    ticket: string = localStorage.getItem('ticket-ECM');
+
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private authService: AlfrescoAuthenticationService,

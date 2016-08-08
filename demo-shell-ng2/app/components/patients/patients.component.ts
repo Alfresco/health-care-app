@@ -90,6 +90,8 @@ export class PatientsComponent implements OnInit {
     selectedNodePropertiesName: string;
     tagFilter: RowFilter;
     folderImageResolver: ImageResolver;
+    ticket: string = localStorage.getItem('ticket-ECM');
+    ecmHost: string;
 
     private patientLayout: DataColumn[] = [];
     private fileLayout: DataColumn[] = [];
@@ -99,7 +101,7 @@ export class PatientsComponent implements OnInit {
                 private tagService: TagService,
                 private alfrescoSettingsService: AlfrescoSettingsService) {
         this.newPatient = new PatientModel();
-
+        this.ecmHost = alfrescoSettingsService.ecmHost;
         this.tagFilter = (row: ShareDataRow) => {
             let selectedTags = this.tagFilters
                 .filter(f => f.isSelected)
@@ -133,7 +135,8 @@ export class PatientsComponent implements OnInit {
             let isFolder = <boolean> row.getValue('isFolder');
             if (isFolder) {
                 let value = row.getValue(col.key);
-                return alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` + value + `/content?attachment=false`;
+                return this.alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` +
+                    value + '/content?attachment=false&alf_ticket=' + this.ticket;
             }
             return null;
         };
