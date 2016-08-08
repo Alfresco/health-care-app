@@ -61,6 +61,8 @@ export class FormFieldModel extends FormWidgetModel {
     private _value: string;
     private _readOnly: boolean = false;
 
+    isVisible : boolean = true;
+
     fieldType: string;
     id: string;
     name: string;
@@ -80,6 +82,11 @@ export class FormFieldModel extends FormWidgetModel {
     params: FormFieldMetadata = {};
     hyperlinkUrl: string;
     displayText: string;
+
+
+    visibilityCondition: any;
+
+
 
     get value(): any {
         return this._value;
@@ -121,11 +128,16 @@ export class FormFieldModel extends FormWidgetModel {
             this.params = <FormFieldMetadata> json.params || {};
             this.hyperlinkUrl = json.hyperlinkUrl;
             this.displayText = json.displayText;
+            this.visibilityCondition = json.visibilityCondition;
+            this.isVisible = json.visibilityCondition?json.isVisible:this.isVisible;
+            //console.log("Visbility for : "+ this.name + " set to :"+this.isVisible);
+
 
             this._value = this.parseValue(json);
             this.updateForm();
         }
     }
+
 
     private parseValue(json: any): any {
         let value = json.value;
@@ -450,9 +462,16 @@ export class FormModel {
                         for (let i = 0; i < containerModelColumn.fields.length; i++) {
                             let formField = containerModelColumn.fields[i];
                             if(data[formField.id]){
+                                if(formField.name === "hideNodeId"){
+                                    console.log("HERE");
+                                }
                                 formField.value = data[formField.id];
                                 formField.json.value = data[formField.id];
-                                // console.log(`Setting [${formField.id}] to [${formField.value}]`);
+                                if(formField.visibilityCondition){
+                                    formField.isVisible = this.evaluateVisibilityForField(formField.json.visibilityCondition);
+                                    formField.json.isVisible = formField.isVisible;
+                                    console.log(`Setting [${formField.id}] to [${formField.isVisible}] and [${formField.json.isVisible}]`);
+                                }
                             }
                         }
                     }
@@ -460,6 +479,39 @@ export class FormModel {
             }
 
         }
+    }
+
+
+    private evaluateVisibilityForField(visibilityCondition: any): boolean {
+            console.log("ADD visibility CONDITION");
+            if (visibilityCondition.leftFormFieldId){
+                    for (let i = 0; i < this.fields.length; i++) {
+                        let containerModel = this.fields[i];
+                        if(containerModel){
+                            for (let i = 0; i < containerModel.columns.length; i++) {
+                                let containerModelColumn = containerModel.columns[i];
+                                if(containerModelColumn) {
+                                    for (let i = 0; i < containerModelColumn.fields.length; i++) {
+                                        let field = containerModelColumn.fields[i];
+                                        if(visibilityCondition.leftFormFieldId === field.name){
+                                            if(visibilityCondition.operator)
+                                            switch(visibilityCondition.operator){
+                                              case "!equal":
+                                                 return field.value != "";
+                                              case "equal":
+                                                 return field.value == "";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+            }
+            if (visibilityCondition.leftRestResponseId){
+                return false;
+            }
     }
 
     /**

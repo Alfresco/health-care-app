@@ -29,4 +29,8 @@ declare var componentHandler;
 })
 export class TextWidget extends WidgetComponent {
 
+    ngOnInit() {
+        console.log(this.field.name +" is Visible ?" +this.field.isVisible);
+    }
+
 }
