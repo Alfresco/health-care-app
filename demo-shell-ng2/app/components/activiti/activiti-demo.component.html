@@ -7,15 +7,16 @@
 </div>
 
 <div class="mdl-grid" style="margin-top: 20px">
-    <div class="mdl-cell mdl-cell--3-col">
+    <div class="mdl-cell mdl-cell--3-col mdl-shadow--2dp">
         <activiti-tasklist *ngIf="isTaskListSelected()" [taskFilter]="taskFilter" [schemaColumn]="schemaColumn"
                            (rowClick)="onRowClick($event)" #activititasklist></activiti-tasklist>
     </div>
-    <div class="mdl-cell mdl-cell--9-col">
-        <div *ngIf="isTaskCompleted()">
-            <div class="completed-task">
-                <span>Task Completed</span>
+    <div class="mdl-cell mdl-cell--9-col mdl-shadow--2dp">
+        <div *ngIf="isTaskCompleted()" class="empty-task" >
+            <div class="title-empty-task center" >
+                Task completed
             </div>
+            <img class="img-empty-task center" src="app/img/completed.svg" alt="empty">
         </div>
         <div class="upload-button">
             <alfresco-upload-button *ngIf="showUploader()"
