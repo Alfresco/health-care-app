@@ -7,7 +7,7 @@
 </div>
 
 <div class="mdl-grid" style="margin-top: 20px">
-    <div class="mdl-cell mdl-cell--3-col mdl-shadow--2dp">
+    <div class="mdl-cell mdl-cell--3-col mdl-shadow--2dp" id="visitlist">
         <activiti-tasklist *ngIf="isTaskListSelected()" [taskFilter]="taskFilter" [schemaColumn]="schemaColumn"
                            (rowClick)="onRowClick($event)" #activititasklist></activiti-tasklist>
     </div>
