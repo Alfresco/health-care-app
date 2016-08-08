@@ -5,15 +5,17 @@
 }
 
 .profile-image {
-    text-align:center;
+    text-align: center;
     border-radius: 90%;
-    width:50px;
-    margin-right:0%;
+    width: 50px;
+    margin-right: 0%;
+    cursor: pointer;
+    border: 2px solid #999999;
 }
 
 .button-profile {
-    display:inline-block;
-    margin-right:-10px;
+    display: inline-block;
+    margin-right: -10px;
     background-color: #0e2d40;
-    border:0px;
+    border: 0px;
 }
