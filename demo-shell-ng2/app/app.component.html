@@ -11,7 +11,7 @@
             <search-bar (expand)="onToggleSearch($event)"></search-bar>
 
             <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <nav *ngIf="isLoggedIn()" class="mdl-navigation mdl-layout--large-screen-only">
                 <a class="mdl-navigation__link" data-automation-id="patients" href="" routerLink="/patients">Patients</a>
                 <a *ngIf="isAdmin()" class="mdl-navigation__link" data-automation-id="createpatient" href=""
                    routerLink="/createpatient">New Patient</a>
@@ -43,8 +43,8 @@
         </div>
     </header>
     <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Components List</span>
-        <nav class="mdl-navigation">
+        <span *ngIf="isLoggedIn()" class="mdl-layout-title">Components List</span>
+        <nav *ngIf="isLoggedIn()" class="mdl-navigation">
             <a class="mdl-navigation__link" href="" routerLink="/patients" (click)="hideDrawer()">Patients</a>
             <a class="mdl-navigation__link" href="" routerLink="/files" (click)="hideDrawer()">Files</a>
             <!--<a class="mdl-navigation__link" href="" routerLink="/datatable" (click)="hideDrawer()">DataTable Demo</a>-->

@@ -82,14 +82,21 @@ export class AppComponent {
     }
 
     isLoggedIn(): boolean {
-        return this.auth.isLoggedIn();
+        if(localStorage.getItem('username')){
+            return this.auth.isLoggedIn();
+        }else{
+            return false;
+        }
     }
 
     onLogout(event) {
         event.preventDefault();
         this.auth.logout()
             .subscribe(
-                () => this.router.navigate(['/login'])
+                () => {
+                    this.router.navigate(['/login']);
+                    localStorage.removeItem('username');
+                }
             );
     }
 
