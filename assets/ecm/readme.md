@@ -1,8 +1,27 @@
 # Health Care Model
 
-Sample ECM model for `Health Care Express Appliction` (Alfresco AppFest)
 
-## Types included:
+## Configuration for the demo app
+Follow the steps below to configure your share app 
+
+1. Login as Admin 
+2. Go To Admin Tools and click Model Manager
+3. Import VisitData and healthCareModel models
+4. Activate the models via Actions menu
+5. Navigate to Users and Click New User
+6. Create the visitor user :
+    - First Name : visitor
+    - Email : visitor@visitor.com
+    - User Name : visitor
+    - Password : visitor
+    - Add the groups : ALFRESCO_ADMINISTRATORS, ALFRESCO_MODEL_ADMINISTRATORS, ALFRESCO_SEARCH_ADMINISTRATORS and SITE_ADMINISTRATORS
+
+
+
+## Sample ECM model for `Health Care Express Appliction` (Alfresco AppFest)
+
+
+### Types included:
 
 - Patient Folder (`hc:patientFolder`)
 
@@ -16,7 +35,7 @@ Sample ECM model for `Health Care Express Appliction` (Alfresco AppFest)
     * Next of Kin (`hc:nextOfKin`)
     * Doctor (`hc:doctor`)
 
-## Deploying
+### Deploying
 
 _You can use the following steps to deploy and activate the model for demo environment.
 Note that it was tested only with internal v.5.2 docker image._
@@ -27,9 +46,9 @@ Note that it was tested only with internal v.5.2 docker image._
 - Execute `activate model health-care-model.xml` command
 - (optional) Ensure the model is loaded via `show models` command, it should have `IsLoaded: Y` in the list
 
-## Creating Patient folders
+### Creating Patient folders
 
-### Using `curl`
+#### Using `curl`
 
 ```sh
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'Authorization: Basic <put-auth-here>' -d '{
@@ -41,7 +60,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 }' 'http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children?autoRename=true'
 ```
 
-### Using `TypeScript`
+#### Using `TypeScript`
 
 _TODO: needs explanation_
 
@@ -63,7 +82,7 @@ this.authService.getAlfrescoApi().nodes.addNode('-root-', body).then(
 );
 ```
 
-## See also
+### See also
 
 - [Deploying a content model: dynamic approach](http://docs.alfresco.com/5.0/tasks/deploy-dynamic.html)
 - [Content metamodel properties](http://docs.alfresco.com/4.0/concepts/metadata-model-props.html)

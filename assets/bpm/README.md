@@ -2,7 +2,7 @@
 
 ## Create user 'visitor'
 
-Follow steps below to create 'visitor' user required.
+### Follow steps below to create 'visitor' user required.
 
     1. Login as admin
     2. Go to identity management > users > create user 
@@ -16,5 +16,11 @@ Follow steps below to create 'visitor' user required.
     6. Go to identity management > personal 
     7. Change email to 'visitor' 
 
-## Import app 
-    1. Import app `visit.zip` into Activit (Alfresco AppFest)
+### Import app 
+    1. Login as Admin
+    2. Import app `visit.zip` into Activit (Alfresco AppFest)
+    3. in the app editor remove and readd the visitor user
+    4. Save and Publish the App
+    5. Login as visitor
+    6. Visit app should be visible on the dashboard
+    7. Click on the App to allow activiti to initialise the filters
