@@ -95,7 +95,8 @@ for PACKAGE in \
   ng2-alfresco-search \
   ng2-alfresco-upload \
   ng2-alfresco-viewer \
-  ng2-alfresco-webscript
+  ng2-alfresco-webscript \
+  alfresco-js-api \
 do
   DESTDIR="$DIR/../ng2-components/${PACKAGE}"
   echo "====== demo shell linking: ${PACKAGE} ====="
