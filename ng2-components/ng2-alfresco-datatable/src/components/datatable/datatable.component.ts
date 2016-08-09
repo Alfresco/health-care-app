@@ -172,9 +172,9 @@ export class DataTableComponent implements OnInit, AfterViewChecked {
     }
 
     iconAltTextKey(value: string) {
-        if(value){
+        if (value) {
             return 'ICONS.' + value.substring(value.lastIndexOf('/') + 1).replace(/\.[a-z]+/, '');
-        }else{
+        } else {
             return 'ICONS.';
         }
     }
@@ -188,19 +188,19 @@ export class DataTableComponent implements OnInit, AfterViewChecked {
     }
 
     getContextMenuActions(row: DataRow, col: DataColumn) {
-        let args = { row: row, col: col, actions: [] };
-        this.showRowContextMenu.emit({ args: args });
+        let args = {row: row, col: col, actions: []};
+        this.showRowContextMenu.emit({args: args});
         return args.actions;
     }
 
     getRowActions(row: DataRow, col: DataColumn) {
-        let args = { row: row, col: col, actions: [] };
-        this.showRowActionsMenu.emit({ args: args });
+        let args = {row: row, col: col, actions: []};
+        this.showRowActionsMenu.emit({args: args});
         return args.actions;
     }
 
     onExecuteRowAction(row: DataRow, action: any) {
-        let args = { row: row, action: action };
-        this.executeRowAction.emit({ args: args });
+        let args = {row: row, action: action};
+        this.executeRowAction.emit({args: args});
     }
 }
