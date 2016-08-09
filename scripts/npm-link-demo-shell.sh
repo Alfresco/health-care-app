@@ -7,7 +7,6 @@ npm install -g typings
 #LINK JS API
 echo "====== linking lib: alfresco-js-api ====="
 cd "$DIR/../ng2-components/alfresco-js-api"
-npm link alfresco-js-api
 npm link
 
 #LINK CORE
