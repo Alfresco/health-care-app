@@ -5,3 +5,4 @@ target
 /coverage
 /node_modules
 /alfresco-core-rest-api.iml
+!dist
