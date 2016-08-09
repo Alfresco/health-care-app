@@ -4,6 +4,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 npm install -g typings
 
+#LINK JS API
+echo "====== linking lib: alfresco-js-api ====="
+cd "$DIR/../ng2-components/alfresco-js-api"
+npm link alfresco-js-api
+npm link
+
 #LINK CORE
 echo "====== linking component: ng2-alfresco-core ====="
 cd "$DIR/../ng2-components/ng2-alfresco-core"
@@ -96,7 +102,7 @@ for PACKAGE in \
   ng2-alfresco-upload \
   ng2-alfresco-viewer \
   ng2-alfresco-webscript \
-  alfresco-js-api 
+  alfresco-js-api
 do
   DESTDIR="$DIR/../ng2-components/${PACKAGE}"
   echo "====== demo shell linking: ${PACKAGE} ====="
