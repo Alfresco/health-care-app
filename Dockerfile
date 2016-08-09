@@ -13,10 +13,8 @@ COPY ng2-components /usr/src/alfresco-ng2-components/ng2-components
 
 WORKDIR /usr/src/alfresco-ng2-components/demo-shell-ng2/
 RUN bash -c "/usr/src/alfresco-ng2-components/scripts/npm-link-demo-shell.sh"
-RUN npm install material-design-lite material-design-icons
-RUN npm install concurrently -g
 RUN npm install
 
 EXPOSE 3000
 
-CMD [ "concurrently", "npm run tsc:w", "npm run serve" ]
+CMD [ "npm run serve" ]
