@@ -34,6 +34,7 @@ alfresco-document-list >>> .mdl-data-table {
 }
 
 .image-cell{
+    background-color: #ffffff;
     width: 100px;
     height: 100px;
     border-radius: 50px;

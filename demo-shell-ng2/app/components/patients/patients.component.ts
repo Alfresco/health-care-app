@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChildNode } from '@angular/core';
 import { Router } from '@angular/router';
 import {
     PaginationComponent,
@@ -92,9 +92,11 @@ export class PatientsComponent implements OnInit {
     folderImageResolver: ImageResolver;
     ticket: string = localStorage.getItem('ticket-ECM');
     ecmHost: string;
-
+    detailsAvatarImage: string;
+    isVisitFolder: boolean = false;
     private patientLayout: DataColumn[] = [];
     private fileLayout: DataColumn[] = [];
+    emptyimgSrc: string = "app/img/anonymous.gif";
 
     constructor(private contentService: AlfrescoContentService,
                 private router: Router,
@@ -180,12 +182,27 @@ export class PatientsComponent implements OnInit {
             this.selectedNode = null;
             this.selectedNodeProperties = null;
 
+
             this.currentPath = event.path;
             this.loadTags();
             if (this.currentPath === this.DEFAULT_PATH) {
+                this.folderImageResolver = (row: DataRow, col: DataColumn) => {
+                    let isFolder = <boolean> row.getValue('isFolder');
+                    if (isFolder) {
+                        let value = row.getValue(col.key);
+                        return this.alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` +
+                            value + '/content?attachment=false&alf_ticket=' + this.ticket;
+                    }
+                    return null;
+                };
                 this.documentList.data.setColumns(this.patientLayout);
+                this.isVisitFolder = false;
             } else {
                 this.documentList.data.setColumns(this.fileLayout);
+                this.folderImageResolver = (row: DataRow, col: DataColumn) => {
+                    return 'app/img/checklist.svg';
+                };
+                this.isVisitFolder = true;
             }
         }
     }
@@ -200,6 +217,11 @@ export class PatientsComponent implements OnInit {
             this.selectedNodeProperties = null;
             this.selectedNode = <MinimalNodeEntity> event.value;
             this.selectedNodePropertiesName = event.value.entry.name;
+            if(this.isVisitFolder){
+                this.detailsAvatarImage = 'app/img/checklist.svg';
+            }else{
+                this.detailsAvatarImage = this.ecmHost + '/alfresco/api/-default-/public/alfresco/versions/1/nodes/' + this.selectedNodePropertiesName + '/content?attachment=false&alf_ticket=' + this.ticket;
+            }
             if (this.selectedNode) {
                 this.selectedNodeProperties = this.getNodeProperties(this.selectedNode);
                 console.log(this.selectedNodeProperties);

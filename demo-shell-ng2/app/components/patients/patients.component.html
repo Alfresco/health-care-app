@@ -131,8 +131,8 @@
     </div>
     <div *ngIf="selectedNodeProperties" class="mdl-cell mdl-cell--2-col mdl-shadow--2dp">
         <div class="user-image-wrap">
-            <img _ngcontent-ksd-12="" class="image-cell" onerror="this.onerror=null;this.src='http://previews.123rf.com/images/yitewang/yitewang1511/yitewang151101098/48134152-icona-piatta-cartella-clinica-Archivio-Fotografico.jpg';"
-                 src="{{ecmHost}}/alfresco/api/-default-/public/alfresco/versions/1/nodes/{{selectedNodePropertiesName}}/content?attachment=false&alf_ticket={{ticket}}">
+            <img _ngcontent-ksd-12="" class="image-cell" onerror="this.onerror=null;this.src='app/img/anonymous.gif';"
+                 [src]="detailsAvatarImage">
         </div>
         <ul class="mdl-list">
             <li *ngFor="let prop of selectedNodeProperties" class="mdl-list__item mdl-list__item--two-line">
