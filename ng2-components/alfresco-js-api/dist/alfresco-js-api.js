@@ -5,7 +5,7 @@ var AlfrescoApi = require('./src/alfrescoApi.js');
 
 module.exports = AlfrescoApi;
 
-},{"./src/alfrescoApi.js":271}],2:[function(require,module,exports){
+},{"./src/alfrescoApi.js":393}],2:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -26484,7 +26484,7 @@ mkdirP.sync = function sync (p, opts, made) {
 };
 
 }).call(this,require('_process'))
-},{"_process":95,"fs":6,"path":93}],74:[function(require,module,exports){
+},{"_process":94,"fs":6,"path":92}],74:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -26947,7 +26947,7 @@ Back.setMode(process.env.NOCK_BACK_MODE || 'dryrun');
 module.exports = exports = Back;
 
 }).call(this,require('_process'))
-},{"./recorder":84,"./scope":86,"_process":95,"chai":11,"debug":43,"fs":6,"lodash":72,"mkdirp":73,"path":93,"util":134}],77:[function(require,module,exports){
+},{"./recorder":84,"./scope":86,"_process":94,"chai":11,"debug":43,"fs":6,"lodash":72,"mkdirp":73,"path":92,"util":134}],77:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -27370,7 +27370,7 @@ DelayedBody.prototype._transform = function (chunk, encoding, cb) {
   process.nextTick(cb);
 };
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")},require('_process'))
-},{"../../is-buffer/index.js":70,"./common":77,"_process":95,"events":66,"stream":101,"util":134}],79:[function(require,module,exports){
+},{"../../is-buffer/index.js":70,"./common":77,"_process":94,"events":66,"stream":101,"util":134}],79:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter
 
 module.exports = new EventEmitter();
@@ -27774,7 +27774,7 @@ module.exports.overrideClientRequest = overrideClientRequest;
 module.exports.restoreOverriddenClientRequest = restoreOverriddenClientRequest;
 
 }).call(this,require('_process'))
-},{"./common":77,"./global_emitter":79,"./interceptor":81,"./request_overrider":85,"_process":95,"debug":43,"events":66,"http":113,"lodash":72,"timers":126,"url":130,"util":134}],81:[function(require,module,exports){
+},{"./common":77,"./global_emitter":79,"./interceptor":81,"./request_overrider":85,"_process":94,"debug":43,"events":66,"http":113,"lodash":72,"timers":126,"url":130,"util":134}],81:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -28313,7 +28313,7 @@ Interceptor.prototype.socketDelay = function socketDelay(ms) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./common":77,"./match_body":82,"./mixin":83,"buffer":8,"debug":43,"fs":6,"json-stringify-safe":71,"lodash":72,"qs":89,"util":134}],82:[function(require,module,exports){
+},{"./common":77,"./match_body":82,"./mixin":83,"buffer":8,"debug":43,"fs":6,"json-stringify-safe":71,"lodash":72,"qs":88,"util":134}],82:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -29299,7 +29299,7 @@ function RequestOverrider(req, options, interceptors, remove, cb) {
 module.exports = RequestOverrider;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./common":77,"./delayed_body":78,"./global_emitter":79,"./socket":87,"_process":95,"buffer":8,"debug":43,"events":66,"http":113,"lodash":72,"propagate":88,"stream":101,"timers":126}],86:[function(require,module,exports){
+},{"./common":77,"./delayed_body":78,"./global_emitter":79,"./socket":87,"_process":94,"buffer":8,"debug":43,"events":66,"http":113,"lodash":72,"propagate":95,"stream":101,"timers":126}],86:[function(require,module,exports){
 /* jshint strict:false */
 /**
  * @module nock/scope
@@ -29731,82 +29731,6 @@ function noop() {}
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":8,"debug":43,"events":66,"util":134}],88:[function(require,module,exports){
-function propagate(events, source, dest) {
-  if (arguments.length < 3) {
-    dest = source;
-    source = events;
-    events = undefined;
-  }
-
-  // events should be an array or object
-  var eventsIsObject = typeof events === 'object'
-  if (events && !eventsIsObject) events = [events];
-
-  if (eventsIsObject) {
-    return explicitPropagate(events, source, dest);
-  }
-
-  var oldEmit =  source.emit;
-
-  source.emit = function(eventType) {
-    if (! events || ~events.indexOf(eventType)) {
-      dest.emit.apply(dest, arguments);
-    }
-    oldEmit.apply(source, arguments);
-  }
-
-  function end() {
-    source.emit = oldEmit;
-  }
-
-  return {
-    end: end
-  };
-};
-
-module.exports = propagate;
-
-function explicitPropagate(events, source, dest) {
-  var eventsIn;
-  var eventsOut;
-  if (Array.isArray(events)) {
-    eventsIn = events;
-    eventsOut = events;
-  } else {
-    eventsIn = Object.keys(events);
-    eventsOut = eventsIn.map(function (key) {
-      return events[key]
-    })
-  }
-
-  var listeners = eventsOut.map(function(event) {
-    return function() {
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(event);
-      dest.emit.apply(dest, args);
-    }
-  });
-
-  listeners.forEach(register);
-
-  return {
-    end: end
-  };
-
-  function register(listener, i) {
-    source.on(eventsIn[i], listener);
-  }
-
-  function unregister(listener, i) {
-    source.removeListener(eventsIn[i], listener);
-  }
-
-  function end() {
-    listeners.forEach(unregister);
-  }
-}
-
-},{}],89:[function(require,module,exports){
 'use strict';
 
 var Stringify = require('./stringify');
@@ -29817,10 +29741,12 @@ module.exports = {
     parse: Parse
 };
 
-},{"./parse":90,"./stringify":91}],90:[function(require,module,exports){
+},{"./parse":89,"./stringify":90}],89:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
+
+var has = Object.prototype.hasOwnProperty;
 
 var defaults = {
     delimiter: '&',
@@ -29842,21 +29768,18 @@ var parseValues = function parseValues(str, options) {
         var part = parts[i];
         var pos = part.indexOf(']=') === -1 ? part.indexOf('=') : part.indexOf(']=') + 1;
 
+        var key, val;
         if (pos === -1) {
-            obj[options.decoder(part)] = '';
-
-            if (options.strictNullHandling) {
-                obj[options.decoder(part)] = null;
-            }
+            key = options.decoder(part);
+            val = options.strictNullHandling ? null : '';
         } else {
-            var key = options.decoder(part.slice(0, pos));
-            var val = options.decoder(part.slice(pos + 1));
-
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                obj[key] = [].concat(obj[key]).concat(val);
-            } else {
-                obj[key] = val;
-            }
+            key = options.decoder(part.slice(0, pos));
+            val = options.decoder(part.slice(pos + 1));
+        }
+        if (has.call(obj, key)) {
+            obj[key] = [].concat(obj[key]).concat(val);
+        } else {
+            obj[key] = val;
         }
     }
 
@@ -29918,7 +29841,7 @@ var parseKeys = function parseKeys(givenKey, val, options) {
     if (segment[1]) {
         // If we aren't using plain objects, optionally prefix keys
         // that would overwrite object prototype properties
-        if (!options.plainObjects && Object.prototype.hasOwnProperty(segment[1])) {
+        if (!options.plainObjects && has.call(Object.prototype, segment[1])) {
             if (!options.allowPrototypes) {
                 return;
             }
@@ -29932,7 +29855,7 @@ var parseKeys = function parseKeys(givenKey, val, options) {
     var i = 0;
     while ((segment = child.exec(key)) !== null && i < options.depth) {
         i += 1;
-        if (!options.plainObjects && Object.prototype.hasOwnProperty(segment[1].replace(/\[|\]/g, ''))) {
+        if (!options.plainObjects && has.call(Object.prototype, segment[1].replace(/\[|\]/g, ''))) {
             if (!options.allowPrototypes) {
                 continue;
             }
@@ -29986,7 +29909,7 @@ module.exports = function (str, opts) {
     return Utils.compact(obj);
 };
 
-},{"./utils":92}],91:[function(require,module,exports){
+},{"./utils":91}],90:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./utils');
@@ -30125,7 +30048,7 @@ module.exports = function (object, opts) {
     return keys.join(delimiter);
 };
 
-},{"./utils":92}],92:[function(require,module,exports){
+},{"./utils":91}],91:[function(require,module,exports){
 'use strict';
 
 var hexTable = (function () {
@@ -30291,7 +30214,7 @@ exports.isBuffer = function (obj) {
     return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
 };
 
-},{}],93:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -30519,7 +30442,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":95}],94:[function(require,module,exports){
+},{"_process":94}],93:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -30566,7 +30489,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":95}],95:[function(require,module,exports){
+},{"_process":94}],94:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -30686,6 +30609,82 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 process.umask = function() { return 0; };
+
+},{}],95:[function(require,module,exports){
+function propagate(events, source, dest) {
+  if (arguments.length < 3) {
+    dest = source;
+    source = events;
+    events = undefined;
+  }
+
+  // events should be an array or object
+  var eventsIsObject = typeof events === 'object'
+  if (events && !eventsIsObject) events = [events];
+
+  if (eventsIsObject) {
+    return explicitPropagate(events, source, dest);
+  }
+
+  var oldEmit =  source.emit;
+
+  source.emit = function(eventType) {
+    if (! events || ~events.indexOf(eventType)) {
+      dest.emit.apply(dest, arguments);
+    }
+    oldEmit.apply(source, arguments);
+  }
+
+  function end() {
+    source.emit = oldEmit;
+  }
+
+  return {
+    end: end
+  };
+};
+
+module.exports = propagate;
+
+function explicitPropagate(events, source, dest) {
+  var eventsIn;
+  var eventsOut;
+  if (Array.isArray(events)) {
+    eventsIn = events;
+    eventsOut = events;
+  } else {
+    eventsIn = Object.keys(events);
+    eventsOut = eventsIn.map(function (key) {
+      return events[key]
+    })
+  }
+
+  var listeners = eventsOut.map(function(event) {
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift(event);
+      dest.emit.apply(dest, args);
+    }
+  });
+
+  listeners.forEach(register);
+
+  return {
+    end: end
+  };
+
+  function register(listener, i) {
+    source.on(eventsIn[i], listener);
+  }
+
+  function unregister(listener, i) {
+    source.removeListener(eventsIn[i], listener);
+  }
+
+  function end() {
+    listeners.forEach(unregister);
+  }
+}
 
 },{}],96:[function(require,module,exports){
 (function (global){
@@ -31638,7 +31637,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":106,"./_stream_writable":108,"core-util-is":41,"inherits":69,"process-nextick-args":94}],105:[function(require,module,exports){
+},{"./_stream_readable":106,"./_stream_writable":108,"core-util-is":41,"inherits":69,"process-nextick-args":93}],105:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -32561,7 +32560,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":104,"_process":95,"buffer":8,"buffer-shims":7,"core-util-is":41,"events":66,"inherits":69,"isarray":102,"process-nextick-args":94,"string_decoder/":124,"util":5}],107:[function(require,module,exports){
+},{"./_stream_duplex":104,"_process":94,"buffer":8,"buffer-shims":7,"core-util-is":41,"events":66,"inherits":69,"isarray":102,"process-nextick-args":93,"string_decoder/":124,"util":5}],107:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -33271,7 +33270,7 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":104,"_process":95,"buffer":8,"buffer-shims":7,"core-util-is":41,"events":66,"inherits":69,"process-nextick-args":94,"util-deprecate":132}],109:[function(require,module,exports){
+},{"./_stream_duplex":104,"_process":94,"buffer":8,"buffer-shims":7,"core-util-is":41,"events":66,"inherits":69,"process-nextick-args":93,"util-deprecate":132}],109:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
 },{"./lib/_stream_passthrough.js":105}],110:[function(require,module,exports){
@@ -33294,7 +33293,7 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":104,"./lib/_stream_passthrough.js":105,"./lib/_stream_readable.js":106,"./lib/_stream_transform.js":107,"./lib/_stream_writable.js":108,"_process":95}],111:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":104,"./lib/_stream_passthrough.js":105,"./lib/_stream_readable.js":106,"./lib/_stream_transform.js":107,"./lib/_stream_writable.js":108,"_process":94}],111:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
 },{"./lib/_stream_transform.js":107}],112:[function(require,module,exports){
@@ -33707,7 +33706,7 @@ var unsafeHeaders = [
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":114,"./response":116,"_process":95,"buffer":8,"inherits":69,"readable-stream":123,"to-arraybuffer":127}],116:[function(require,module,exports){
+},{"./capability":114,"./response":116,"_process":94,"buffer":8,"inherits":69,"readable-stream":123,"to-arraybuffer":127}],116:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -33891,21 +33890,21 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":114,"_process":95,"buffer":8,"inherits":69,"readable-stream":123}],117:[function(require,module,exports){
+},{"./capability":114,"_process":94,"buffer":8,"inherits":69,"readable-stream":123}],117:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
 },{"dup":9}],118:[function(require,module,exports){
 arguments[4][104][0].apply(exports,arguments)
-},{"./_stream_readable":120,"./_stream_writable":122,"core-util-is":41,"dup":104,"inherits":69,"process-nextick-args":94}],119:[function(require,module,exports){
+},{"./_stream_readable":120,"./_stream_writable":122,"core-util-is":41,"dup":104,"inherits":69,"process-nextick-args":93}],119:[function(require,module,exports){
 arguments[4][105][0].apply(exports,arguments)
 },{"./_stream_transform":121,"core-util-is":41,"dup":105,"inherits":69}],120:[function(require,module,exports){
 arguments[4][106][0].apply(exports,arguments)
-},{"./_stream_duplex":118,"_process":95,"buffer":8,"buffer-shims":7,"core-util-is":41,"dup":106,"events":66,"inherits":69,"isarray":117,"process-nextick-args":94,"string_decoder/":124,"util":5}],121:[function(require,module,exports){
+},{"./_stream_duplex":118,"_process":94,"buffer":8,"buffer-shims":7,"core-util-is":41,"dup":106,"events":66,"inherits":69,"isarray":117,"process-nextick-args":93,"string_decoder/":124,"util":5}],121:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
 },{"./_stream_duplex":118,"core-util-is":41,"dup":107,"inherits":69}],122:[function(require,module,exports){
 arguments[4][108][0].apply(exports,arguments)
-},{"./_stream_duplex":118,"_process":95,"buffer":8,"buffer-shims":7,"core-util-is":41,"dup":108,"events":66,"inherits":69,"process-nextick-args":94,"util-deprecate":132}],123:[function(require,module,exports){
+},{"./_stream_duplex":118,"_process":94,"buffer":8,"buffer-shims":7,"core-util-is":41,"dup":108,"events":66,"inherits":69,"process-nextick-args":93,"util-deprecate":132}],123:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":118,"./lib/_stream_passthrough.js":119,"./lib/_stream_readable.js":120,"./lib/_stream_transform.js":121,"./lib/_stream_writable.js":122,"_process":95,"dup":110}],124:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":118,"./lib/_stream_passthrough.js":119,"./lib/_stream_readable.js":120,"./lib/_stream_transform.js":121,"./lib/_stream_writable.js":122,"_process":94,"dup":110}],124:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -35398,7 +35397,7 @@ exports.setImmediate = typeof setImmediate === "function" ? setImmediate : funct
 exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
   delete immediateIds[id];
 };
-},{"process/browser.js":95}],127:[function(require,module,exports){
+},{"process/browser.js":94}],127:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 
 module.exports = function (buf) {
@@ -36985,7 +36984,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":133,"_process":95,"inherits":69}],135:[function(require,module,exports){
+},{"./support/isBuffer":133,"_process":94,"inherits":69}],135:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -37007,7 +37006,6 @@ function extend() {
 }
 
 },{}],136:[function(require,module,exports){
-(function (Buffer){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37015,462 +37013,70 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['superagent'], factory);
+    define(['ApiClient'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('superagent'));
+    module.exports = factory(require('../../../alfrescoApiClient'));
   } else {
     // Browser globals (root is window)
-    if (!root.AlfrescoAuthRestApi) {
-      root.AlfrescoAuthRestApi = {};
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
     }
-    root.AlfrescoAuthRestApi.ApiClient = factory(root.superagent);
+    root.ActivitiPublicRestApi.AboutApi = factory(root.ActivitiPublicRestApi.ApiClient);
   }
-})(undefined, function (superagent) {
+})(undefined, function (ApiClient) {
   'use strict';
 
   /**
-   * @module ApiClient
-   * @version 0.1.0
+   * About service.
+   * @module api/AboutApi
+   * @version 1.4.0
    */
 
   /**
-   * Manages low level client-server communications, parameter marshalling, etc. There should not be any need for an
-   * application to use this class directly - the *Api and model classes provide the public API for the service. The
-   * contents of this file should be regarded as internal but are documented for completeness.
-   * @alias module:ApiClient
+   * Constructs a new AboutApi.
+   * @alias module:api/AboutApi
    * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
    */
 
-  var exports = function exports() {
-    /**
-     * The base URL against which to resolve every API call's (relative) path.
-     * @type {String}
-     * @default https://localhost/alfresco/api/-default-/public/authentication/versions/1
-     */
-    this.basePath = 'https://localhost/alfresco/api/-default-/public/authentication/versions/1'.replace(/\/+$/, '');
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
 
     /**
-     * The authentication methods to be included for all API calls.
-     * @type {Array.<String>}
+     * Function to receive the result of the getAppVersion operation.
+     * @param {String} error Error message, if any.
+     * @param {Object.<String, {'String': 'String'}>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
      */
-    this.authentications = {
-      'basicAuth': { type: 'basic' }
+
+    /**
+     * Server Information
+     * Retrieve information about the Activiti BPM Suite version
+     * data is of type: {Object.<String, {'String': 'String'}>}
+     */
+    this.getAppVersion = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = { 'String': 'String' };
+
+      return this.apiClient.callApi('/api/enterprise/app-version', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
     };
-    /**
-     * The default HTTP headers to be included for all API calls.
-     * @type {Array.<String>}
-     * @default {}
-     */
-    this.defaultHeaders = {};
-
-    /**
-     * The default HTTP timeout for all API calls.
-     * @type {Number}
-     * @default 60000
-     */
-    this.timeout = 60000;
   };
-
-  /**
-   * Returns a string representation for an actual parameter.
-   * @param param The actual parameter.
-   * @returns {String} The string representation of <code>param</code>.
-   */
-  exports.prototype.paramToString = function (param) {
-    if (param == undefined || param == null) {
-      return '';
-    }
-    if (param instanceof Date) {
-      return param.toJSON();
-    }
-    return param.toString();
-  };
-
-  /**
-   * Builds full URL by appending the given path to the base URL and replacing path parameter place-holders with parameter values.
-   * NOTE: query parameters are not handled here.
-   * @param {String} path The path to append to the base URL.
-   * @param {Object} pathParams The parameter values to append.
-   * @returns {String} The encoded path with parameter values substituted.
-   */
-  exports.prototype.buildUrl = function (path, pathParams) {
-    if (!path.match(/^\//)) {
-      path = '/' + path;
-    }
-    var url = this.basePath + path;
-    var _this = this;
-    url = url.replace(/\{([\w-]+)\}/g, function (fullMatch, key) {
-      var value;
-      if (pathParams.hasOwnProperty(key)) {
-        value = _this.paramToString(pathParams[key]);
-      } else {
-        value = fullMatch;
-      }
-      return encodeURIComponent(value);
-    });
-    return url;
-  };
-
-  /**
-   * Checks whether the given content type represents JSON.<br>
-   * JSON content type examples:<br>
-   * <ul>
-   * <li>application/json</li>
-   * <li>application/json; charset=UTF8</li>
-   * <li>APPLICATION/JSON</li>
-   * </ul>
-   * @param {String} contentType The MIME content type to check.
-   * @returns {Boolean} <code>true</code> if <code>contentType</code> represents JSON, otherwise <code>false</code>.
-   */
-  exports.prototype.isJsonMime = function (contentType) {
-    return Boolean(contentType != null && contentType.match(/^application\/json(;.*)?$/i));
-  };
-
-  /**
-   * Chooses a content type from the given array, with JSON preferred; i.e. return JSON if included, otherwise return the first.
-   * @param {Array.<String>} contentTypes
-   * @returns {String} The chosen content type, preferring JSON.
-   */
-  exports.prototype.jsonPreferredMime = function (contentTypes) {
-    for (var i = 0; i < contentTypes.length; i++) {
-      if (this.isJsonMime(contentTypes[i])) {
-        return contentTypes[i];
-      }
-    }
-    return contentTypes[0];
-  };
-
-  /**
-   * Checks whether the given parameter value represents file-like content.
-   * @param param The parameter to check.
-   * @returns {Boolean} <code>true</code> if <code>param</code> represents a file. 
-   */
-  exports.prototype.isFileParam = function (param) {
-    // fs.ReadStream in Node.js (but not in runtime like browserify)
-    if (typeof window === 'undefined' && typeof require === 'function' && require('fs') && param instanceof require('fs').ReadStream) {
-      return true;
-    }
-    // Buffer in Node.js
-    if (typeof Buffer === 'function' && param instanceof Buffer) {
-      return true;
-    }
-    // Blob in browser
-    if (typeof Blob === 'function' && param instanceof Blob) {
-      return true;
-    }
-    // File in browser (it seems File object is also instance of Blob, but keep this for safe)
-    if (typeof File === 'function' && param instanceof File) {
-      return true;
-    }
-    return false;
-  };
-
-  /**
-   * Normalizes parameter values:
-   * <ul>
-   * <li>remove nils</li>
-   * <li>keep files and arrays</li>
-   * <li>format to string with `paramToString` for other cases</li>
-   * </ul>
-   * @param {Object.<String, Object>} params The parameters as object properties.
-   * @returns {Object.<String, Object>} normalized parameters.
-   */
-  exports.prototype.normalizeParams = function (params) {
-    var newParams = {};
-    for (var key in params) {
-      if (params.hasOwnProperty(key) && params[key] != undefined && params[key] != null) {
-        var value = params[key];
-        if (this.isFileParam(value) || Array.isArray(value)) {
-          newParams[key] = value;
-        } else {
-          newParams[key] = this.paramToString(value);
-        }
-      }
-    }
-    return newParams;
-  };
-
-  /**
-   * Enumeration of collection format separator strategies.
-   * @enum {String} 
-   * @readonly
-   */
-  exports.CollectionFormatEnum = {
-    /**
-     * Comma-separated values. Value: <code>csv</code>
-     * @const
-     */
-    CSV: ',',
-    /**
-     * Space-separated values. Value: <code>ssv</code>
-     * @const
-     */
-    SSV: ' ',
-    /**
-     * Tab-separated values. Value: <code>tsv</code>
-     * @const
-     */
-    TSV: '\t',
-    /**
-     * Pipe(|)-separated values. Value: <code>pipes</code>
-     * @const
-     */
-    PIPES: '|',
-    /**
-     * Native array. Value: <code>multi</code>
-     * @const
-     */
-    MULTI: 'multi'
-  };
-
-  /**
-   * Builds a string representation of an array-type actual parameter, according to the given collection format.
-   * @param {Array} param An array parameter.
-   * @param {module:ApiClient.CollectionFormatEnum} collectionFormat The array element separator strategy.
-   * @returns {String|Array} A string representation of the supplied collection, using the specified delimiter. Returns
-   * <code>param</code> as is if <code>collectionFormat</code> is <code>multi</code>.
-   */
-  exports.prototype.buildCollectionParam = function buildCollectionParam(param, collectionFormat) {
-    if (param == null) {
-      return null;
-    }
-    switch (collectionFormat) {
-      case 'csv':
-        return param.map(this.paramToString).join(',');
-      case 'ssv':
-        return param.map(this.paramToString).join(' ');
-      case 'tsv':
-        return param.map(this.paramToString).join('\t');
-      case 'pipes':
-        return param.map(this.paramToString).join('|');
-      case 'multi':
-        // return the array directly as SuperAgent will handle it as expected
-        return param.map(this.paramToString);
-      default:
-        throw new Error('Unknown collection format: ' + collectionFormat);
-    }
-  };
-
-  /**
-   * Applies authentication headers to the request.
-   * @param {Object} request The request object created by a <code>superagent()</code> call.
-   * @param {Array.<String>} authNames An array of authentication method names.
-   */
-  exports.prototype.applyAuthToRequest = function (request, authNames) {
-    var _this = this;
-    authNames.forEach(function (authName) {
-      var auth = _this.authentications[authName];
-      switch (auth.type) {
-        case 'basic':
-          if (auth.username || auth.password) {
-            request.auth(auth.username || '', auth.password || '');
-          }
-          break;
-        case 'apiKey':
-          if (auth.apiKey) {
-            var data = {};
-            if (auth.apiKeyPrefix) {
-              data[auth.name] = auth.apiKeyPrefix + ' ' + auth.apiKey;
-            } else {
-              data[auth.name] = auth.apiKey;
-            }
-            if (auth['in'] === 'header') {
-              request.set(data);
-            } else {
-              request.query(data);
-            }
-          }
-          break;
-        case 'oauth2':
-          if (auth.accessToken) {
-            request.set({ 'Authorization': 'Bearer ' + auth.accessToken });
-          }
-          break;
-        default:
-          throw new Error('Unknown authentication type: ' + auth.type);
-      }
-    });
-  };
-
-  /**
-   * Deserializes an HTTP response body into a value of the specified type.
-   * @param {Object} response A SuperAgent response object.
-   * @param {(String|Array.<String>|Object.<String, Object>|Function)} returnType The type to return. Pass a string for simple types
-   * or the constructor function for a complex type. Pass an array containing the type name to return an array of that type. To
-   * return an object, pass an object with one property whose name is the key type and whose value is the corresponding value type:
-   * all properties on <code>data<code> will be converted to this type.
-   * @returns A value of the specified type.
-   */
-  exports.prototype.deserialize = function deserialize(response, returnType) {
-    if (response == null || returnType == null) {
-      return null;
-    }
-    // Rely on SuperAgent for parsing response body.
-    // See http://visionmedia.github.io/superagent/#parsing-response-bodies
-    var data = response.body;
-    if (data == null) {
-      // SuperAgent does not always produce a body; use the unparsed response as a fallback
-      data = response.text;
-    }
-    return exports.convertToType(data, returnType);
-  };
-
-  /**
-   * Invokes the REST service using the supplied settings and parameters.
-   * @param {String} path The base URL to invoke.
-   * @param {String} httpMethod The HTTP method to use.
-   * @param {Object.<String, String>} pathParams A map of path parameters and their values.
-   * @param {Object.<String, Object>} queryParams A map of query parameters and their values.
-   * @param {Object.<String, Object>} headerParams A map of header parameters and their values.
-   * @param {Object.<String, Object>} formParams A map of form parameters and their values.
-   * @param {Object} bodyParam The value to pass as the request body.
-   * @param {Array.<String>} authNames An array of authentication type names.
-   * @param {Array.<String>} contentTypes An array of request MIME types.
-   * @param {Array.<String>} accepts An array of acceptable response MIME types.
-   * @param {(String|Array|ObjectFunction)} returnType The required type to return; can be a string for simple types or the
-   * constructor for a complex type.   * @returns {Promise} A Promise object.
-   */
-  exports.prototype.callApi = function callApi(path, httpMethod, pathParams, queryParams, headerParams, formParams, bodyParam, authNames, contentTypes, accepts, returnType) {
-
-    var _this = this;
-    var url = this.buildUrl(path, pathParams);
-    var request = superagent(httpMethod, url);
-
-    // apply authentications
-    this.applyAuthToRequest(request, authNames);
-
-    // set query parameters
-    request.query(this.normalizeParams(queryParams));
-
-    // set header parameters
-    request.set(this.defaultHeaders).set(this.normalizeParams(headerParams));
-
-    // set request timeout
-    request.timeout(this.timeout);
-
-    var contentType = this.jsonPreferredMime(contentTypes);
-    if (contentType) {
-      request.type(contentType);
-    } else if (!request.header['Content-Type']) {
-      request.type('application/json');
-    }
-
-    if (contentType === 'application/x-www-form-urlencoded') {
-      request.send(this.normalizeParams(formParams));
-    } else if (contentType == 'multipart/form-data') {
-      var _formParams = this.normalizeParams(formParams);
-      for (var key in _formParams) {
-        if (_formParams.hasOwnProperty(key)) {
-          if (this.isFileParam(_formParams[key])) {
-            // file field
-            request.attach(key, _formParams[key]);
-          } else {
-            request.field(key, _formParams[key]);
-          }
-        }
-      }
-    } else if (bodyParam) {
-      request.send(bodyParam);
-    }
-
-    var accept = this.jsonPreferredMime(accepts);
-    if (accept) {
-      request.accept(accept);
-    }
-
-    return new Promise(function (resolve, reject) {
-      request.end(function (error, response) {
-        if (error) {
-          reject(error);
-        } else {
-          var data = _this.deserialize(response, returnType);
-          resolve(data);
-        }
-      });
-    });
-  };
-
-  /**
-   * Parses an ISO-8601 string representation of a date value.
-   * @param {String} str The date value as a string.
-   * @returns {Date} The parsed date object.
-   */
-  exports.parseDate = function (str) {
-    return new Date(str.replace(/T/i, ' '));
-  };
-
-  /**
-   * Converts a value to the specified type.
-   * @param {(String|Object)} data The data to convert, as a string or object.
-   * @param {(String|Array.<String>|Object.<String, Object>|Function)} type The type to return. Pass a string for simple types
-   * or the constructor function for a complex type. Pass an array containing the type name to return an array of that type. To
-   * return an object, pass an object with one property whose name is the key type and whose value is the corresponding value type:
-   * all properties on <code>data<code> will be converted to this type.
-   * @returns An instance of the specified type.
-   */
-  exports.convertToType = function (data, type) {
-    switch (type) {
-      case 'Boolean':
-        return Boolean(data);
-      case 'Integer':
-        return parseInt(data, 10);
-      case 'Number':
-        return parseFloat(data);
-      case 'String':
-        return String(data);
-      case 'Date':
-        return this.parseDate(String(data));
-      default:
-        if (type === Object) {
-          // generic object, return directly
-          return data;
-        } else if (typeof type === 'function') {
-          // for model type like: User
-          return type.constructFromObject(data);
-        } else if (Array.isArray(type)) {
-          // for array type like: ['String']
-          var itemType = type[0];
-          return data.map(function (item) {
-            return exports.convertToType(item, itemType);
-          });
-        } else if ((typeof type === 'undefined' ? 'undefined' : _typeof(type)) === 'object') {
-          // for plain object type like: {'String': 'Integer'}
-          var keyType, valueType;
-          for (var k in type) {
-            if (type.hasOwnProperty(k)) {
-              keyType = k;
-              valueType = type[k];
-              break;
-            }
-          }
-          var result = {};
-          for (var k in data) {
-            if (data.hasOwnProperty(k)) {
-              var key = exports.convertToType(k, keyType);
-              var value = exports.convertToType(data[k], valueType);
-              result[key] = value;
-            }
-          }
-          return result;
-        } else {
-          // for unknown type, return the data directly
-          return data;
-        }
-    }
-  };
-
-  /**
-   * The default API client implementation.
-   * @type {module:ApiClient}
-   */
-  exports.instance = new exports();
 
   return exports;
 });
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":8,"fs":6,"superagent":125}],137:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394}],137:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37478,10 +37084,19089 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', '../model/Error', '../model/LoginTicketEntry', '../model/LoginRequest', '../model/ValidateTicketEntry'], factory);
+    define(['ApiClient', 'model/CreateEndpointBasicAuthRepresentation', 'model/EndpointBasicAuthRepresentation', 'model/EndpointConfigurationRepresentation'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/Error'), require('../model/LoginTicketEntry'), require('../model/LoginRequest'), require('../model/ValidateTicketEntry'));
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/CreateEndpointBasicAuthRepresentation'), require('../model/EndpointBasicAuthRepresentation'), require('../model/EndpointConfigurationRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AdminEndpointsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.CreateEndpointBasicAuthRepresentation, root.ActivitiPublicRestApi.EndpointBasicAuthRepresentation, root.ActivitiPublicRestApi.EndpointConfigurationRepresentation);
+  }
+})(undefined, function (ApiClient, CreateEndpointBasicAuthRepresentation, EndpointBasicAuthRepresentation, EndpointConfigurationRepresentation) {
+  'use strict';
+
+  /**
+   * AdminEndpoints service.
+   * @module api/AdminEndpointsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AdminEndpointsApi.
+   * @alias module:api/AdminEndpointsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the createBasicAuthConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointBasicAuthRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createBasicAuthConfiguration
+     * @param {module:model/CreateEndpointBasicAuthRepresentation} createRepresentation createRepresentation
+     */
+    this.createBasicAuthConfiguration = function (createRepresentation) {
+      var postBody = createRepresentation;
+
+      // verify the required parameter 'createRepresentation' is set
+      if (createRepresentation == undefined || createRepresentation == null) {
+        throw "Missing the required parameter 'createRepresentation' when calling createBasicAuthConfiguration";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointBasicAuthRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/basic-auths', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createEndpointConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointConfigurationRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createEndpointConfiguration
+     * @param {module:model/EndpointConfigurationRepresentation} representation representation
+     */
+    this.createEndpointConfiguration = function (representation) {
+      var postBody = representation;
+
+      // verify the required parameter 'representation' is set
+      if (representation == undefined || representation == null) {
+        throw "Missing the required parameter 'representation' when calling createEndpointConfiguration";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointConfigurationRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/endpoints', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getBasicAuthConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointBasicAuthRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getBasicAuthConfiguration
+     * @param {Integer} basicAuthId basicAuthId
+     * @param {Integer} tenantId tenantId
+     */
+    this.getBasicAuthConfiguration = function (basicAuthId, tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'basicAuthId' is set
+      if (basicAuthId == undefined || basicAuthId == null) {
+        throw "Missing the required parameter 'basicAuthId' when calling getBasicAuthConfiguration";
+      }
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getBasicAuthConfiguration";
+      }
+
+      var pathParams = {
+        'basicAuthId': basicAuthId
+      };
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointBasicAuthRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/basic-auths/{basicAuthId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getBasicAuthConfigurations operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/EndpointBasicAuthRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getBasicAuthConfigurations
+     * @param {Integer} tenantId tenantId
+     */
+    this.getBasicAuthConfigurations = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getBasicAuthConfigurations";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [EndpointBasicAuthRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/admin/basic-auths', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getEndpointConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointConfigurationRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getEndpointConfiguration
+     * @param {Integer} endpointConfigurationId endpointConfigurationId
+     * @param {Integer} tenantId tenantId
+     */
+    this.getEndpointConfiguration = function (endpointConfigurationId, tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'endpointConfigurationId' is set
+      if (endpointConfigurationId == undefined || endpointConfigurationId == null) {
+        throw "Missing the required parameter 'endpointConfigurationId' when calling getEndpointConfiguration";
+      }
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getEndpointConfiguration";
+      }
+
+      var pathParams = {
+        'endpointConfigurationId': endpointConfigurationId
+      };
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointConfigurationRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/endpoints/{endpointConfigurationId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getEndpointConfigurations operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/EndpointConfigurationRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getEndpointConfigurations
+     * @param {Integer} tenantId tenantId
+     */
+    this.getEndpointConfigurations = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getEndpointConfigurations";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [EndpointConfigurationRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/admin/endpoints', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeBasicAuthonfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * removeBasicAuthonfiguration
+     * @param {Integer} basicAuthId basicAuthId
+     * @param {Integer} tenantId tenantId
+     */
+    this.removeBasicAuthonfiguration = function (basicAuthId, tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'basicAuthId' is set
+      if (basicAuthId == undefined || basicAuthId == null) {
+        throw "Missing the required parameter 'basicAuthId' when calling removeBasicAuthonfiguration";
+      }
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling removeBasicAuthonfiguration";
+      }
+
+      var pathParams = {
+        'basicAuthId': basicAuthId
+      };
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/basic-auths/{basicAuthId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeEndpointConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * removeEndpointConfiguration
+     * @param {Integer} endpointConfigurationId endpointConfigurationId
+     * @param {Integer} tenantId tenantId
+     */
+    this.removeEndpointConfiguration = function (endpointConfigurationId, tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'endpointConfigurationId' is set
+      if (endpointConfigurationId == undefined || endpointConfigurationId == null) {
+        throw "Missing the required parameter 'endpointConfigurationId' when calling removeEndpointConfiguration";
+      }
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling removeEndpointConfiguration";
+      }
+
+      var pathParams = {
+        'endpointConfigurationId': endpointConfigurationId
+      };
+      var queryParams = {
+        'tenantId': tenantId
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/endpoints/{endpointConfigurationId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateBasicAuthConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointBasicAuthRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * updateBasicAuthConfiguration
+     * @param {Integer} basicAuthId basicAuthId
+     * @param {module:model/CreateEndpointBasicAuthRepresentation} createRepresentation createRepresentation
+     */
+    this.updateBasicAuthConfiguration = function (basicAuthId, createRepresentation) {
+      var postBody = createRepresentation;
+
+      // verify the required parameter 'basicAuthId' is set
+      if (basicAuthId == undefined || basicAuthId == null) {
+        throw "Missing the required parameter 'basicAuthId' when calling updateBasicAuthConfiguration";
+      }
+
+      // verify the required parameter 'createRepresentation' is set
+      if (createRepresentation == undefined || createRepresentation == null) {
+        throw "Missing the required parameter 'createRepresentation' when calling updateBasicAuthConfiguration";
+      }
+
+      var pathParams = {
+        'basicAuthId': basicAuthId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointBasicAuthRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/basic-auths/{basicAuthId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateEndpointConfiguration operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/EndpointConfigurationRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * updateEndpointConfiguration
+     * @param {Integer} endpointConfigurationId endpointConfigurationId
+     * @param {module:model/EndpointConfigurationRepresentation} representation representation
+     */
+    this.updateEndpointConfiguration = function (endpointConfigurationId, representation) {
+      var postBody = representation;
+
+      // verify the required parameter 'endpointConfigurationId' is set
+      if (endpointConfigurationId == undefined || endpointConfigurationId == null) {
+        throw "Missing the required parameter 'endpointConfigurationId' when calling updateEndpointConfiguration";
+      }
+
+      // verify the required parameter 'representation' is set
+      if (representation == undefined || representation == null) {
+        throw "Missing the required parameter 'representation' when calling updateEndpointConfiguration";
+      }
+
+      var pathParams = {
+        'endpointConfigurationId': endpointConfigurationId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = EndpointConfigurationRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/endpoints/{endpointConfigurationId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CreateEndpointBasicAuthRepresentation":196,"../model/EndpointBasicAuthRepresentation":199,"../model/EndpointConfigurationRepresentation":200}],138:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AddGroupCapabilitiesRepresentation', 'model/GroupRepresentation', 'model/ResultListDataRepresentation', 'model/AbstractGroupRepresentation', 'model/LightGroupRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/AddGroupCapabilitiesRepresentation'), require('../model/GroupRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/AbstractGroupRepresentation'), require('../model/LightGroupRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AdminGroupsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AddGroupCapabilitiesRepresentation, root.ActivitiPublicRestApi.GroupRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.AbstractGroupRepresentation, root.ActivitiPublicRestApi.LightGroupRepresentation);
+  }
+})(undefined, function (ApiClient, AddGroupCapabilitiesRepresentation, GroupRepresentation, ResultListDataRepresentation, AbstractGroupRepresentation, LightGroupRepresentation) {
+  'use strict';
+
+  /**
+   * AdminGroups service.
+   * @module api/AdminGroupsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AdminGroupsApi.
+   * @alias module:api/AdminGroupsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the activate operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * activate
+     * @param {Integer} groupId groupId
+     */
+    this.activate = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling activate";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/action/activate', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addAllUsersToGroup operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * addAllUsersToGroup
+     * @param {Integer} groupId groupId
+     */
+    this.addAllUsersToGroup = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling addAllUsersToGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/add-all-users', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addGroupCapabilities operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * addGroupCapabilities
+     * @param {Integer} groupId groupId
+     * @param {module:model/AddGroupCapabilitiesRepresentation} addGroupCapabilitiesRepresentation addGroupCapabilitiesRepresentation
+     */
+    this.addGroupCapabilities = function (groupId, addGroupCapabilitiesRepresentation) {
+      var postBody = addGroupCapabilitiesRepresentation;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling addGroupCapabilities";
+      }
+
+      // verify the required parameter 'addGroupCapabilitiesRepresentation' is set
+      if (addGroupCapabilitiesRepresentation == undefined || addGroupCapabilitiesRepresentation == null) {
+        throw "Missing the required parameter 'addGroupCapabilitiesRepresentation' when calling addGroupCapabilities";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/capabilities', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addGroupMember operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * addGroupMember
+     * @param {Integer} groupId groupId
+     * @param {Integer} userId userId
+     */
+    this.addGroupMember = function (groupId, userId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling addGroupMember";
+      }
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling addGroupMember";
+      }
+
+      var pathParams = {
+        'groupId': groupId,
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/members/{userId}', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addRelatedGroup operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * addRelatedGroup
+     * @param {Integer} groupId groupId
+     * @param {Integer} relatedGroupId relatedGroupId
+     * @param {String} type type
+     */
+    this.addRelatedGroup = function (groupId, relatedGroupId, type) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling addRelatedGroup";
+      }
+
+      // verify the required parameter 'relatedGroupId' is set
+      if (relatedGroupId == undefined || relatedGroupId == null) {
+        throw "Missing the required parameter 'relatedGroupId' when calling addRelatedGroup";
+      }
+
+      // verify the required parameter 'type' is set
+      if (type == undefined || type == null) {
+        throw "Missing the required parameter 'type' when calling addRelatedGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId,
+        'relatedGroupId': relatedGroupId
+      };
+      var queryParams = {
+        'type': type
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/related-groups/{relatedGroupId}', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createNewGroup operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/GroupRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createNewGroup
+     * @param {module:model/GroupRepresentation} groupRepresentation groupRepresentation
+     * data is of type: {module:model/GroupRepresentation}
+     */
+    this.createNewGroup = function (groupRepresentation) {
+      var postBody = groupRepresentation;
+
+      // verify the required parameter 'groupRepresentation' is set
+      if (groupRepresentation == undefined || groupRepresentation == null) {
+        throw "Missing the required parameter 'groupRepresentation' when calling createNewGroup";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = GroupRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteGroupCapability operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * deleteGroupCapability
+     * @param {Integer} groupId groupId
+     * @param {Integer} groupCapabilityId groupCapabilityId
+     */
+    this.deleteGroupCapability = function (groupId, groupCapabilityId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling deleteGroupCapability";
+      }
+
+      // verify the required parameter 'groupCapabilityId' is set
+      if (groupCapabilityId == undefined || groupCapabilityId == null) {
+        throw "Missing the required parameter 'groupCapabilityId' when calling deleteGroupCapability";
+      }
+
+      var pathParams = {
+        'groupId': groupId,
+        'groupCapabilityId': groupCapabilityId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/capabilities/{groupCapabilityId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteGroupMember operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * deleteGroupMember
+     * @param {Integer} groupId groupId
+     * @param {Integer} userId userId
+     */
+    this.deleteGroupMember = function (groupId, userId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling deleteGroupMember";
+      }
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling deleteGroupMember";
+      }
+
+      var pathParams = {
+        'groupId': groupId,
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/members/{userId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteGroup operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * deleteGroup
+     * @param {Integer} groupId groupId
+     */
+    this.deleteGroup = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling deleteGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteRelatedGroup operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * deleteRelatedGroup
+     * @param {Integer} groupId groupId
+     * @param {Integer} relatedGroupId relatedGroupId
+     */
+    this.deleteRelatedGroup = function (groupId, relatedGroupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling deleteRelatedGroup";
+      }
+
+      // verify the required parameter 'relatedGroupId' is set
+      if (relatedGroupId == undefined || relatedGroupId == null) {
+        throw "Missing the required parameter 'relatedGroupId' when calling deleteRelatedGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId,
+        'relatedGroupId': relatedGroupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/related-groups/{relatedGroupId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getCapabilities operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<'String'>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getCapabilities
+     * @param {Integer} groupId groupId
+     * data is of type: {Array.<'String'>}
+     */
+    this.getCapabilities = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling getCapabilities";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ['String'];
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/potential-capabilities', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getGroupUsers operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getGroupUsers
+     * @param {Integer} groupId groupId
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {Integer} opts.page page
+     * @param {Integer} opts.pageSize pageSize
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getGroupUsers = function (groupId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling getGroupUsers";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {
+        'filter': opts['filter'],
+        'page': opts['page'],
+        'pageSize': opts['pageSize']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/users', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getGroup operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AbstractGroupRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getGroup
+     * @param {Integer} groupId groupId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.includeAllUsers includeAllUsers
+     * @param {Boolean} opts.summary summary
+     * data is of type: {module:model/AbstractGroupRepresentation}
+     */
+    this.getGroup = function (groupId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling getGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {
+        'includeAllUsers': opts['includeAllUsers'],
+        'summary': opts['summary']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = AbstractGroupRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getGroups operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/LightGroupRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getGroups
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Boolean} opts.functional functional
+     * @param {Boolean} opts.summary summary
+     * data is of type: {Array.<module:model/LightGroupRepresentation>}
+     */
+    this.getGroups = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': opts['tenantId'],
+        'functional': opts['functional'],
+        'summary': opts['summary']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [LightGroupRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRelatedGroups operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/LightGroupRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getRelatedGroups
+     * @param {Integer} groupId groupId
+     * data is of type: {Array.<module:model/LightGroupRepresentation>}
+     */
+    this.getRelatedGroups = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling getRelatedGroups";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [LightGroupRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}/related-groups', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateGroup operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/GroupRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * updateGroup
+     * @param {Integer} groupId groupId
+     * @param {module:model/GroupRepresentation} groupRepresentation groupRepresentation
+     * data is of type: {module:model/GroupRepresentation}
+     */
+    this.updateGroup = function (groupId, groupRepresentation) {
+      var postBody = groupRepresentation;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling updateGroup";
+      }
+
+      // verify the required parameter 'groupRepresentation' is set
+      if (groupRepresentation == undefined || groupRepresentation == null) {
+        throw "Missing the required parameter 'groupRepresentation' when calling updateGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = GroupRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/groups/{groupId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/AbstractGroupRepresentation":179,"../model/AddGroupCapabilitiesRepresentation":182,"../model/GroupRepresentation":215,"../model/LightGroupRepresentation":219,"../model/ResultListDataRepresentation":239}],139:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightTenantRepresentation', 'model/CreateTenantRepresentation', 'model/TenantEvent', 'model/TenantRepresentation', 'model/ImageUploadRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/LightTenantRepresentation'), require('../model/CreateTenantRepresentation'), require('../model/TenantEvent'), require('../model/TenantRepresentation'), require('../model/ImageUploadRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AdminTenantsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightTenantRepresentation, root.ActivitiPublicRestApi.CreateTenantRepresentation, root.ActivitiPublicRestApi.TenantEvent, root.ActivitiPublicRestApi.TenantRepresentation, root.ActivitiPublicRestApi.ImageUploadRepresentation);
+  }
+})(undefined, function (ApiClient, LightTenantRepresentation, CreateTenantRepresentation, TenantEvent, TenantRepresentation, ImageUploadRepresentation) {
+  'use strict';
+
+  /**
+   * AdminTenants service.
+   * @module api/AdminTenantsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AdminTenantsApi.
+   * @alias module:api/AdminTenantsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the createTenant operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/LightTenantRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a new tenant
+     * Tenant manager only
+     * @param {module:model/CreateTenantRepresentation} createTenantRepresentation createTenantRepresentation
+     * data is of type: {module:model/LightTenantRepresentation}
+     */
+    this.createTenant = function (createTenantRepresentation) {
+      var postBody = createTenantRepresentation;
+
+      // verify the required parameter 'createTenantRepresentation' is set
+      if (createTenantRepresentation == undefined || createTenantRepresentation == null) {
+        throw "Missing the required parameter 'createTenantRepresentation' when calling createTenant";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = LightTenantRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteTenant operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a tenant
+     * @param {Integer} tenantId tenantId
+     */
+    this.deleteTenant = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling deleteTenant";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTenantEvents operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/TenantEvent>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get tenant events
+     * @param {Integer} tenantId tenantId
+     * data is of type: {Array.<module:model/TenantEvent>}
+     */
+    this.getTenantEvents = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getTenantEvents";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [TenantEvent];
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}/events', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTenantLogo operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get tenant logo
+     * @param {Integer} tenantId tenantId
+     */
+    this.getTenantLogo = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getTenantLogo";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}/logo', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTenant operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TenantRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get tenant details
+     * @param {Integer} tenantId tenantId
+     * data is of type: {module:model/TenantRepresentation}
+     */
+    this.getTenant = function (tenantId) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling getTenant";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TenantRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTenants operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/LightTenantRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get all tenants
+     * Tenant manager only
+     * data is of type: {Array.<module:model/LightTenantRepresentation>}
+     */
+    this.getTenants = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [LightTenantRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the update operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TenantRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update a tenant
+     * @param {Integer} tenantId tenantId
+     * @param {module:model/CreateTenantRepresentation} createTenantRepresentation createTenantRepresentation
+     * data is of type: {module:model/TenantRepresentation}
+     */
+    this.update = function (tenantId, createTenantRepresentation) {
+      var postBody = createTenantRepresentation;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling update";
+      }
+
+      // verify the required parameter 'createTenantRepresentation' is set
+      if (createTenantRepresentation == undefined || createTenantRepresentation == null) {
+        throw "Missing the required parameter 'createTenantRepresentation' when calling update";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TenantRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the uploadTenantLogo operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ImageUploadRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update tenant logo
+     * @param {Integer} tenantId tenantId
+     * @param {File} file file
+     * data is of type: {module:model/ImageUploadRepresentation}
+     */
+    this.uploadTenantLogo = function (tenantId, file) {
+      var postBody = null;
+
+      // verify the required parameter 'tenantId' is set
+      if (tenantId == undefined || tenantId == null) {
+        throw "Missing the required parameter 'tenantId' when calling uploadTenantLogo";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling uploadTenantLogo";
+      }
+
+      var pathParams = {
+        'tenantId': tenantId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = ImageUploadRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/tenants/{tenantId}/logo', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CreateTenantRepresentation":198,"../model/ImageUploadRepresentation":216,"../model/LightTenantRepresentation":220,"../model/TenantEvent":249,"../model/TenantRepresentation":250}],140:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/BulkUserUpdateRepresentation', 'model/UserRepresentation', 'model/AbstractUserRepresentation', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/BulkUserUpdateRepresentation'), require('../model/UserRepresentation'), require('../model/AbstractUserRepresentation'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AdminUsersApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.BulkUserUpdateRepresentation, root.ActivitiPublicRestApi.UserRepresentation, root.ActivitiPublicRestApi.AbstractUserRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, BulkUserUpdateRepresentation, UserRepresentation, AbstractUserRepresentation, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * AdminUsers service.
+   * @module api/AdminUsersApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AdminUsersApi.
+   * @alias module:api/AdminUsersApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the bulkUpdateUsers operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Bulk Update a list of users
+     * @param {module:model/BulkUserUpdateRepresentation} update update
+     */
+    this.bulkUpdateUsers = function (update) {
+      var postBody = update;
+
+      // verify the required parameter 'update' is set
+      if (update == undefined || update == null) {
+        throw "Missing the required parameter 'update' when calling bulkUpdateUsers";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/users', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createNewUser operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a new user
+     * @param {module:model/UserRepresentation} userRepresentation userRepresentation
+     * data is of type: {module:model/UserRepresentation}
+     */
+    this.createNewUser = function (userRepresentation) {
+      var postBody = userRepresentation;
+
+      // verify the required parameter 'userRepresentation' is set
+      if (userRepresentation == undefined || userRepresentation == null) {
+        throw "Missing the required parameter 'userRepresentation' when calling createNewUser";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/users', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUser operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AbstractUserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve user information
+     * @param {Integer} userId userId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.summary summary
+     * data is of type: {module:model/AbstractUserRepresentation}
+     */
+    this.getUser = function (userId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling getUser";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {
+        'summary': opts['summary']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = AbstractUserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/users/{userId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUsers operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get a list of users
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.status status
+     * @param {String} opts.accountType accountType
+     * @param {String} opts.sort sort
+     * @param {String} opts.company company
+     * @param {Integer} opts.start start
+     * @param {Integer} opts.page page
+     * @param {Integer} opts.size size
+     * @param {Integer} opts.groupId groupId
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Boolean} opts.summary summary
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getUsers = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'status': opts['status'],
+        'accountType': opts['accountType'],
+        'sort': opts['sort'],
+        'company': opts['company'],
+        'start': opts['start'],
+        'page': opts['page'],
+        'size': opts['size'],
+        'groupId': opts['groupId'],
+        'tenantId': opts['tenantId'],
+        'summary': opts['summary']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/admin/users', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateUserDetails operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update user details
+     * @param {Integer} userId userId
+     * @param {module:model/UserRepresentation} userRepresentation userRepresentation
+     */
+    this.updateUserDetails = function (userId, userRepresentation) {
+      var postBody = userRepresentation;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling updateUserDetails";
+      }
+
+      // verify the required parameter 'userRepresentation' is set
+      if (userRepresentation == undefined || userRepresentation == null) {
+        throw "Missing the required parameter 'userRepresentation' when calling updateUserDetails";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/admin/users/{userId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/AbstractUserRepresentation":181,"../model/BulkUserUpdateRepresentation":190,"../model/ResultListDataRepresentation":239,"../model/UserRepresentation":255}],141:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AlfrescoApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * Alfresco service.
+   * @module api/AlfrescoApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AlfrescoApi.
+   * @alias module:api/AlfrescoApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Alfresco Cloud Authorization
+     * Returns Alfresco Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllNetworks operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco networks
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAllNetworks = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} networkId networkId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAllSites = function (networkId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'networkId': networkId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} repositoryId repositoryId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAllSites = function (repositoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} networkId networkId
+     * @param {String} folderId folderId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getContentInFolder = function (networkId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} repositoryId repositoryId
+     * @param {String} folderId folderId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getContentInFolder = function (repositoryId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} networkId networkId
+     * @param {String} siteId siteId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getContentInSite = function (networkId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} repositoryId repositoryId
+     * @param {String} siteId siteId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getContentInSite = function (repositoryId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRepositories operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco repositories
+     * A tenant administrator can configure one or more Alfresco repositories to use when working with content.
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Boolean} opts.includeAccounts includeAccounts
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getRepositories = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': opts['tenantId'],
+        'includeAccounts': opts['includeAccounts']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile/accounts/alfresco', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],142:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/RuntimeAppDefinitionSaveRepresentation', 'model/ResultListDataRepresentation', 'model/AppDefinitionRepresentation', 'model/AppDefinitionPublishRepresentation', 'model/AppDefinitionUpdateResultRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/RuntimeAppDefinitionSaveRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/AppDefinitionRepresentation'), require('../model/AppDefinitionPublishRepresentation'), require('../model/AppDefinitionUpdateResultRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.RuntimeAppDefinitionSaveRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.AppDefinitionRepresentation, root.ActivitiPublicRestApi.AppDefinitionPublishRepresentation, root.ActivitiPublicRestApi.AppDefinitionUpdateResultRepresentation);
+  }
+})(undefined, function (ApiClient, RuntimeAppDefinitionSaveRepresentation, ResultListDataRepresentation, AppDefinitionRepresentation, AppDefinitionPublishRepresentation, AppDefinitionUpdateResultRepresentation) {
+  'use strict';
+
+  /**
+   * Apps service.
+   * @module api/AppsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AppsApi.
+   * @alias module:api/AppsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the deployAppDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Deploy published app
+     * After creating and puclished an app the user can add it to his/her landing page.
+     * @param {module:model/RuntimeAppDefinitionSaveRepresentation} saveObject saveObject
+     */
+    this.deployAppDefinitions = function (saveObject) {
+      var postBody = saveObject;
+
+      // verify the required parameter 'saveObject' is set
+      if (saveObject == undefined || saveObject == null) {
+        throw "Missing the required parameter 'saveObject' when calling deployAppDefinitions";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/runtime-app-definitions', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the exportAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Export App Definition
+     * This will return a zip file containing the app definition model and all related models (process definitions and forms).
+     * @param {Integer} modelId modelId from a runtime app or the id of an app definition model
+     */
+    this.exportAppDefinition = function (modelId) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling exportAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/export', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAppDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List runtime apps
+     * When a user logs in into the Alfresco Activiti BPM Suite, the landing page is displayed containing all the apps that the user is allowed to see and use.
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAppDefinitions = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/runtime-app-definitions', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the importAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Import App Definition
+     * This is useful to bootstrap an environment (for users or continous integration).
+     * @param {File} file file
+     * data is of type: {module:model/AppDefinitionRepresentation}
+     */
+    this.importAppDefinition = function (file) {
+      var postBody = null;
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importAppDefinition";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/import', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the importAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Import App
+     * To import an app to an existing app definition to create a new version instead of importing a new app definition.
+     * @param {Integer} modelId modelId
+     * @param {File} file file
+     * data is of type: {module:model/AppDefinitionRepresentation}
+     */
+    this.importAppDefinition = function (modelId, file) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling importAppDefinition";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/import', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the publishAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionUpdateResultRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Publish App
+     * Before an app model can be used, it need to be published
+     * @param {Integer} modelId modelId
+     * @param {module:model/AppDefinitionPublishRepresentation} publishModel publishModel
+     * data is of type: {module:model/AppDefinitionUpdateResultRepresentation}
+     */
+    this.publishAppDefinition = function (modelId, publishModel) {
+      var postBody = publishModel;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling publishAppDefinition";
+      }
+
+      // verify the required parameter 'publishModel' is set
+      if (publishModel == undefined || publishModel == null) {
+        throw "Missing the required parameter 'publishModel' when calling publishAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionUpdateResultRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/publish', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/AppDefinitionPublishRepresentation":184,"../model/AppDefinitionRepresentation":185,"../model/AppDefinitionUpdateResultRepresentation":186,"../model/ResultListDataRepresentation":239,"../model/RuntimeAppDefinitionSaveRepresentation":240}],143:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AppDefinitionRepresentation', 'model/AppDefinitionPublishRepresentation', 'model/AppDefinitionUpdateResultRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/AppDefinitionRepresentation'), require('../model/AppDefinitionPublishRepresentation'), require('../model/AppDefinitionUpdateResultRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppsDefinitionApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AppDefinitionRepresentation, root.ActivitiPublicRestApi.AppDefinitionPublishRepresentation, root.ActivitiPublicRestApi.AppDefinitionUpdateResultRepresentation);
+  }
+})(undefined, function (ApiClient, AppDefinitionRepresentation, AppDefinitionPublishRepresentation, AppDefinitionUpdateResultRepresentation) {
+  'use strict';
+
+  /**
+   * AppsDefinition service.
+   * @module api/AppsDefinitionApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AppsDefinitionApi.
+   * @alias module:api/AppsDefinitionApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the exportAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Export App Definition
+     * This will return a zip file containing the app definition model and all related models (process definitions and forms).
+     * @param {Integer} modelId modelId from a runtime app or the id of an app definition model
+     */
+    this.exportAppDefinition = function (modelId) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling exportAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/export', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the importAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Import App Definition
+     * This is useful to bootstrap an environment (for users or continous integration).
+     * @param {File} file file
+     * data is of type: {module:model/AppDefinitionRepresentation}
+     */
+    this.importAppDefinition = function (file) {
+      var postBody = null;
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importAppDefinition";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/import', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Import App
+     * To import an app to an existing app definition to create a new version instead of importing a new app definition.
+     * @param {Integer} modelId modelId
+     * @param {File} file file
+     * data is of type: {module:model/AppDefinitionRepresentation}
+     */
+    this.importAppDefinition = function (modelId, file) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling importAppDefinition";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/import', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * @param {String} error Error message, if any.
+     * @param {module:model/AppDefinitionUpdateResultRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Publish App
+     * Before an app model can be used, it need to be published
+     * @param {Integer} modelId modelId
+     * @param {module:model/AppDefinitionPublishRepresentation} publishModel publishModel
+     * data is of type: {module:model/AppDefinitionUpdateResultRepresentation}
+     */
+    this.publishAppDefinition = function (modelId, publishModel) {
+      var postBody = publishModel;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling publishAppDefinition";
+      }
+
+      // verify the required parameter 'publishModel' is set
+      if (publishModel == undefined || publishModel == null) {
+        throw "Missing the required parameter 'publishModel' when calling publishAppDefinition";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = AppDefinitionUpdateResultRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/app-definitions/{modelId}/publish', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/AppDefinitionPublishRepresentation":184,"../model/AppDefinitionRepresentation":185,"../model/AppDefinitionUpdateResultRepresentation":186}],144:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/RuntimeAppDefinitionSaveRepresentation', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/RuntimeAppDefinitionSaveRepresentation'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppsRuntimeApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.RuntimeAppDefinitionSaveRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, RuntimeAppDefinitionSaveRepresentation, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * AppsRuntime service.
+   * @module api/AppsRuntimeApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new AppsRuntimeApi.
+   * @alias module:api/AppsRuntimeApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the deployAppDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Deploy published app
+     * After creating and puclished an app the user can add it to his/her landing page.
+     * @param {module:model/RuntimeAppDefinitionSaveRepresentation} saveObject saveObject
+     */
+    this.deployAppDefinitions = function (saveObject) {
+      var postBody = saveObject;
+
+      // verify the required parameter 'saveObject' is set
+      if (saveObject == undefined || saveObject == null) {
+        throw "Missing the required parameter 'saveObject' when calling deployAppDefinitions";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/runtime-app-definitions', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAppDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List runtime apps
+     * When a user logs in into the Alfresco Activiti BPM Suite, the landing page is displayed containing all the apps that the user is allowed to see and use.
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAppDefinitions = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/runtime-app-definitions', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239,"../model/RuntimeAppDefinitionSaveRepresentation":240}],145:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/CommentRepresentation', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/CommentRepresentation'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CommentsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.CommentRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, CommentRepresentation, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * Comments service.
+   * @module api/CommentsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new CommentsApi.
+   * @alias module:api/CommentsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the addProcessInstanceComment operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/CommentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Add a comment to a Process
+     * @param {module:model/CommentRepresentation} commentRequest commentRequest
+     * @param {String} processInstanceId processInstanceId
+     * data is of type: {module:model/CommentRepresentation}
+     */
+    this.addProcessInstanceComment = function (commentRequest, processInstanceId) {
+      var postBody = commentRequest;
+
+      // verify the required parameter 'commentRequest' is set
+      if (commentRequest == undefined || commentRequest == null) {
+        throw "Missing the required parameter 'commentRequest' when calling addProcessInstanceComment";
+      }
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling addProcessInstanceComment";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = CommentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/comments', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addTaskComment operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/CommentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Add a comment to a Task
+     * @param {module:model/CommentRepresentation} commentRequest commentRequest
+     * @param {String} taskId taskId
+     * data is of type: {module:model/CommentRepresentation}
+     */
+    this.addTaskComment = function (commentRequest, taskId) {
+      var postBody = commentRequest;
+
+      // verify the required parameter 'commentRequest' is set
+      if (commentRequest == undefined || commentRequest == null) {
+        throw "Missing the required parameter 'commentRequest' when calling addTaskComment";
+      }
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling addTaskComment";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = CommentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/comments', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceComments operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Comment list added to Process
+     * @param {String} processInstanceId processInstanceId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latestFirst latestFirst
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getProcessInstanceComments = function (processInstanceId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceComments";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {
+        'latestFirst': opts['latestFirst']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/comments', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTaskComments operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Comment list added to Task
+     * @param {String} taskId taskId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latestFirst latestFirst
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getTaskComments = function (taskId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getTaskComments";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'latestFirst': opts['latestFirst']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/comments', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CommentRepresentation":193,"../model/ResultListDataRepresentation":239}],146:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/RelatedContentRepresentation', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/RelatedContentRepresentation'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ContentApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.RelatedContentRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, RelatedContentRepresentation, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * Content service.
+   * @module api/ContentApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ContentApi.
+   * @alias module:api/ContentApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the createRelatedContentOnProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createRelatedContentOnProcessInstance
+     * @param {String} processInstanceId processInstanceId
+     * @param {module:model/RelatedContentRepresentation} relatedContent relatedContent
+     */
+    this.createRelatedContentOnProcessInstance = function (processInstanceId, relatedContent) {
+      var postBody = relatedContent;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling createRelatedContentOnProcessInstance";
+      }
+
+      // verify the required parameter 'relatedContent' is set
+      if (relatedContent == undefined || relatedContent == null) {
+        throw "Missing the required parameter 'relatedContent' when calling createRelatedContentOnProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRelatedContentOnProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createRelatedContentOnProcessInstance
+     * @param {String} processInstanceId processInstanceId
+     * @param {File} file file
+     */
+    this.createRelatedContentOnProcessInstance = function (processInstanceId, file) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling createRelatedContentOnProcessInstance";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling createRelatedContentOnProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/raw-content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRelatedContentOnTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To relate content (eg from Alfresco) to a task
+     * @param {String} taskId taskId
+     * @param {module:model/RelatedContentRepresentation} relatedContent relatedContent
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.isRelatedContent isRelatedContent
+     */
+    this.createRelatedContentOnTask = function (taskId, relatedContent, opts) {
+      opts = opts || {};
+      var postBody = relatedContent;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling createRelatedContentOnTask";
+      }
+
+      // verify the required parameter 'relatedContent' is set
+      if (relatedContent == undefined || relatedContent == null) {
+        throw "Missing the required parameter 'relatedContent' when calling createRelatedContentOnTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'isRelatedContent': opts['isRelatedContent']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRelatedContentOnTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Upload content to a task
+     * @param {String} taskId taskId
+     * @param {File} file file
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.isRelatedContent isRelatedContent
+     */
+    this.createRelatedContentOnTask = function (taskId, file, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling createRelatedContentOnTask";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling createRelatedContentOnTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'isRelatedContent': opts['isRelatedContent']
+      };
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/raw-content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createTemporaryRawRelatedContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createTemporaryRawRelatedContent
+     * @param {File} file file
+     */
+    this.createTemporaryRawRelatedContent = function (file) {
+      var postBody = null;
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling createTemporaryRawRelatedContent";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/content/raw', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createTemporaryRelatedContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * createTemporaryRelatedContent
+     * @param {module:model/RelatedContentRepresentation} relatedContent relatedContent
+     */
+    this.createTemporaryRelatedContent = function (relatedContent) {
+      var postBody = relatedContent;
+
+      // verify the required parameter 'relatedContent' is set
+      if (relatedContent == undefined || relatedContent == null) {
+        throw "Missing the required parameter 'relatedContent' when calling createTemporaryRelatedContent";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteContent operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * deleteContent
+     * @param {Integer} contentId contentId
+     */
+    this.deleteContent = function (contentId) {
+      var postBody = null;
+
+      // verify the required parameter 'contentId' is set
+      if (contentId == undefined || contentId == null) {
+        throw "Missing the required parameter 'contentId' when calling deleteContent";
+      }
+
+      var pathParams = {
+        'contentId': contentId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/content/{contentId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getContent
+     * @param {Integer} contentId contentId
+     */
+    this.getContent = function (contentId) {
+      var postBody = null;
+
+      // verify the required parameter 'contentId' is set
+      if (contentId == undefined || contentId == null) {
+        throw "Missing the required parameter 'contentId' when calling getContent";
+      }
+
+      var pathParams = {
+        'contentId': contentId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/content/{contentId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve content attached to process instance fields
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstanceContent = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceContent";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/field-content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRawContent3 operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getRawContent
+     * @param {Integer} contentId contentId
+     */
+    this.getRawContent3 = function (contentId) {
+      var postBody = null;
+
+      // verify the required parameter 'contentId' is set
+      if (contentId == undefined || contentId == null) {
+        throw "Missing the required parameter 'contentId' when calling getRawContent3";
+      }
+
+      var pathParams = {
+        'contentId': contentId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/content/{contentId}/raw', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRelatedContentForProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getRelatedContentForProcessInstance
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getRelatedContentForProcessInstance = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getRelatedContentForProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRelatedContentForTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve which content is attached to a task
+     * @param {String} taskId taskId
+     */
+    this.getRelatedContentForTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRelatedContentForTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/RelatedContentRepresentation":236,"../model/ResultListDataRepresentation":239}],147:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ContentRenditionApi = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * ContentRendition service.
+   * @module api/ContentRenditionApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ContentRenditionApi.
+   * @alias module:api/ContentRenditionApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getRawContent operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Raw Content
+     * @param {Integer} contentId contentId
+     * @param {String} renditionType renditionType
+     */
+    this.getRawContent = function (contentId, renditionType) {
+      var postBody = null;
+
+      // verify the required parameter 'contentId' is set
+      if (contentId == undefined || contentId == null) {
+        throw "Missing the required parameter 'contentId' when calling getRawContent";
+      }
+
+      // verify the required parameter 'renditionType' is set
+      if (renditionType == undefined || renditionType == null) {
+        throw "Missing the required parameter 'renditionType' when calling getRawContent";
+      }
+
+      var pathParams = {
+        'contentId': contentId,
+        'renditionType': renditionType
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/content/{contentId}/rendition/{renditionType}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],148:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormRepresentation', 'model/FormSaveRepresentation', 'model/ValidationErrorRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/FormRepresentation'), require('../model/FormSaveRepresentation'), require('../model/ValidationErrorRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EditorApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormRepresentation, root.ActivitiPublicRestApi.FormSaveRepresentation, root.ActivitiPublicRestApi.ValidationErrorRepresentation);
+  }
+})(undefined, function (ApiClient, FormRepresentation, FormSaveRepresentation, ValidationErrorRepresentation) {
+  'use strict';
+
+  /**
+   * Editor service.
+   * @module api/EditorApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new EditorApi.
+   * @alias module:api/EditorApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getFormHistory operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getFormHistory
+     * @param {Integer} formId formId
+     * @param {Integer} formHistoryId formHistoryId
+     */
+    this.getFormHistory = function (formId, formHistoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'formId' is set
+      if (formId == undefined || formId == null) {
+        throw "Missing the required parameter 'formId' when calling getFormHistory";
+      }
+
+      // verify the required parameter 'formHistoryId' is set
+      if (formHistoryId == undefined || formHistoryId == null) {
+        throw "Missing the required parameter 'formHistoryId' when calling getFormHistory";
+      }
+
+      var pathParams = {
+        'formId': formId,
+        'formHistoryId': formHistoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/editor/form-models/{formId}/history/{formHistoryId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getForm
+     * @param {Integer} formId formId
+     */
+    this.getForm = function (formId) {
+      var postBody = null;
+
+      // verify the required parameter 'formId' is set
+      if (formId == undefined || formId == null) {
+        throw "Missing the required parameter 'formId' when calling getForm";
+      }
+
+      var pathParams = {
+        'formId': formId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/editor/form-models/{formId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getForms operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getForms
+     * data is of type: {Array.<module:model/FormRepresentation>}
+     */
+    this.getForms = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/editor/form-models/values', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the saveForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * saveForm
+     * @param {Integer} formId formId
+     * @param {module:model/FormSaveRepresentation} saveRepresentation saveRepresentation
+     */
+    this.saveForm = function (formId, saveRepresentation) {
+      var postBody = saveRepresentation;
+
+      // verify the required parameter 'formId' is set
+      if (formId == undefined || formId == null) {
+        throw "Missing the required parameter 'formId' when calling saveForm";
+      }
+
+      // verify the required parameter 'saveRepresentation' is set
+      if (saveRepresentation == undefined || saveRepresentation == null) {
+        throw "Missing the required parameter 'saveRepresentation' when calling saveForm";
+      }
+
+      var pathParams = {
+        'formId': formId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/editor/form-models/{formId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the validateModel operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/ValidationErrorRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * validateModel
+     * @param {Integer} formId formId
+     * @param {module:model/FormSaveRepresentation} saveRepresentation saveRepresentation
+     */
+    this.validateModel = function (formId, saveRepresentation) {
+      var postBody = saveRepresentation;
+
+      // verify the required parameter 'formId' is set
+      if (formId == undefined || formId == null) {
+        throw "Missing the required parameter 'formId' when calling validateModel";
+      }
+
+      // verify the required parameter 'saveRepresentation' is set
+      if (saveRepresentation == undefined || saveRepresentation == null) {
+        throw "Missing the required parameter 'saveRepresentation' when calling validateModel";
+      }
+
+      var pathParams = {
+        'formId': formId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [ValidationErrorRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/editor/form-models/{formId}/validate', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/FormRepresentation":209,"../model/FormSaveRepresentation":210,"../model/ValidationErrorRepresentation":257}],149:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.GroupsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * Groups service.
+   * @module api/GroupsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new GroupsApi.
+   * @alias module:api/GroupsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getGroups operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List groups
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {Integer} opts.groupId groupId
+     * @param {String} opts.externalId externalId
+     * @param {String} opts.externalIdCaseInsensitive externalIdCaseInsensitive
+     * @param {Integer} opts.tenantId tenantId
+     */
+    this.getGroups = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'groupId': opts['groupId'],
+        'externalId': opts['externalId'],
+        'externalIdCaseInsensitive': opts['externalIdCaseInsensitive'],
+        'tenantId': opts['tenantId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/groups', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUsersForGroup operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List users member of a specific group
+     * @param {Integer} groupId groupId
+     */
+    this.getUsersForGroup = function (groupId) {
+      var postBody = null;
+
+      // verify the required parameter 'groupId' is set
+      if (groupId == undefined || groupId == null) {
+        throw "Missing the required parameter 'groupId' when calling getUsersForGroup";
+      }
+
+      var pathParams = {
+        'groupId': groupId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/groups/{groupId}/users', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],150:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/SyncLogEntryRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/SyncLogEntryRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IDMSyncApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.SyncLogEntryRepresentation);
+  }
+})(undefined, function (ApiClient, SyncLogEntryRepresentation) {
+  'use strict';
+
+  /**
+   * IDMSync service.
+   * @module api/IDMSyncApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IDMSyncApi.
+   * @alias module:api/IDMSyncApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getLogFile operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getLogFile
+     * @param {Integer} syncLogEntryId syncLogEntryId
+     */
+    this.getLogFile = function (syncLogEntryId) {
+      var postBody = null;
+
+      // verify the required parameter 'syncLogEntryId' is set
+      if (syncLogEntryId == undefined || syncLogEntryId == null) {
+        throw "Missing the required parameter 'syncLogEntryId' when calling getLogFile";
+      }
+
+      var pathParams = {
+        'syncLogEntryId': syncLogEntryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/idm-sync-log-entries/{syncLogEntryId}/logfile', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getSyncLogEntries operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/SyncLogEntryRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getSyncLogEntries
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Integer} opts.page page
+     * @param {Integer} opts.size size
+     */
+    this.getSyncLogEntries = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': opts['tenantId'],
+        'page': opts['page'],
+        'size': opts['size']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [SyncLogEntryRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/idm-sync-log-entries', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/SyncLogEntryRepresentation":242}],151:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationAccountApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * IntegrationAccount service.
+   * @module api/IntegrationAccountApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationAccountApi.
+   * @alias module:api/IntegrationAccountApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getAccounts operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Alfresco account information
+     * Ideal to map accounts &amp; integrate with 3rd party app/client
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getAccounts = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/account/integration', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],152:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationAlfrescoCloudApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * IntegrationAlfrescoCloud service.
+   * @module api/IntegrationAlfrescoCloudApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationAlfrescoCloudApi.
+   * @alias module:api/IntegrationAlfrescoCloudApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Alfresco Cloud Authorization
+     * Returns Alfresco Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllNetworks operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco networks
+     */
+    this.getAllNetworks = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} networkId networkId
+     */
+    this.getAllSites = function (networkId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'networkId': networkId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} networkId networkId
+     * @param {String} folderId folderId
+     */
+    this.getContentInFolder = function (networkId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} networkId networkId
+     * @param {String} siteId siteId
+     */
+    this.getContentInSite = function (networkId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],153:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationAlfrescoOnPremiseApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * IntegrationAlfrescoOnPremise service.
+   * @module api/IntegrationAlfrescoOnPremiseApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationAlfrescoOnPremiseApi.
+   * @alias module:api/IntegrationAlfrescoOnPremiseApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} repositoryId repositoryId
+     */
+    this.getAllSites = function (repositoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} repositoryId repositoryId
+     * @param {String} folderId folderId
+     */
+    this.getContentInFolder = function (repositoryId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} repositoryId repositoryId
+     * @param {String} siteId siteId
+     */
+    this.getContentInSite = function (repositoryId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRepositories operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco repositories
+     * A tenant administrator can configure one or more Alfresco repositories to use when working with content.
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Boolean} opts.includeAccounts includeAccounts
+     */
+    this.getRepositories = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': opts['tenantId'],
+        'includeAccounts': opts['includeAccounts']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile/accounts/alfresco', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],154:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/UserAccountCredentialsRepresentation', 'model/ResultListDataRepresentation', 'model/BoxUserAccountCredentialsRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/UserAccountCredentialsRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/BoxUserAccountCredentialsRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.UserAccountCredentialsRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.BoxUserAccountCredentialsRepresentation);
+  }
+})(undefined, function (ApiClient, UserAccountCredentialsRepresentation, ResultListDataRepresentation, BoxUserAccountCredentialsRepresentation) {
+  'use strict';
+
+  /**
+   * Integration service.
+   * @module api/IntegrationApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationApi.
+   * @alias module:api/IntegrationApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Alfresco Cloud Authorization
+     * Returns Alfresco Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Box Authorization
+     * Returns Box Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Drive Authorization
+     * Returns Drive Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/google-drive/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRepositoryAccount operation.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create Box account
+     * @param {Integer} userId userId
+     * @param {module:model/UserAccountCredentialsRepresentation} credentials credentials
+     */
+    this.createRepositoryAccount = function (userId, credentials) {
+      var postBody = credentials;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling createRepositoryAccount";
+      }
+
+      // verify the required parameter 'credentials' is set
+      if (credentials == undefined || credentials == null) {
+        throw "Missing the required parameter 'credentials' when calling createRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete Box account
+     * @param {Integer} userId userId
+     */
+    this.deleteRepositoryAccount = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling deleteRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllNetworks operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco networks
+     */
+    this.getAllNetworks = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} networkId networkId
+     */
+    this.getAllSites = function (networkId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'networkId': networkId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getAllSites operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco sites
+     * Returns ALL Sites
+     * @param {String} repositoryId repositoryId
+     */
+    this.getAllSites = function (repositoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getAllSites";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getBoxPluginStatus operation.
+     * @param {String} error Error message, if any.
+     * @param {'Boolean'} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve if Box Integration is enabled
+     */
+    this.getBoxPluginStatus = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = 'Boolean';
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/status', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} networkId networkId
+     * @param {String} folderId folderId
+     */
+    this.getContentInFolder = function (networkId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInFolder operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific folder
+     * @param {String} repositoryId repositoryId
+     * @param {String} folderId folderId
+     */
+    this.getContentInFolder = function (repositoryId, folderId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInFolder";
+      }
+
+      // verify the required parameter 'folderId' is set
+      if (folderId == undefined || folderId == null) {
+        throw "Missing the required parameter 'folderId' when calling getContentInFolder";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'folderId': folderId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/folders/{folderId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} networkId networkId
+     * @param {String} siteId siteId
+     */
+    this.getContentInSite = function (networkId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'networkId' is set
+      if (networkId == undefined || networkId == null) {
+        throw "Missing the required parameter 'networkId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'networkId': networkId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco-cloud/networks/{networkId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getContentInSite operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders inside a specific site
+     * @param {String} repositoryId repositoryId
+     * @param {String} siteId siteId
+     */
+    this.getContentInSite = function (repositoryId, siteId) {
+      var postBody = null;
+
+      // verify the required parameter 'repositoryId' is set
+      if (repositoryId == undefined || repositoryId == null) {
+        throw "Missing the required parameter 'repositoryId' when calling getContentInSite";
+      }
+
+      // verify the required parameter 'siteId' is set
+      if (siteId == undefined || siteId == null) {
+        throw "Missing the required parameter 'siteId' when calling getContentInSite";
+      }
+
+      var pathParams = {
+        'repositoryId': repositoryId,
+        'siteId': siteId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/alfresco/{repositoryId}/sites/{siteId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getFiles operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.parent parent
+     */
+    this.getFiles = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'parent': opts['parent']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/files', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getFiles operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.parent parent
+     * @param {Boolean} opts.currentFolderOnly currentFolderOnly
+     */
+    this.getFiles = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'parent': opts['parent'],
+        'currentFolderOnly': opts['currentFolderOnly']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/google-drive/files', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRepositories operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Alfresco repositories
+     * A tenant administrator can configure one or more Alfresco repositories to use when working with content.
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.tenantId tenantId
+     * @param {Boolean} opts.includeAccounts includeAccounts
+     */
+    this.getRepositories = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'tenantId': opts['tenantId'],
+        'includeAccounts': opts['includeAccounts']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile/accounts/alfresco', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/BoxUserAccountCredentialsRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Box Account
+     * @param {Integer} userId userId
+     */
+    this.getRepositoryAccount = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling getRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = BoxUserAccountCredentialsRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update Box account
+     * @param {Integer} userId userId
+     * @param {module:model/UserAccountCredentialsRepresentation} credentials credentials
+     */
+    this.updateRepositoryAccount = function (userId, credentials) {
+      var postBody = credentials;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling updateRepositoryAccount";
+      }
+
+      // verify the required parameter 'credentials' is set
+      if (credentials == undefined || credentials == null) {
+        throw "Missing the required parameter 'credentials' when calling updateRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/BoxUserAccountCredentialsRepresentation":189,"../model/ResultListDataRepresentation":239,"../model/UserAccountCredentialsRepresentation":251}],155:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/UserAccountCredentialsRepresentation', 'model/ResultListDataRepresentation', 'model/BoxUserAccountCredentialsRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/UserAccountCredentialsRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/BoxUserAccountCredentialsRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationBoxApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.UserAccountCredentialsRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.BoxUserAccountCredentialsRepresentation);
+  }
+})(undefined, function (ApiClient, UserAccountCredentialsRepresentation, ResultListDataRepresentation, BoxUserAccountCredentialsRepresentation) {
+  'use strict';
+
+  /**
+   * IntegrationBox service.
+   * @module api/IntegrationBoxApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationBoxApi.
+   * @alias module:api/IntegrationBoxApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Box Authorization
+     * Returns Box Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create Box account
+     * @param {Integer} userId userId
+     * @param {module:model/UserAccountCredentialsRepresentation} credentials credentials
+     */
+    this.createRepositoryAccount = function (userId, credentials) {
+      var postBody = credentials;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling createRepositoryAccount";
+      }
+
+      // verify the required parameter 'credentials' is set
+      if (credentials == undefined || credentials == null) {
+        throw "Missing the required parameter 'credentials' when calling createRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete Box account
+     * @param {Integer} userId userId
+     */
+    this.deleteRepositoryAccount = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling deleteRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getBoxPluginStatus operation.
+     * @param {String} error Error message, if any.
+     * @param {'Boolean'} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve if Box Integration is enabled
+     */
+    this.getBoxPluginStatus = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = 'Boolean';
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/status', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getFiles operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.parent parent
+     */
+    this.getFiles = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'parent': opts['parent']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/files', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/BoxUserAccountCredentialsRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Box Account
+     * @param {Integer} userId userId
+     */
+    this.getRepositoryAccount = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling getRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = BoxUserAccountCredentialsRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateRepositoryAccount operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update Box account
+     * @param {Integer} userId userId
+     * @param {module:model/UserAccountCredentialsRepresentation} credentials credentials
+     */
+    this.updateRepositoryAccount = function (userId, credentials) {
+      var postBody = credentials;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling updateRepositoryAccount";
+      }
+
+      // verify the required parameter 'credentials' is set
+      if (credentials == undefined || credentials == null) {
+        throw "Missing the required parameter 'credentials' when calling updateRepositoryAccount";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/box/{userId}/account', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/BoxUserAccountCredentialsRepresentation":189,"../model/ResultListDataRepresentation":239,"../model/UserAccountCredentialsRepresentation":251}],156:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.IntegrationDriveApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * IntegrationDrive service.
+   * @module api/IntegrationDriveApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new IntegrationDriveApi.
+   * @alias module:api/IntegrationDriveApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the confirmAuthorisation operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Drive Authorization
+     * Returns Drive Oauth HTML Page
+     * @param {String} code code
+     */
+    this.confirmAuthorisation = function (code) {
+      var postBody = null;
+
+      // verify the required parameter 'code' is set
+      if (code == undefined || code == null) {
+        throw "Missing the required parameter 'code' when calling confirmAuthorisation";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'code': code
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['text/html', 'application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/integration/google-drive/confirm-auth-request', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getFiles operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List file &amp; folders
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.parent parent
+     * @param {Boolean} opts.currentFolderOnly currentFolderOnly
+     */
+    this.getFiles = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'parent': opts['parent'],
+        'currentFolderOnly': opts['currentFolderOnly']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/integration/google-drive/files', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],157:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ModelBpmnApi = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * ModelBpmn service.
+   * @module api/ModelBpmnApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ModelBpmnApi.
+   * @alias module:api/ModelBpmnApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getHistoricProcessModelBpmn20Xml operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Export a previous process definition model to a BPMN 2.0 xml file
+     * @param {Integer} processModelId processModelId
+     * @param {Integer} processModelHistoryId processModelHistoryId
+     */
+    this.getHistoricProcessModelBpmn20Xml = function (processModelId, processModelHistoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'processModelId' is set
+      if (processModelId == undefined || processModelId == null) {
+        throw "Missing the required parameter 'processModelId' when calling getHistoricProcessModelBpmn20Xml";
+      }
+
+      // verify the required parameter 'processModelHistoryId' is set
+      if (processModelHistoryId == undefined || processModelHistoryId == null) {
+        throw "Missing the required parameter 'processModelHistoryId' when calling getHistoricProcessModelBpmn20Xml";
+      }
+
+      var pathParams = {
+        'processModelId': processModelId,
+        'processModelHistoryId': processModelHistoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/models/{processModelId}/history/{processModelHistoryId}/bpmn20', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessModelBpmn20Xml operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Export a process definition model to a BPMN 2.0 xml file
+     * @param {Integer} processModelId processModelId
+     */
+    this.getProcessModelBpmn20Xml = function (processModelId) {
+      var postBody = null;
+
+      // verify the required parameter 'processModelId' is set
+      if (processModelId == undefined || processModelId == null) {
+        throw "Missing the required parameter 'processModelId' when calling getProcessModelBpmn20Xml";
+      }
+
+      var pathParams = {
+        'processModelId': processModelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/models/{processModelId}/bpmn20', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],158:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ModelRepresentation', 'model/ObjectNode', 'model/ResultListDataRepresentation', 'model/ValidationErrorRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ModelRepresentation'), require('../model/ObjectNode'), require('../model/ResultListDataRepresentation'), require('../model/ValidationErrorRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ModelsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ModelRepresentation, root.ActivitiPublicRestApi.ObjectNode, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.ValidationErrorRepresentation);
+  }
+})(undefined, function (ApiClient, ModelRepresentation, ObjectNode, ResultListDataRepresentation, ValidationErrorRepresentation) {
+  'use strict';
+
+  /**
+   * Models service.
+   * @module api/ModelsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ModelsApi.
+   * @alias module:api/ModelsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the createModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To create a new model
+     * @param {module:model/ModelRepresentation} modelRepresentation modelRepresentation
+     */
+    this.createModel = function (modelRepresentation) {
+      var postBody = modelRepresentation;
+
+      // verify the required parameter 'modelRepresentation' is set
+      if (modelRepresentation == undefined || modelRepresentation == null) {
+        throw "Missing the required parameter 'modelRepresentation' when calling createModel";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteModel operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a model
+     * @param {Integer} modelId modelId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.cascade cascade
+     * @param {Boolean} opts.deleteRuntimeApp deleteRuntimeApp
+     */
+    this.deleteModel = function (modelId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling deleteModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {
+        'cascade': opts['cascade'],
+        'deleteRuntimeApp': opts['deleteRuntimeApp']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the duplicateModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To duplicate an existing model
+     * @param {Integer} modelId modelId
+     * @param {module:model/ModelRepresentation} modelRepresentation modelRepresentation
+     */
+    this.duplicateModel = function (modelId, modelRepresentation) {
+      var postBody = modelRepresentation;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling duplicateModel";
+      }
+
+      // verify the required parameter 'modelRepresentation' is set
+      if (modelRepresentation == undefined || modelRepresentation == null) {
+        throw "Missing the required parameter 'modelRepresentation' when calling duplicateModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/clone', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getModelJSON operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ObjectNode} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get the JSON model
+     * @param {Integer} modelId modelId
+     */
+    this.getModelJSON = function (modelId) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling getModelJSON";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ObjectNode;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/editor/json', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getModelThumbnail operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<'String'>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get Model thumbnail
+     * @param {Integer} modelId modelId
+     */
+    this.getModelThumbnail = function (modelId) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling getModelThumbnail";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['image/png', 'application/json'];
+      var returnType = ['String'];
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/thumbnail', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To retrieve details about a particular model (process, form, decision rule or app)
+     * @param {Integer} modelId modelId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.includePermissions includePermissions
+     */
+    this.getModel = function (modelId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling getModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {
+        'includePermissions': opts['includePermissions']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getModelsToIncludeInAppDefinition operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * TODO
+     */
+    this.getModelsToIncludeInAppDefinition = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models-for-app-definition', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getModels operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List models (process, form, decision rule or app)
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.sort sort
+     * @param {Integer} opts.modelType modelType
+     * @param {Integer} opts.referenceId referenceId
+     */
+    this.getModels = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'sort': opts['sort'],
+        'modelType': opts['modelType'],
+        'referenceId': opts['referenceId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the importNewVersion operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a new model version
+     * @param {Integer} modelId modelId
+     * @param {File} file file
+     */
+    this.importNewVersion = function (modelId, file) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling importNewVersion";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importNewVersion";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/newversion', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the importProcessModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To import a BPMN 2.0 xml file
+     * @param {File} file file
+     */
+    this.importProcessModel = function (file) {
+      var postBody = null;
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling importProcessModel";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-models/import', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the saveModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Save the JSON model
+     * @param {Integer} modelId modelId
+     * @param {Object} values values
+     */
+    this.saveModel = function (modelId, values) {
+      var postBody = values;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling saveModel";
+      }
+
+      // verify the required parameter 'values' is set
+      if (values == undefined || values == null) {
+        throw "Missing the required parameter 'values' when calling saveModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/editor/json', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateModel operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Edit a specific model
+     * @param {Integer} modelId modelId
+     * @param {module:model/ModelRepresentation} updatedModel updatedModel
+     */
+    this.updateModel = function (modelId, updatedModel) {
+      var postBody = updatedModel;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling updateModel";
+      }
+
+      // verify the required parameter 'updatedModel' is set
+      if (updatedModel == undefined || updatedModel == null) {
+        throw "Missing the required parameter 'updatedModel' when calling updateModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the validateModel operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/ValidationErrorRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Validate the JSON model
+     * @param {Integer} modelId modelId
+     * @param {Object} opts Optional parameters
+     * @param {Object} opts.values values
+     */
+    this.validateModel = function (modelId, opts) {
+      opts = opts || {};
+      var postBody = opts['values'];
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling validateModel";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [ValidationErrorRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/editor/validate', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ModelRepresentation":226,"../model/ObjectNode":227,"../model/ResultListDataRepresentation":239,"../model/ValidationErrorRepresentation":257}],159:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation', 'model/ModelRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'), require('../model/ModelRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ModelsHistoryApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.ModelRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation, ModelRepresentation) {
+  'use strict';
+
+  /**
+   * ModelsHistory service.
+   * @module api/ModelsHistoryApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ModelsHistoryApi.
+   * @alias module:api/ModelsHistoryApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getModelHistoryCollection operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To get the version information for a model
+     * @param {Integer} modelId modelId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.includeLatestVersion includeLatestVersion
+     */
+    this.getModelHistoryCollection = function (modelId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling getModelHistoryCollection";
+      }
+
+      var pathParams = {
+        'modelId': modelId
+      };
+      var queryParams = {
+        'includeLatestVersion': opts['includeLatestVersion']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/history', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessModelHistory operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ModelRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To get a particular older version of a model
+     * @param {Integer} modelId modelId
+     * @param {Integer} modelHistoryId modelHistoryId
+     */
+    this.getProcessModelHistory = function (modelId, modelHistoryId) {
+      var postBody = null;
+
+      // verify the required parameter 'modelId' is set
+      if (modelId == undefined || modelId == null) {
+        throw "Missing the required parameter 'modelId' when calling getProcessModelHistory";
+      }
+
+      // verify the required parameter 'modelHistoryId' is set
+      if (modelHistoryId == undefined || modelHistoryId == null) {
+        throw "Missing the required parameter 'modelHistoryId' when calling getProcessModelHistory";
+      }
+
+      var pathParams = {
+        'modelId': modelId,
+        'modelHistoryId': modelHistoryId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ModelRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/models/{modelId}/history/{modelHistoryId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ModelRepresentation":226,"../model/ResultListDataRepresentation":239}],160:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessInstanceFilterRequestRepresentation', 'model/ResultListDataRepresentation', 'model/FormDefinitionRepresentation', 'model/ProcessInstanceRepresentation', 'model/ObjectNode', 'model/FormValueRepresentation', 'model/CreateProcessInstanceRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ProcessInstanceFilterRequestRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/FormDefinitionRepresentation'), require('../model/ProcessInstanceRepresentation'), require('../model/ObjectNode'), require('../model/FormValueRepresentation'), require('../model/CreateProcessInstanceRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessInstanceFilterRequestRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.FormDefinitionRepresentation, root.ActivitiPublicRestApi.ProcessInstanceRepresentation, root.ActivitiPublicRestApi.ObjectNode, root.ActivitiPublicRestApi.FormValueRepresentation, root.ActivitiPublicRestApi.CreateProcessInstanceRepresentation);
+  }
+})(undefined, function (ApiClient, ProcessInstanceFilterRequestRepresentation, ResultListDataRepresentation, FormDefinitionRepresentation, ProcessInstanceRepresentation, ObjectNode, FormValueRepresentation, CreateProcessInstanceRepresentation) {
+  'use strict';
+
+  /**
+   * Process service.
+   * @module api/ProcessApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessApi.
+   * @alias module:api/ProcessApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the deleteProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a process instance
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.deleteProcessInstance = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling deleteProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the filterProcessInstances operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Filter a list of process instances
+     * @param {module:model/ProcessInstanceFilterRequestRepresentation} filterRequest filterRequest
+     */
+    this.filterProcessInstances = function (filterRequest) {
+      var postBody = filterRequest;
+
+      // verify the required parameter 'filterRequest' is set
+      if (filterRequest == undefined || filterRequest == null) {
+        throw "Missing the required parameter 'filterRequest' when calling filterProcessInstances";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/filter', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessDefinitionStartForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve the start form for a process definition
+     */
+    this.getProcessDefinitionStartForm = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a list of process definitions
+     * Get a list of process definitions (visible within the tenant of the user)
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latest latest
+     * @param {Integer} opts.appDefinitionId appDefinitionId
+     */
+    this.getProcessDefinitions = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'latest': opts['latest'],
+        'appDefinitionId': opts['appDefinitionId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve content attached to process instance fields
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstanceContent = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceContent";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/field-content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceStartForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get process start form
+     * When a process definitions has a start form (hasStartForm is true in the call above), the start form can be retrieved
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstanceStartForm = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceStartForm";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/start-form', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ProcessInstanceRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a process instance information
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstance = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ProcessInstanceRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstances operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a list of process instances
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.getProcessInstances = function (requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling getProcessInstances";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/query', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve field values (eg. the typeahead field)
+     */
+    this.getRestFieldValues = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form-values/{field}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestTableFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve field values (eg. the table field)
+     */
+    this.getRestTableFieldValues = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form-values/{field}/{column}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the startNewProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ProcessInstanceRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Start a process instance
+     * @param {module:model/CreateProcessInstanceRepresentation} startRequest startRequest
+     */
+    this.startNewProcessInstance = function (startRequest) {
+      var postBody = startRequest;
+
+      // verify the required parameter 'startRequest' is set
+      if (startRequest == undefined || startRequest == null) {
+        throw "Missing the required parameter 'startRequest' when calling startNewProcessInstance";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ProcessInstanceRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CreateProcessInstanceRepresentation":197,"../model/FormDefinitionRepresentation":205,"../model/FormValueRepresentation":213,"../model/ObjectNode":227,"../model/ProcessInstanceFilterRequestRepresentation":230,"../model/ProcessInstanceRepresentation":231,"../model/ResultListDataRepresentation":239}],161:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessDefinitionsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * ProcessDefinitions service.
+   * @module api/ProcessDefinitionsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessDefinitionsApi.
+   * @alias module:api/ProcessDefinitionsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getProcessDefinitions operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a list of process definitions
+     * Get a list of process definitions (visible within the tenant of the user)
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latest latest
+     * @param {Integer} opts.appDefinitionId appDefinitionId
+     */
+    this.getProcessDefinitions = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'latest': opts['latest'],
+        'appDefinitionId': opts['appDefinitionId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],162:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormDefinitionRepresentation', 'model/FormValueRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/FormDefinitionRepresentation'), require('../model/FormValueRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessDefinitionsFormApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormDefinitionRepresentation, root.ActivitiPublicRestApi.FormValueRepresentation);
+  }
+})(undefined, function (ApiClient, FormDefinitionRepresentation, FormValueRepresentation) {
+  'use strict';
+
+  /**
+   * ProcessDefinitionsForm service.
+   * @module api/ProcessDefinitionsFormApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessDefinitionsFormApi.
+   * @alias module:api/ProcessDefinitionsFormApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getProcessDefinitionStartForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve the start form for a process definition
+     */
+    this.getProcessDefinitionStartForm = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve field values (eg. the typeahead field)
+     */
+    this.getRestFieldValues = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form-values/{field}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestTableFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve field values (eg. the table field)
+     */
+    this.getRestTableFieldValues = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/process-definitions/{processDefinitionId}/start-form-values/{field}/{column}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/FormDefinitionRepresentation":205,"../model/FormValueRepresentation":213}],163:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/CommentRepresentation', 'model/ResultListDataRepresentation', 'model/FormDefinitionRepresentation', 'model/ProcessInstanceRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/CommentRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/FormDefinitionRepresentation'), require('../model/ProcessInstanceRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstancesApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.CommentRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.FormDefinitionRepresentation, root.ActivitiPublicRestApi.ProcessInstanceRepresentation);
+  }
+})(undefined, function (ApiClient, CommentRepresentation, ResultListDataRepresentation, FormDefinitionRepresentation, ProcessInstanceRepresentation) {
+  'use strict';
+
+  /**
+   * ProcessInstances service.
+   * @module api/ProcessInstancesApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessInstancesApi.
+   * @alias module:api/ProcessInstancesApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the addProcessInstanceComment operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/CommentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Add a comment to a Process
+     * @param {module:model/CommentRepresentation} commentRequest commentRequest
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.addProcessInstanceComment = function (commentRequest, processInstanceId) {
+      var postBody = commentRequest;
+
+      // verify the required parameter 'commentRequest' is set
+      if (commentRequest == undefined || commentRequest == null) {
+        throw "Missing the required parameter 'commentRequest' when calling addProcessInstanceComment";
+      }
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling addProcessInstanceComment";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = CommentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/comments', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a process instance
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.deleteProcessInstance = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling deleteProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceComments operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Comment list added to Process
+     * @param {String} processInstanceId processInstanceId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latestFirst latestFirst
+     */
+    this.getProcessInstanceComments = function (processInstanceId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceComments";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {
+        'latestFirst': opts['latestFirst']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/comments', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstanceStartForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get process start form
+     * When a process definitions has a start form (hasStartForm is true in the call above), the start form can be retrieved
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstanceStartForm = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceStartForm";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/start-form', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ProcessInstanceRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a process instance information
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstance = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstance";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ProcessInstanceRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CommentRepresentation":193,"../model/FormDefinitionRepresentation":205,"../model/ProcessInstanceRepresentation":231,"../model/ResultListDataRepresentation":239}],164:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation', 'model/CreateProcessInstanceRepresentation', 'model/ProcessInstanceRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'), require('../model/CreateProcessInstanceRepresentation'), require('../model/ProcessInstanceRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstancesInformationApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.CreateProcessInstanceRepresentation, root.ActivitiPublicRestApi.ProcessInstanceRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation, CreateProcessInstanceRepresentation, ProcessInstanceRepresentation) {
+  'use strict';
+
+  /**
+   * ProcessInstancesInformation service.
+   * @module api/ProcessInstancesInformationApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessInstancesInformationApi.
+   * @alias module:api/ProcessInstancesInformationApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getProcessInstanceContent operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve content attached to process instance fields
+     * @param {String} processInstanceId processInstanceId
+     */
+    this.getProcessInstanceContent = function (processInstanceId) {
+      var postBody = null;
+
+      // verify the required parameter 'processInstanceId' is set
+      if (processInstanceId == undefined || processInstanceId == null) {
+        throw "Missing the required parameter 'processInstanceId' when calling getProcessInstanceContent";
+      }
+
+      var pathParams = {
+        'processInstanceId': processInstanceId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/{processInstanceId}/field-content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the startNewProcessInstance operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ProcessInstanceRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Start a process instance
+     * @param {module:model/CreateProcessInstanceRepresentation} startRequest startRequest
+     */
+    this.startNewProcessInstance = function (startRequest) {
+      var postBody = startRequest;
+
+      // verify the required parameter 'startRequest' is set
+      if (startRequest == undefined || startRequest == null) {
+        throw "Missing the required parameter 'startRequest' when calling startNewProcessInstance";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ProcessInstanceRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CreateProcessInstanceRepresentation":197,"../model/ProcessInstanceRepresentation":231,"../model/ResultListDataRepresentation":239}],165:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessInstanceFilterRequestRepresentation', 'model/ResultListDataRepresentation', 'model/ObjectNode'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ProcessInstanceFilterRequestRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/ObjectNode'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstancesListingApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessInstanceFilterRequestRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.ObjectNode);
+  }
+})(undefined, function (ApiClient, ProcessInstanceFilterRequestRepresentation, ResultListDataRepresentation, ObjectNode) {
+  'use strict';
+
+  /**
+   * ProcessInstancesListing service.
+   * @module api/ProcessInstancesListingApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessInstancesListingApi.
+   * @alias module:api/ProcessInstancesListingApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the filterProcessInstances operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Filter a list of process instances
+     * @param {module:model/ProcessInstanceFilterRequestRepresentation} filterRequest filterRequest
+     */
+    this.filterProcessInstances = function (filterRequest) {
+      var postBody = filterRequest;
+
+      // verify the required parameter 'filterRequest' is set
+      if (filterRequest == undefined || filterRequest == null) {
+        throw "Missing the required parameter 'filterRequest' when calling filterProcessInstances";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/filter', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProcessInstances operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve a list of process instances
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.getProcessInstances = function (requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling getProcessInstances";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/process-instances/query', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ObjectNode":227,"../model/ProcessInstanceFilterRequestRepresentation":230,"../model/ResultListDataRepresentation":239}],166:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessScopesRequestRepresentation', 'model/ProcessScopeRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ProcessScopesRequestRepresentation'), require('../model/ProcessScopeRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessScopeApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessScopesRequestRepresentation, root.ActivitiPublicRestApi.ProcessScopeRepresentation);
+  }
+})(undefined, function (ApiClient, ProcessScopesRequestRepresentation, ProcessScopeRepresentation) {
+  'use strict';
+
+  /**
+   * ProcessScope service.
+   * @module api/ProcessScopeApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProcessScopeApi.
+   * @alias module:api/ProcessScopeApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getRuntimeProcessScopes operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/ProcessScopeRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getRuntimeProcessScopes
+     * @param {module:model/ProcessScopesRequestRepresentation} processScopesRequest processScopesRequest
+     */
+    this.getRuntimeProcessScopes = function (processScopesRequest) {
+      var postBody = processScopesRequest;
+
+      // verify the required parameter 'processScopesRequest' is set
+      if (processScopesRequest == undefined || processScopesRequest == null) {
+        throw "Missing the required parameter 'processScopesRequest' when calling getRuntimeProcessScopes";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [ProcessScopeRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/process-scopes', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ProcessScopeRepresentation":233,"../model/ProcessScopesRequestRepresentation":234}],167:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ChangePasswordRepresentation', 'model/UserRepresentation', 'model/ImageUploadRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ChangePasswordRepresentation'), require('../model/UserRepresentation'), require('../model/ImageUploadRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProfileApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ChangePasswordRepresentation, root.ActivitiPublicRestApi.UserRepresentation, root.ActivitiPublicRestApi.ImageUploadRepresentation);
+  }
+})(undefined, function (ApiClient, ChangePasswordRepresentation, UserRepresentation, ImageUploadRepresentation) {
+  'use strict';
+
+  /**
+   * Profile service.
+   * @module api/ProfileApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ProfileApi.
+   * @alias module:api/ProfileApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the changePassword operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Change user password
+     * @param {module:model/ChangePasswordRepresentation} changePasswordRepresentation changePasswordRepresentation
+     */
+    this.changePassword = function (changePasswordRepresentation) {
+      var postBody = changePasswordRepresentation;
+
+      // verify the required parameter 'changePasswordRepresentation' is set
+      if (changePasswordRepresentation == undefined || changePasswordRepresentation == null) {
+        throw "Missing the required parameter 'changePasswordRepresentation' when calling changePassword";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/profile-password', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProfilePicture operation.
+     * @param {String} error Error message, if any.
+     * @param {File} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve user profile picture
+     * Generally returns an image file
+     */
+    this.getProfilePicture = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = File;
+
+      return this.apiClient.callApi('/api/enterprise/profile-picture', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProfile operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve user information
+     *  This is useful to get the name, email, the groups that the user is part of, the user picture, etc.
+     */
+    this.getProfile = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateProfile operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update user information
+     * Only a first name, last name, email and company can be updated
+     * @param {module:model/UserRepresentation} userRepresentation userRepresentation
+     */
+    this.updateProfile = function (userRepresentation) {
+      var postBody = userRepresentation;
+
+      // verify the required parameter 'userRepresentation' is set
+      if (userRepresentation == undefined || userRepresentation == null) {
+        throw "Missing the required parameter 'userRepresentation' when calling updateProfile";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the uploadProfilePicture operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ImageUploadRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Change user profile picture
+     * @param {File} file file
+     */
+    this.uploadProfilePicture = function (file) {
+      var postBody = null;
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling uploadProfilePicture";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = ImageUploadRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/profile-picture', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ChangePasswordRepresentation":191,"../model/ImageUploadRepresentation":216,"../model/UserRepresentation":255}],168:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ScriptFileApi = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * ScriptFile service.
+   * @module api/ScriptFileApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new ScriptFileApi.
+   * @alias module:api/ScriptFileApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getControllers operation.
+     * @param {String} error Error message, if any.
+     * @param {'String'} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getControllers
+     */
+    this.getControllers = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json', 'application/javascript'];
+      var returnType = 'String';
+
+      return this.apiClient.callApi('/api/enterprise/script-files/controllers', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getLibraries operation.
+     * @param {String} error Error message, if any.
+     * @param {'String'} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getLibraries
+     */
+    this.getLibraries = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json', 'application/javascript'];
+      var returnType = 'String';
+
+      return this.apiClient.callApi('/api/enterprise/script-files/libraries', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],169:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/SystemPropertiesRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/SystemPropertiesRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.SystemPropertiesApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.SystemPropertiesRepresentation);
+  }
+})(undefined, function (ApiClient, SystemPropertiesRepresentation) {
+  'use strict';
+
+  /**
+   * SystemProperties service.
+   * @module api/SystemPropertiesApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new SystemPropertiesApi.
+   * @alias module:api/SystemPropertiesApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getProperties operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/SystemPropertiesRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve System Properties
+     * Typical value is AllowInvolveByEmail
+     */
+    this.getProperties = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = SystemPropertiesRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/system/properties', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/SystemPropertiesRepresentation":243}],170:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ObjectNode', 'model/TaskRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ObjectNode'), require('../model/TaskRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskActionsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ObjectNode, root.ActivitiPublicRestApi.TaskRepresentation);
+  }
+})(undefined, function (ApiClient, ObjectNode, TaskRepresentation) {
+  'use strict';
+
+  /**
+   * TaskActions service.
+   * @module api/TaskActionsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new TaskActionsApi.
+   * @alias module:api/TaskActionsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the assignTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Assign a task to a user
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.assignTask = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling assignTask";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling assignTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/assign', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the attachForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Attach a form to a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.attachForm = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling attachForm";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling attachForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/attach-form', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the claimTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Claim a task
+     * To claim a task (in case the task is assigned to a group)
+     * @param {String} taskId taskId
+     */
+    this.claimTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling claimTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/claim', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the completeTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Complete Task
+     * To complete a task (standalone or without a task form)
+     * @param {String} taskId taskId
+     */
+    this.completeTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling completeTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/complete', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the involveUser operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To involve a user with a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.involveUser = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling involveUser";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling involveUser";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/involve', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Remove a form to a task
+     * @param {String} taskId taskId
+     */
+    this.removeForm = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling removeForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/remove-form', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeInvolvedUser operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Remove an involved user from a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.removeInvolvedUser = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling removeInvolvedUser";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling removeInvolvedUser";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/remove-involved', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the unclaimTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Unclaim a task
+     * To unclaim a task (in case the task was assigned to a group)
+     * @param {String} taskId taskId
+     */
+    this.unclaimTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling unclaimTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/unclaim', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ObjectNode":227,"../model/TaskRepresentation":247}],171:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/TaskRepresentation', 'model/CommentRepresentation', 'model/ObjectNode', 'model/CompleteFormRepresentation', 'model/RelatedContentRepresentation', 'model/TaskFilterRequestRepresentation', 'model/ResultListDataRepresentation', 'model/FormValueRepresentation', 'model/FormDefinitionRepresentation', 'model/ChecklistOrderRepresentation', 'model/SaveFormRepresentation', 'model/TaskUpdateRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/TaskRepresentation'), require('../model/CommentRepresentation'), require('../model/ObjectNode'), require('../model/CompleteFormRepresentation'), require('../model/RelatedContentRepresentation'), require('../model/TaskFilterRequestRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/FormValueRepresentation'), require('../model/FormDefinitionRepresentation'), require('../model/ChecklistOrderRepresentation'), require('../model/SaveFormRepresentation'), require('../model/TaskUpdateRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.TaskRepresentation, root.ActivitiPublicRestApi.CommentRepresentation, root.ActivitiPublicRestApi.ObjectNode, root.ActivitiPublicRestApi.CompleteFormRepresentation, root.ActivitiPublicRestApi.RelatedContentRepresentation, root.ActivitiPublicRestApi.TaskFilterRequestRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.FormValueRepresentation, root.ActivitiPublicRestApi.FormDefinitionRepresentation, root.ActivitiPublicRestApi.ChecklistOrderRepresentation, root.ActivitiPublicRestApi.SaveFormRepresentation, root.ActivitiPublicRestApi.TaskUpdateRepresentation);
+  }
+})(undefined, function (ApiClient, TaskRepresentation, CommentRepresentation, ObjectNode, CompleteFormRepresentation, RelatedContentRepresentation, TaskFilterRequestRepresentation, ResultListDataRepresentation, FormValueRepresentation, FormDefinitionRepresentation, ChecklistOrderRepresentation, SaveFormRepresentation, TaskUpdateRepresentation) {
+  'use strict';
+
+  /**
+   * Task service.
+   * @module api/TaskApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new TaskApi.
+   * @alias module:api/TaskApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the addSubtask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a task checklist
+     * @param {String} taskId taskId
+     * @param {module:model/TaskRepresentation} taskRepresentation taskRepresentation
+     */
+    this.addSubtask = function (taskId, taskRepresentation) {
+      var postBody = taskRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling addSubtask";
+      }
+
+      // verify the required parameter 'taskRepresentation' is set
+      if (taskRepresentation == undefined || taskRepresentation == null) {
+        throw "Missing the required parameter 'taskRepresentation' when calling addSubtask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the addTaskComment operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/CommentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Add a comment to a Task
+     * @param {module:model/CommentRepresentation} commentRequest commentRequest
+     * @param {String} taskId taskId
+     */
+    this.addTaskComment = function (commentRequest, taskId) {
+      var postBody = commentRequest;
+
+      // verify the required parameter 'commentRequest' is set
+      if (commentRequest == undefined || commentRequest == null) {
+        throw "Missing the required parameter 'commentRequest' when calling addTaskComment";
+      }
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling addTaskComment";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = CommentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/comments', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the assignTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Assign a task to a user
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.assignTask = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling assignTask";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling assignTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/assign', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the attachForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Attach a form to a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.attachForm = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling attachForm";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling attachForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/attach-form', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the claimTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Claim a task
+     * To claim a task (in case the task is assigned to a group)
+     * @param {String} taskId taskId
+     */
+    this.claimTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling claimTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/claim', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the completeTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Complete a Task Form
+     * @param {String} taskId taskId
+     * @param {module:model/CompleteFormRepresentation} completeTaskFormRepresentation completeTaskFormRepresentation
+     */
+    this.completeTaskForm = function (taskId, completeTaskFormRepresentation) {
+      var postBody = completeTaskFormRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling completeTaskForm";
+      }
+
+      // verify the required parameter 'completeTaskFormRepresentation' is set
+      if (completeTaskFormRepresentation == undefined || completeTaskFormRepresentation == null) {
+        throw "Missing the required parameter 'completeTaskFormRepresentation' when calling completeTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the completeTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Complete Task
+     * To complete a task (standalone or without a task form)
+     * @param {String} taskId taskId
+     */
+    this.completeTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling completeTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/complete', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createNewTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a Standalone Task
+     * Standalone Task is not associated with a process instance. You can define only task name &amp; description
+     * @param {module:model/TaskRepresentation} taskRepresentation taskRepresentation
+     */
+    this.createNewTask = function (taskRepresentation) {
+      var postBody = taskRepresentation;
+
+      // verify the required parameter 'taskRepresentation' is set
+      if (taskRepresentation == undefined || taskRepresentation == null) {
+        throw "Missing the required parameter 'taskRepresentation' when calling createNewTask";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRelatedContentOnTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To relate content (eg from Alfresco) to a task
+     * @param {String} taskId taskId
+     * @param {module:model/RelatedContentRepresentation} relatedContent relatedContent
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.isRelatedContent isRelatedContent
+     */
+    this.createRelatedContentOnTask = function (taskId, relatedContent, opts) {
+      opts = opts || {};
+      var postBody = relatedContent;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling createRelatedContentOnTask";
+      }
+
+      // verify the required parameter 'relatedContent' is set
+      if (relatedContent == undefined || relatedContent == null) {
+        throw "Missing the required parameter 'relatedContent' when calling createRelatedContentOnTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'isRelatedContent': opts['isRelatedContent']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createRelatedContentOnTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/RelatedContentRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Upload content to a task
+     * @param {String} taskId taskId
+     * @param {File} file file
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.isRelatedContent isRelatedContent
+     */
+    this.createRelatedContentOnTask = function (taskId, file, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling createRelatedContentOnTask";
+      }
+
+      // verify the required parameter 'file' is set
+      if (file == undefined || file == null) {
+        throw "Missing the required parameter 'file' when calling createRelatedContentOnTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'isRelatedContent': opts['isRelatedContent']
+      };
+      var headerParams = {};
+      var formParams = {
+        'file': file
+      };
+
+      var authNames = [];
+      var contentTypes = ['multipart/form-data'];
+      var accepts = ['application/json'];
+      var returnType = RelatedContentRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/raw-content', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a Task
+     * @param {String} taskId taskId
+     */
+    this.deleteTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling deleteTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the filterTasks operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Filter list of Task
+     * @param {module:model/TaskFilterRequestRepresentation} requestNode requestNode
+     */
+    this.filterTasks = function (requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling filterTasks";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/filter', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getChecklist operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Checklist added to a task
+     * @param {String} taskId taskId
+     */
+    this.getChecklist = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getChecklist";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRelatedContentForTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve which content is attached to a task
+     * @param {String} taskId taskId
+     */
+    this.getRelatedContentForTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRelatedContentForTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/content', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Column Field Values
+     * Specific case to retrieve information on a specific column
+     * @param {String} taskId taskId
+     * @param {String} field field
+     * @param {String} column column
+     */
+    this.getRestFieldValues = function (taskId, field, column) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'field' is set
+      if (field == undefined || field == null) {
+        throw "Missing the required parameter 'field' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'column' is set
+      if (column == undefined || column == null) {
+        throw "Missing the required parameter 'column' when calling getRestFieldValues";
+      }
+
+      var pathParams = {
+        'taskId': taskId,
+        'field': field,
+        'column': column
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/form-values/{field}/{column}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Populated Field Values
+     * Form field values that are populated through a REST backend, can be retrieved via this service
+     * @param {String} taskId taskId
+     * @param {String} field field
+     */
+    this.getRestFieldValues = function (taskId, field) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'field' is set
+      if (field == undefined || field == null) {
+        throw "Missing the required parameter 'field' when calling getRestFieldValues";
+      }
+
+      var pathParams = {
+        'taskId': taskId,
+        'field': field
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/form-values/{field}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTaskComments operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Comment list added to Task
+     * @param {String} taskId taskId
+     * @param {Object} opts Optional parameters
+     * @param {Boolean} opts.latestFirst latestFirst
+     */
+    this.getTaskComments = function (taskId, opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getTaskComments";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {
+        'latestFirst': opts['latestFirst']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/comments', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Task Form
+     * @param {String} taskId taskId
+     */
+    this.getTaskForm = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Task Details
+     * @param {String} taskId taskId
+     */
+    this.getTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the involveUser operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To involve a user with a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.involveUser = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling involveUser";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling involveUser";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/involve', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the listTasks operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List Task
+     * @param {module:model/TaskQueryRequestRepresentation} requestNode requestNode
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.listTasks = function (requestNode) {
+      var postBody = requestNode || {};
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/query', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the orderChecklist operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Change the order of items on a checklist
+     * @param {String} taskId taskId
+     * @param {module:model/ChecklistOrderRepresentation} orderRepresentation orderRepresentation
+     */
+    this.orderChecklist = function (taskId, orderRepresentation) {
+      var postBody = orderRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling orderChecklist";
+      }
+
+      // verify the required parameter 'orderRepresentation' is set
+      if (orderRepresentation == undefined || orderRepresentation == null) {
+        throw "Missing the required parameter 'orderRepresentation' when calling orderChecklist";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Remove a form to a task
+     * @param {String} taskId taskId
+     */
+    this.removeForm = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling removeForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/remove-form', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the removeInvolvedUser operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Remove an involved user from a task
+     * @param {String} taskId taskId
+     * @param {module:model/ObjectNode} requestNode requestNode
+     */
+    this.removeInvolvedUser = function (taskId, requestNode) {
+      var postBody = requestNode;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling removeInvolvedUser";
+      }
+
+      // verify the required parameter 'requestNode' is set
+      if (requestNode == undefined || requestNode == null) {
+        throw "Missing the required parameter 'requestNode' when calling removeInvolvedUser";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/remove-involved', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the saveTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Save Task Form
+     * @param {String} taskId taskId
+     * @param {module:model/SaveFormRepresentation} saveTaskFormRepresentation saveTaskFormRepresentation
+     */
+    this.saveTaskForm = function (taskId, saveTaskFormRepresentation) {
+      var postBody = saveTaskFormRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling saveTaskForm";
+      }
+
+      // verify the required parameter 'saveTaskFormRepresentation' is set
+      if (saveTaskFormRepresentation == undefined || saveTaskFormRepresentation == null) {
+        throw "Missing the required parameter 'saveTaskFormRepresentation' when calling saveTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/save-form', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the unclaimTask operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Unclaim a task
+     * To unclaim a task (in case the task was assigned to a group)
+     * @param {String} taskId taskId
+     */
+    this.unclaimTask = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling unclaimTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/action/unclaim', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateTask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update Task Details
+     * You can edit only name, description and dueDate (ISO 8601 string).
+     * @param {String} taskId taskId
+     * @param {module:model/TaskUpdateRepresentation} updated updated
+     * data is of type: {module:model/TaskRepresentation}
+     */
+    this.updateTask = function (taskId, updated) {
+      var postBody = updated;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling updateTask";
+      }
+
+      // verify the required parameter 'updated' is set
+      if (updated == undefined || updated == null) {
+        throw "Missing the required parameter 'updated' when calling updateTask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ChecklistOrderRepresentation":192,"../model/CommentRepresentation":193,"../model/CompleteFormRepresentation":194,"../model/FormDefinitionRepresentation":205,"../model/FormValueRepresentation":213,"../model/ObjectNode":227,"../model/RelatedContentRepresentation":236,"../model/ResultListDataRepresentation":239,"../model/SaveFormRepresentation":241,"../model/TaskFilterRequestRepresentation":245,"../model/TaskRepresentation":247,"../model/TaskUpdateRepresentation":248}],172:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/TaskRepresentation', 'model/ResultListDataRepresentation', 'model/ChecklistOrderRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/TaskRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/ChecklistOrderRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskCheckListApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.TaskRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.ChecklistOrderRepresentation);
+  }
+})(undefined, function (ApiClient, TaskRepresentation, ResultListDataRepresentation, ChecklistOrderRepresentation) {
+  'use strict';
+
+  /**
+   * TaskCheckList service.
+   * @module api/TaskCheckListApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new TaskCheckListApi.
+   * @alias module:api/TaskCheckListApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the addSubtask operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/TaskRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a task checklist
+     * @param {String} taskId taskId
+     * @param {module:model/TaskRepresentation} taskRepresentation taskRepresentation
+     */
+    this.addSubtask = function (taskId, taskRepresentation) {
+      var postBody = taskRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling addSubtask";
+      }
+
+      // verify the required parameter 'taskRepresentation' is set
+      if (taskRepresentation == undefined || taskRepresentation == null) {
+        throw "Missing the required parameter 'taskRepresentation' when calling addSubtask";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = TaskRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getChecklist operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Checklist added to a task
+     * @param {String} taskId taskId
+     */
+    this.getChecklist = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getChecklist";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the orderChecklist operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Change the order of items on a checklist
+     * @param {String} taskId taskId
+     * @param {module:model/ChecklistOrderRepresentation} orderRepresentation orderRepresentation
+     */
+    this.orderChecklist = function (taskId, orderRepresentation) {
+      var postBody = orderRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling orderChecklist";
+      }
+
+      // verify the required parameter 'orderRepresentation' is set
+      if (orderRepresentation == undefined || orderRepresentation == null) {
+        throw "Missing the required parameter 'orderRepresentation' when calling orderChecklist";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/tasks/{taskId}/checklist', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ChecklistOrderRepresentation":192,"../model/ResultListDataRepresentation":239,"../model/TaskRepresentation":247}],173:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/CompleteFormRepresentation', 'model/FormValueRepresentation', 'model/FormDefinitionRepresentation', 'model/SaveFormRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/CompleteFormRepresentation'), require('../model/FormValueRepresentation'), require('../model/FormDefinitionRepresentation'), require('../model/SaveFormRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskFormsApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.CompleteFormRepresentation, root.ActivitiPublicRestApi.FormValueRepresentation, root.ActivitiPublicRestApi.FormDefinitionRepresentation, root.ActivitiPublicRestApi.SaveFormRepresentation);
+  }
+})(undefined, function (ApiClient, CompleteFormRepresentation, FormValueRepresentation, FormDefinitionRepresentation, SaveFormRepresentation) {
+  'use strict';
+
+  /**
+   * TaskForms service.
+   * @module api/TaskFormsApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new TaskFormsApi.
+   * @alias module:api/TaskFormsApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the completeTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Complete a Task Form
+     * @param {String} taskId taskId
+     * @param {module:model/CompleteFormRepresentation} completeTaskFormRepresentation completeTaskFormRepresentation
+     */
+    this.completeTaskForm = function (taskId, completeTaskFormRepresentation) {
+      var postBody = completeTaskFormRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling completeTaskForm";
+      }
+
+      // verify the required parameter 'completeTaskFormRepresentation' is set
+      if (completeTaskFormRepresentation == undefined || completeTaskFormRepresentation == null) {
+        throw "Missing the required parameter 'completeTaskFormRepresentation' when calling completeTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Column Field Values
+     * Specific case to retrieve information on a specific column
+     * @param {String} taskId taskId
+     * @param {String} field field
+     * @param {String} column column
+     */
+    this.getRestFieldValues = function (taskId, field, column) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'field' is set
+      if (field == undefined || field == null) {
+        throw "Missing the required parameter 'field' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'column' is set
+      if (column == undefined || column == null) {
+        throw "Missing the required parameter 'column' when calling getRestFieldValues";
+      }
+
+      var pathParams = {
+        'taskId': taskId,
+        'field': field,
+        'column': column
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/form-values/{field}/{column}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getRestFieldValues operation.
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/FormValueRepresentation>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Populated Field Values
+     * Form field values that are populated through a REST backend, can be retrieved via this service
+     * @param {String} taskId taskId
+     * @param {String} field field
+     */
+    this.getRestFieldValues = function (taskId, field) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getRestFieldValues";
+      }
+
+      // verify the required parameter 'field' is set
+      if (field == undefined || field == null) {
+        throw "Missing the required parameter 'field' when calling getRestFieldValues";
+      }
+
+      var pathParams = {
+        'taskId': taskId,
+        'field': field
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = [FormValueRepresentation];
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/form-values/{field}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/FormDefinitionRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve Task Form
+     * @param {String} taskId taskId
+     */
+    this.getTaskForm = function (taskId) {
+      var postBody = null;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling getTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = FormDefinitionRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the saveTaskForm operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Save Task Form
+     * @param {String} taskId taskId
+     * @param {module:model/SaveFormRepresentation} saveTaskFormRepresentation saveTaskFormRepresentation
+     */
+    this.saveTaskForm = function (taskId, saveTaskFormRepresentation) {
+      var postBody = saveTaskFormRepresentation;
+
+      // verify the required parameter 'taskId' is set
+      if (taskId == undefined || taskId == null) {
+        throw "Missing the required parameter 'taskId' when calling saveTaskForm";
+      }
+
+      // verify the required parameter 'saveTaskFormRepresentation' is set
+      if (saveTaskFormRepresentation == undefined || saveTaskFormRepresentation == null) {
+        throw "Missing the required parameter 'saveTaskFormRepresentation' when calling saveTaskForm";
+      }
+
+      var pathParams = {
+        'taskId': taskId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/task-forms/{taskId}/save-form', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/CompleteFormRepresentation":194,"../model/FormDefinitionRepresentation":205,"../model/FormValueRepresentation":213,"../model/SaveFormRepresentation":241}],174:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ArrayNode'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ArrayNode'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TemporaryApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ArrayNode);
+  }
+})(undefined, function (ApiClient, ArrayNode) {
+  'use strict';
+
+  /**
+   * Temporary service.
+   * @module api/TemporaryApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new TemporaryApi.
+   * @alias module:api/TemporaryApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the completeTasks operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * completeTasks
+     * @param {Integer} userId userId
+     * @param {String} processDefinitionKey processDefinitionKey
+     */
+    this.completeTasks = function (userId, processDefinitionKey) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling completeTasks";
+      }
+
+      // verify the required parameter 'processDefinitionKey' is set
+      if (processDefinitionKey == undefined || processDefinitionKey == null) {
+        throw "Missing the required parameter 'processDefinitionKey' when calling completeTasks";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'userId': userId,
+        'processDefinitionKey': processDefinitionKey
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/temporary/generate-report-data/complete-tasks', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the generateData operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * generateData
+     * @param {Integer} userId userId
+     * @param {String} processDefinitionKey processDefinitionKey
+     */
+    this.generateData = function (userId, processDefinitionKey) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling generateData";
+      }
+
+      // verify the required parameter 'processDefinitionKey' is set
+      if (processDefinitionKey == undefined || processDefinitionKey == null) {
+        throw "Missing the required parameter 'processDefinitionKey' when calling generateData";
+      }
+
+      var pathParams = {};
+      var queryParams = {
+        'userId': userId,
+        'processDefinitionKey': processDefinitionKey
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/temporary/generate-report-data/start-process', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getHeaders operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ArrayNode} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getHeaders
+     */
+    this.getHeaders = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ArrayNode;
+
+      return this.apiClient.callApi('/api/enterprise/temporary/example-headers', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getOptions operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ArrayNode} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * getOptions
+     */
+    this.getOptions = function () {
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ArrayNode;
+
+      return this.apiClient.callApi('/api/enterprise/temporary/example-options', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ArrayNode":188}],175:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/UserActionRepresentation', 'model/UserRepresentation', 'model/ResultListDataRepresentation', 'model/ResetPasswordRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/UserActionRepresentation'), require('../model/UserRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/ResetPasswordRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.UserActionRepresentation, root.ActivitiPublicRestApi.UserRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.ResetPasswordRepresentation);
+  }
+})(undefined, function (ApiClient, UserActionRepresentation, UserRepresentation, ResultListDataRepresentation, ResetPasswordRepresentation) {
+  'use strict';
+
+  /**
+   * User service.
+   * @module api/UserApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new UserApi.
+   * @alias module:api/UserApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the executeAction operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Execute an action for a specific user
+     * Typical action is updating/reset password
+     * @param {Integer} userId userId
+     * @param {module:model/UserActionRepresentation} actionRequest actionRequest
+     */
+    this.executeAction = function (userId, actionRequest) {
+      var postBody = actionRequest;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling executeAction";
+      }
+
+      // verify the required parameter 'actionRequest' is set
+      if (actionRequest == undefined || actionRequest == null) {
+        throw "Missing the required parameter 'actionRequest' when calling executeAction";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/users/{userId}', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getProfilePicture operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve user profile picture
+     * @param {Integer} userId userId
+     */
+    this.getProfilePicture = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling getProfilePicture";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/users/{userId}/picture', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUser operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve user information
+     * @param {Integer} userId userId
+     */
+    this.getUser = function (userId) {
+      var postBody = null;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling getUser";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/users/{userId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUsers operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List users
+     * A common use case is that a user wants to select another user (eg. when assigning a task) or group.
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.email email
+     * @param {String} opts.externalId externalId
+     * @param {String} opts.externalIdCaseInsensitive externalIdCaseInsensitive
+     * @param {String} opts.excludeTaskId excludeTaskId
+     * @param {String} opts.excludeProcessId excludeProcessId
+     * @param {Integer} opts.groupId groupId
+     * @param {Integer} opts.tenantId tenantId
+     */
+    this.getUsers = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'email': opts['email'],
+        'externalId': opts['externalId'],
+        'externalIdCaseInsensitive': opts['externalIdCaseInsensitive'],
+        'excludeTaskId': opts['excludeTaskId'],
+        'excludeProcessId': opts['excludeProcessId'],
+        'groupId': opts['groupId'],
+        'tenantId': opts['tenantId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/users', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the requestPasswordReset operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Request password reset
+     * @param {module:model/ResetPasswordRepresentation} resetPassword resetPassword
+     */
+    this.requestPasswordReset = function (resetPassword) {
+      var postBody = resetPassword;
+
+      // verify the required parameter 'resetPassword' is set
+      if (resetPassword == undefined || resetPassword == null) {
+        throw "Missing the required parameter 'resetPassword' when calling requestPasswordReset";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/idm/passwords', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateUser operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update user information
+     * @param {Integer} userId userId
+     * @param {module:model/UserRepresentation} userRequest userRequest
+     */
+    this.updateUser = function (userId, userRequest) {
+      var postBody = userRequest;
+
+      // verify the required parameter 'userId' is set
+      if (userId == undefined || userId == null) {
+        throw "Missing the required parameter 'userId' when calling updateUser";
+      }
+
+      // verify the required parameter 'userRequest' is set
+      if (userRequest == undefined || userRequest == null) {
+        throw "Missing the required parameter 'userRequest' when calling updateUser";
+      }
+
+      var pathParams = {
+        'userId': userId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/users/{userId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResetPasswordRepresentation":237,"../model/ResultListDataRepresentation":239,"../model/UserActionRepresentation":252,"../model/UserRepresentation":255}],176:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/UserProcessInstanceFilterRepresentation', 'model/UserTaskFilterRepresentation', 'model/ResultListDataRepresentation', 'model/UserFilterOrderRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/UserProcessInstanceFilterRepresentation'), require('../model/UserTaskFilterRepresentation'), require('../model/ResultListDataRepresentation'), require('../model/UserFilterOrderRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserFiltersApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.UserProcessInstanceFilterRepresentation, root.ActivitiPublicRestApi.UserTaskFilterRepresentation, root.ActivitiPublicRestApi.ResultListDataRepresentation, root.ActivitiPublicRestApi.UserFilterOrderRepresentation);
+  }
+})(undefined, function (ApiClient, UserProcessInstanceFilterRepresentation, UserTaskFilterRepresentation, ResultListDataRepresentation, UserFilterOrderRepresentation) {
+  'use strict';
+
+  /**
+   * UserFilters service.
+   * @module api/UserFiltersApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new UserFiltersApi.
+   * @alias module:api/UserFiltersApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the createUserProcessInstanceFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserProcessInstanceFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a user process instance task filter
+     * @param {module:model/UserProcessInstanceFilterRepresentation} userProcessInstanceFilterRepresentation userProcessInstanceFilterRepresentation
+     * data is of type: {module:model/UserProcessInstanceFilterRepresentation}
+     */
+    this.createUserProcessInstanceFilter = function (userProcessInstanceFilterRepresentation) {
+      var postBody = userProcessInstanceFilterRepresentation;
+
+      // verify the required parameter 'userProcessInstanceFilterRepresentation' is set
+      if (userProcessInstanceFilterRepresentation == undefined || userProcessInstanceFilterRepresentation == null) {
+        throw "Missing the required parameter 'userProcessInstanceFilterRepresentation' when calling createUserProcessInstanceFilter";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserProcessInstanceFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the createUserTaskFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserTaskFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Create a new task filter
+     * @param {module:model/UserTaskFilterRepresentation} userTaskFilterRepresentation userTaskFilterRepresentation
+     * data is of type: {module:model/UserTaskFilterRepresentation}
+     */
+    this.createUserTaskFilter = function (userTaskFilterRepresentation) {
+      var postBody = userTaskFilterRepresentation;
+
+      // verify the required parameter 'userTaskFilterRepresentation' is set
+      if (userTaskFilterRepresentation == undefined || userTaskFilterRepresentation == null) {
+        throw "Missing the required parameter 'userTaskFilterRepresentation' when calling createUserTaskFilter";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserTaskFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteUserProcessInstanceFilter operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a user process instance task filter
+     * @param {Integer} userFilterId userFilterId
+     */
+    this.deleteUserProcessInstanceFilter = function (userFilterId) {
+      var postBody = null;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling deleteUserProcessInstanceFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes/{userFilterId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the deleteUserTaskFilter operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Delete a task filter
+     * @param {Integer} userFilterId userFilterId
+     */
+    this.deleteUserTaskFilter = function (userFilterId) {
+      var postBody = null;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling deleteUserTaskFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks/{userFilterId}', 'DELETE', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUserProcessInstanceFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserProcessInstanceFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get a specific user process instance task filter
+     * @param {Integer} userFilterId userFilterId
+     * data is of type: {module:model/UserProcessInstanceFilterRepresentation}
+     */
+    this.getUserProcessInstanceFilter = function (userFilterId) {
+      var postBody = null;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling getUserProcessInstanceFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserProcessInstanceFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes/{userFilterId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUserProcessInstanceFilters operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve list of taks filters
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.appId appId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getUserProcessInstanceFilters = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'appId': opts['appId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUserTaskFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserTaskFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Get a specific task filter
+     * @param {Integer} userFilterId userFilterId
+     * data is of type: {module:model/UserTaskFilterRepresentation}
+     */
+    this.getUserTaskFilter = function (userFilterId) {
+      var postBody = null;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling getUserTaskFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserTaskFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks/{userFilterId}', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the getUserTaskFilters operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Retrieve list of task filters
+     * @param {Object} opts Optional parameters
+     * @param {Integer} opts.appId appId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getUserTaskFilters = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'appId': opts['appId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the orderUserProcessInstanceFilters operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To order the list of user process instance filters
+     * @param {module:model/UserFilterOrderRepresentation} filterOrderRepresentation filterOrderRepresentation
+     */
+    this.orderUserProcessInstanceFilters = function (filterOrderRepresentation) {
+      var postBody = filterOrderRepresentation;
+
+      // verify the required parameter 'filterOrderRepresentation' is set
+      if (filterOrderRepresentation == undefined || filterOrderRepresentation == null) {
+        throw "Missing the required parameter 'filterOrderRepresentation' when calling orderUserProcessInstanceFilters";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the orderUserTaskFilters operation.
+     * @param {String} error Error message, if any.
+     * @param data This operation does not return a value.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * To order the list of user task filters
+     * @param {module:model/UserFilterOrderRepresentation} filterOrderRepresentation filterOrderRepresentation
+     */
+    this.orderUserTaskFilters = function (filterOrderRepresentation) {
+      var postBody = filterOrderRepresentation;
+
+      // verify the required parameter 'filterOrderRepresentation' is set
+      if (filterOrderRepresentation == undefined || filterOrderRepresentation == null) {
+        throw "Missing the required parameter 'filterOrderRepresentation' when calling orderUserTaskFilters";
+      }
+
+      var pathParams = {};
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = null;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateUserProcessInstanceFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserProcessInstanceFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update a user process instance task filter
+     * @param {Integer} userFilterId userFilterId
+     * @param {module:model/UserProcessInstanceFilterRepresentation} userProcessInstanceFilterRepresentation userProcessInstanceFilterRepresentation
+     * data is of type: {module:model/UserProcessInstanceFilterRepresentation}
+     */
+    this.updateUserProcessInstanceFilter = function (userFilterId, userProcessInstanceFilterRepresentation) {
+      var postBody = userProcessInstanceFilterRepresentation;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling updateUserProcessInstanceFilter";
+      }
+
+      // verify the required parameter 'userProcessInstanceFilterRepresentation' is set
+      if (userProcessInstanceFilterRepresentation == undefined || userProcessInstanceFilterRepresentation == null) {
+        throw "Missing the required parameter 'userProcessInstanceFilterRepresentation' when calling updateUserProcessInstanceFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserProcessInstanceFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/processes/{userFilterId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+
+    /**
+     * Function to receive the result of the updateUserTaskFilter operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/UserTaskFilterRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Update a specific task filter
+     * @param {Integer} userFilterId userFilterId
+     * @param {module:model/UserTaskFilterRepresentation} userTaskFilterRepresentation userTaskFilterRepresentation
+     * data is of type: {module:model/UserTaskFilterRepresentation}
+     */
+    this.updateUserTaskFilter = function (userFilterId, userTaskFilterRepresentation) {
+      var postBody = userTaskFilterRepresentation;
+
+      // verify the required parameter 'userFilterId' is set
+      if (userFilterId == undefined || userFilterId == null) {
+        throw "Missing the required parameter 'userFilterId' when calling updateUserTaskFilter";
+      }
+
+      // verify the required parameter 'userTaskFilterRepresentation' is set
+      if (userTaskFilterRepresentation == undefined || userTaskFilterRepresentation == null) {
+        throw "Missing the required parameter 'userTaskFilterRepresentation' when calling updateUserTaskFilter";
+      }
+
+      var pathParams = {
+        'userFilterId': userFilterId
+      };
+      var queryParams = {};
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = UserTaskFilterRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/filters/tasks/{userFilterId}', 'PUT', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239,"../model/UserFilterOrderRepresentation":253,"../model/UserProcessInstanceFilterRepresentation":254,"../model/UserTaskFilterRepresentation":256}],177:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ResultListDataRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/ResultListDataRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UsersWorkflowApi = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ResultListDataRepresentation);
+  }
+})(undefined, function (ApiClient, ResultListDataRepresentation) {
+  'use strict';
+
+  /**
+   * UsersWorkflow service.
+   * @module api/UsersWorkflowApi
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new UsersWorkflowApi.
+   * @alias module:api/UsersWorkflowApi
+   * @class
+   * @param {module:ApiClient} apiClient Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+
+  var exports = function exports(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+
+    /**
+     * Function to receive the result of the getUsers operation.
+     * @param {String} error Error message, if any.
+     * @param {module:model/ResultListDataRepresentation} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * List users
+     * A common use case is that a user wants to select another user (eg. when assigning a task) or group.
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.filter filter
+     * @param {String} opts.email email
+     * @param {String} opts.externalId externalId
+     * @param {String} opts.externalIdCaseInsensitive externalIdCaseInsensitive
+     * @param {String} opts.excludeTaskId excludeTaskId
+     * @param {String} opts.excludeProcessId excludeProcessId
+     * @param {Integer} opts.groupId groupId
+     * @param {Integer} opts.tenantId tenantId
+     * data is of type: {module:model/ResultListDataRepresentation}
+     */
+    this.getUsers = function (opts) {
+      opts = opts || {};
+      var postBody = null;
+
+      var pathParams = {};
+      var queryParams = {
+        'filter': opts['filter'],
+        'email': opts['email'],
+        'externalId': opts['externalId'],
+        'externalIdCaseInsensitive': opts['externalIdCaseInsensitive'],
+        'excludeTaskId': opts['excludeTaskId'],
+        'excludeProcessId': opts['excludeProcessId'],
+        'groupId': opts['groupId'],
+        'tenantId': opts['tenantId']
+      };
+      var headerParams = {};
+      var formParams = {};
+
+      var authNames = [];
+      var contentTypes = ['application/json'];
+      var accepts = ['application/json'];
+      var returnType = ResultListDataRepresentation;
+
+      return this.apiClient.callApi('/api/enterprise/users', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts, returnType);
+    };
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"../model/ResultListDataRepresentation":239}],178:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['../../alfrescoApiClient', 'model/AbstractGroupRepresentation', 'model/AbstractRepresentation', 'model/AbstractUserRepresentation', 'model/AddGroupCapabilitiesRepresentation', 'model/AppDefinition', 'model/AppDefinitionPublishRepresentation', 'model/AppDefinitionRepresentation', 'model/AppDefinitionUpdateResultRepresentation', 'model/AppModelDefinition', 'model/ArrayNode', 'model/BoxUserAccountCredentialsRepresentation', 'model/BulkUserUpdateRepresentation', 'model/ChangePasswordRepresentation', 'model/ChecklistOrderRepresentation', 'model/CommentRepresentation', 'model/CompleteFormRepresentation', 'model/ConditionRepresentation', 'model/CreateEndpointBasicAuthRepresentation', 'model/CreateProcessInstanceRepresentation', 'model/CreateTenantRepresentation', 'model/EndpointBasicAuthRepresentation', 'model/EndpointConfigurationRepresentation', 'model/EndpointRequestHeaderRepresentation', 'model/EntityAttributeScopeRepresentation', 'model/EntityVariableScopeRepresentation', 'model/File', 'model/FormDefinitionRepresentation', 'model/FormFieldRepresentation', 'model/FormJavascriptEventRepresentation', 'model/FormOutcomeRepresentation', 'model/FormRepresentation', 'model/FormSaveRepresentation', 'model/FormScopeRepresentation', 'model/FormTabRepresentation', 'model/FormValueRepresentation', 'model/GroupCapabilityRepresentation', 'model/GroupRepresentation', 'model/ImageUploadRepresentation', 'model/LayoutRepresentation', 'model/LightAppRepresentation', 'model/LightGroupRepresentation', 'model/LightTenantRepresentation', 'model/LightUserRepresentation', 'model/MaplongListstring', 'model/MapstringListEntityVariableScopeRepresentation', 'model/MapstringListVariableScopeRepresentation', 'model/Mapstringstring', 'model/ModelRepresentation', 'model/ObjectNode', 'model/OptionRepresentation', 'model/ProcessInstanceFilterRepresentation', 'model/ProcessInstanceFilterRequestRepresentation', 'model/ProcessInstanceRepresentation', 'model/ProcessScopeIdentifierRepresentation', 'model/ProcessScopeRepresentation', 'model/ProcessScopesRequestRepresentation', 'model/PublishIdentityInfoRepresentation', 'model/RelatedContentRepresentation', 'model/ResetPasswordRepresentation', 'model/RestVariable', 'model/ResultListDataRepresentation', 'model/RuntimeAppDefinitionSaveRepresentation', 'model/SaveFormRepresentation', 'model/SyncLogEntryRepresentation', 'model/SystemPropertiesRepresentation', 'model/TaskFilterRepresentation', 'model/TaskFilterRequestRepresentation', 'model/TaskQueryRequestRepresentation', 'model/TaskRepresentation', 'model/TaskUpdateRepresentation', 'model/TenantEvent', 'model/TenantRepresentation', 'model/UserAccountCredentialsRepresentation', 'model/UserActionRepresentation', 'model/UserFilterOrderRepresentation', 'model/UserProcessInstanceFilterRepresentation', 'model/UserRepresentation', 'model/UserTaskFilterRepresentation', 'model/ValidationErrorRepresentation', 'model/VariableScopeRepresentation', 'api/AboutApi', 'api/AdminEndpointsApi', 'api/AdminGroupsApi', 'api/AdminTenantsApi', 'api/AdminUsersApi', 'api/AlfrescoApi', 'api/AppsApi', 'api/AppsDefinitionApi', 'api/AppsRuntimeApi', 'api/CommentsApi', 'api/ContentApi', 'api/ContentRenditionApi', 'api/EditorApi', 'api/GroupsApi', 'api/IDMSyncApi', 'api/IntegrationApi', 'api/IntegrationAccountApi', 'api/IntegrationAlfrescoCloudApi', 'api/IntegrationAlfrescoOnPremiseApi', 'api/IntegrationBoxApi', 'api/IntegrationDriveApi', 'api/ModelBpmnApi', 'api/ModelsApi', 'api/ModelsHistoryApi', 'api/ProcessApi', 'api/ProcessDefinitionsApi', 'api/ProcessDefinitionsFormApi', 'api/ProcessInstancesApi', 'api/ProcessInstancesInformationApi', 'api/ProcessInstancesListingApi', 'api/ProcessScopeApi', 'api/ProfileApi', 'api/ScriptFileApi', 'api/SystemPropertiesApi', 'api/TaskApi', 'api/TaskActionsApi', 'api/TaskCheckListApi', 'api/TaskFormsApi', 'api/TemporaryApi', 'api/UserApi', 'api/UserFiltersApi', 'api/UsersWorkflowApi'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../alfrescoApiClient'), require('./model/AbstractGroupRepresentation'), require('./model/AbstractRepresentation'), require('./model/AbstractUserRepresentation'), require('./model/AddGroupCapabilitiesRepresentation'), require('./model/AppDefinition'), require('./model/AppDefinitionPublishRepresentation'), require('./model/AppDefinitionRepresentation'), require('./model/AppDefinitionUpdateResultRepresentation'), require('./model/AppModelDefinition'), require('./model/ArrayNode'), require('./model/BoxUserAccountCredentialsRepresentation'), require('./model/BulkUserUpdateRepresentation'), require('./model/ChangePasswordRepresentation'), require('./model/ChecklistOrderRepresentation'), require('./model/CommentRepresentation'), require('./model/CompleteFormRepresentation'), require('./model/ConditionRepresentation'), require('./model/CreateEndpointBasicAuthRepresentation'), require('./model/CreateProcessInstanceRepresentation'), require('./model/CreateTenantRepresentation'), require('./model/EndpointBasicAuthRepresentation'), require('./model/EndpointConfigurationRepresentation'), require('./model/EndpointRequestHeaderRepresentation'), require('./model/EntityAttributeScopeRepresentation'), require('./model/EntityVariableScopeRepresentation'), require('./model/File'), require('./model/FormDefinitionRepresentation'), require('./model/FormFieldRepresentation'), require('./model/FormJavascriptEventRepresentation'), require('./model/FormOutcomeRepresentation'), require('./model/FormRepresentation'), require('./model/FormSaveRepresentation'), require('./model/FormScopeRepresentation'), require('./model/FormTabRepresentation'), require('./model/FormValueRepresentation'), require('./model/GroupCapabilityRepresentation'), require('./model/GroupRepresentation'), require('./model/ImageUploadRepresentation'), require('./model/LayoutRepresentation'), require('./model/LightAppRepresentation'), require('./model/LightGroupRepresentation'), require('./model/LightTenantRepresentation'), require('./model/LightUserRepresentation'), require('./model/MaplongListstring'), require('./model/MapstringListEntityVariableScopeRepresentation'), require('./model/MapstringListVariableScopeRepresentation'), require('./model/Mapstringstring'), require('./model/ModelRepresentation'), require('./model/ObjectNode'), require('./model/OptionRepresentation'), require('./model/ProcessInstanceFilterRepresentation'), require('./model/ProcessInstanceFilterRequestRepresentation'), require('./model/ProcessInstanceRepresentation'), require('./model/ProcessScopeIdentifierRepresentation'), require('./model/ProcessScopeRepresentation'), require('./model/ProcessScopesRequestRepresentation'), require('./model/PublishIdentityInfoRepresentation'), require('./model/RelatedContentRepresentation'), require('./model/ResetPasswordRepresentation'), require('./model/RestVariable'), require('./model/ResultListDataRepresentation'), require('./model/RuntimeAppDefinitionSaveRepresentation'), require('./model/SaveFormRepresentation'), require('./model/SyncLogEntryRepresentation'), require('./model/SystemPropertiesRepresentation'), require('./model/TaskFilterRepresentation'), require('./model/TaskFilterRequestRepresentation'), require('./model/TaskQueryRequestRepresentation'), require('./model/TaskRepresentation'), require('./model/TaskUpdateRepresentation'), require('./model/TenantEvent'), require('./model/TenantRepresentation'), require('./model/UserAccountCredentialsRepresentation'), require('./model/UserActionRepresentation'), require('./model/UserFilterOrderRepresentation'), require('./model/UserProcessInstanceFilterRepresentation'), require('./model/UserRepresentation'), require('./model/UserTaskFilterRepresentation'), require('./model/ValidationErrorRepresentation'), require('./model/VariableScopeRepresentation'), require('./api/AboutApi'), require('./api/AdminEndpointsApi'), require('./api/AdminGroupsApi'), require('./api/AdminTenantsApi'), require('./api/AdminUsersApi'), require('./api/AlfrescoApi'), require('./api/AppsApi'), require('./api/AppsDefinitionApi'), require('./api/AppsRuntimeApi'), require('./api/CommentsApi'), require('./api/ContentApi'), require('./api/ContentRenditionApi'), require('./api/EditorApi'), require('./api/GroupsApi'), require('./api/IDMSyncApi'), require('./api/IntegrationApi'), require('./api/IntegrationAccountApi'), require('./api/IntegrationAlfrescoCloudApi'), require('./api/IntegrationAlfrescoOnPremiseApi'), require('./api/IntegrationBoxApi'), require('./api/IntegrationDriveApi'), require('./api/ModelBpmnApi'), require('./api/ModelsApi'), require('./api/ModelsHistoryApi'), require('./api/ProcessApi'), require('./api/ProcessDefinitionsApi'), require('./api/ProcessDefinitionsFormApi'), require('./api/ProcessInstancesApi'), require('./api/ProcessInstancesInformationApi'), require('./api/ProcessInstancesListingApi'), require('./api/ProcessScopeApi'), require('./api/ProfileApi'), require('./api/ScriptFileApi'), require('./api/SystemPropertiesApi'), require('./api/TaskApi'), require('./api/TaskActionsApi'), require('./api/TaskCheckListApi'), require('./api/TaskFormsApi'), require('./api/TemporaryApi'), require('./api/UserApi'), require('./api/UserFiltersApi'), require('./api/UsersWorkflowApi'));
+  }
+})(function (ApiClient, AbstractGroupRepresentation, AbstractRepresentation, AbstractUserRepresentation, AddGroupCapabilitiesRepresentation, AppDefinition, AppDefinitionPublishRepresentation, AppDefinitionRepresentation, AppDefinitionUpdateResultRepresentation, AppModelDefinition, ArrayNode, BoxUserAccountCredentialsRepresentation, BulkUserUpdateRepresentation, ChangePasswordRepresentation, ChecklistOrderRepresentation, CommentRepresentation, CompleteFormRepresentation, ConditionRepresentation, CreateEndpointBasicAuthRepresentation, CreateProcessInstanceRepresentation, CreateTenantRepresentation, EndpointBasicAuthRepresentation, EndpointConfigurationRepresentation, EndpointRequestHeaderRepresentation, EntityAttributeScopeRepresentation, EntityVariableScopeRepresentation, File, FormDefinitionRepresentation, FormFieldRepresentation, FormJavascriptEventRepresentation, FormOutcomeRepresentation, FormRepresentation, FormSaveRepresentation, FormScopeRepresentation, FormTabRepresentation, FormValueRepresentation, GroupCapabilityRepresentation, GroupRepresentation, ImageUploadRepresentation, LayoutRepresentation, LightAppRepresentation, LightGroupRepresentation, LightTenantRepresentation, LightUserRepresentation, MaplongListstring, MapstringListEntityVariableScopeRepresentation, MapstringListVariableScopeRepresentation, Mapstringstring, ModelRepresentation, ObjectNode, OptionRepresentation, ProcessInstanceFilterRepresentation, ProcessInstanceFilterRequestRepresentation, ProcessInstanceRepresentation, ProcessScopeIdentifierRepresentation, ProcessScopeRepresentation, ProcessScopesRequestRepresentation, PublishIdentityInfoRepresentation, RelatedContentRepresentation, ResetPasswordRepresentation, RestVariable, ResultListDataRepresentation, RuntimeAppDefinitionSaveRepresentation, SaveFormRepresentation, SyncLogEntryRepresentation, SystemPropertiesRepresentation, TaskFilterRepresentation, TaskFilterRequestRepresentation, TaskQueryRequestRepresentation, TaskRepresentation, TaskUpdateRepresentation, TenantEvent, TenantRepresentation, UserAccountCredentialsRepresentation, UserActionRepresentation, UserFilterOrderRepresentation, UserProcessInstanceFilterRepresentation, UserRepresentation, UserTaskFilterRepresentation, ValidationErrorRepresentation, VariableScopeRepresentation, AboutApi, AdminEndpointsApi, AdminGroupsApi, AdminTenantsApi, AdminUsersApi, AlfrescoApi, AppsApi, AppsDefinitionApi, AppsRuntimeApi, CommentsApi, ContentApi, ContentRenditionApi, EditorApi, GroupsApi, IDMSyncApi, IntegrationApi, IntegrationAccountApi, IntegrationAlfrescoCloudApi, IntegrationAlfrescoOnPremiseApi, IntegrationBoxApi, IntegrationDriveApi, ModelBpmnApi, ModelsApi, ModelsHistoryApi, ProcessApi, ProcessDefinitionsApi, ProcessDefinitionsFormApi, ProcessInstancesApi, ProcessInstancesInformationApi, ProcessInstancesListingApi, ProcessScopeApi, ProfileApi, ScriptFileApi, SystemPropertiesApi, TaskApi, TaskActionsApi, TaskCheckListApi, TaskFormsApi, TemporaryApi, UserApi, UserFiltersApi, UsersWorkflowApi) {
+  'use strict';
+
+  /**
+   *  The Alfresco Activiti BPM Suite comes with a REST API. It includes both an Enterprise equivalent of the Activiti Open Source REST API exposing the generic Activiti Engine operations, and a dedicated set op REST API endpoints specific for the functionality in the Alfresco Activiti BPM Suite.        Note that there is also an &#39;internal&#39; REST API, which are the REST endpoints used by the Javascript UI. It is advised not to use this API, these REST API urls and way of using it will change and evolve with the product and are unsupported. The supported API is stable. Also, the internal REST API uses a different authentication mechanism tailored towards web browser usage. .<br>
+   * The <code>index</code> module provides access to constructors for all the classes which comprise the public API.
+   * <p>
+   * An AMD (recommended!) or CommonJS application will generally do something equivalent to the following:
+   * <pre>
+   * var ActivitiPublicRestApi = require('index'); // See note below*.
+   * var xxxSvc = new ActivitiPublicRestApi.XxxApi(); // Allocate the API class we're going to use.
+   * var yyyModel = new ActivitiPublicRestApi.Yyy(); // Construct a model instance.
+   * yyyModel.someProperty = 'someValue';
+   * ...
+   * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.
+   * ...
+   * </pre>
+   * <em>*NOTE: For a top-level AMD script, use require(['index'], function(){...})
+   * and put the application logic within the callback function.</em>
+   * </p>
+   * <p>
+   * A non-AMD browser application (discouraged) might do something like this:
+   * <pre>
+   * var xxxSvc = new ActivitiPublicRestApi.XxxApi(); // Allocate the API class we're going to use.
+   * var yyy = new ActivitiPublicRestApi.Yyy(); // Construct a model instance.
+   * yyyModel.someProperty = 'someValue';
+   * ...
+   * var zzz = xxxSvc.doSomething(yyyModel); // Invoke the service.
+   * ...
+   * </pre>
+   * </p>
+   * @module index
+   * @version 1.4.0
+   */
+
+  var exports = {
+    /**
+     * The ApiClient constructor.
+     * @property {module:ApiClient}
+     */
+    ApiClient: ApiClient,
+    /**
+     * The AbstractGroupRepresentation model constructor.
+     * @property {module:model/AbstractGroupRepresentation}
+     */
+    AbstractGroupRepresentation: AbstractGroupRepresentation,
+    /**
+     * The AbstractRepresentation model constructor.
+     * @property {module:model/AbstractRepresentation}
+     */
+    AbstractRepresentation: AbstractRepresentation,
+    /**
+     * The AbstractUserRepresentation model constructor.
+     * @property {module:model/AbstractUserRepresentation}
+     */
+    AbstractUserRepresentation: AbstractUserRepresentation,
+    /**
+     * The AddGroupCapabilitiesRepresentation model constructor.
+     * @property {module:model/AddGroupCapabilitiesRepresentation}
+     */
+    AddGroupCapabilitiesRepresentation: AddGroupCapabilitiesRepresentation,
+    /**
+     * The AppDefinition model constructor.
+     * @property {module:model/AppDefinition}
+     */
+    AppDefinition: AppDefinition,
+    /**
+     * The AppDefinitionPublishRepresentation model constructor.
+     * @property {module:model/AppDefinitionPublishRepresentation}
+     */
+    AppDefinitionPublishRepresentation: AppDefinitionPublishRepresentation,
+    /**
+     * The AppDefinitionRepresentation model constructor.
+     * @property {module:model/AppDefinitionRepresentation}
+     */
+    AppDefinitionRepresentation: AppDefinitionRepresentation,
+    /**
+     * The AppDefinitionUpdateResultRepresentation model constructor.
+     * @property {module:model/AppDefinitionUpdateResultRepresentation}
+     */
+    AppDefinitionUpdateResultRepresentation: AppDefinitionUpdateResultRepresentation,
+    /**
+     * The AppModelDefinition model constructor.
+     * @property {module:model/AppModelDefinition}
+     */
+    AppModelDefinition: AppModelDefinition,
+    /**
+     * The ArrayNode model constructor.
+     * @property {module:model/ArrayNode}
+     */
+    ArrayNode: ArrayNode,
+    /**
+     * The BoxUserAccountCredentialsRepresentation model constructor.
+     * @property {module:model/BoxUserAccountCredentialsRepresentation}
+     */
+    BoxUserAccountCredentialsRepresentation: BoxUserAccountCredentialsRepresentation,
+    /**
+     * The BulkUserUpdateRepresentation model constructor.
+     * @property {module:model/BulkUserUpdateRepresentation}
+     */
+    BulkUserUpdateRepresentation: BulkUserUpdateRepresentation,
+    /**
+     * The ChangePasswordRepresentation model constructor.
+     * @property {module:model/ChangePasswordRepresentation}
+     */
+    ChangePasswordRepresentation: ChangePasswordRepresentation,
+    /**
+     * The ChecklistOrderRepresentation model constructor.
+     * @property {module:model/ChecklistOrderRepresentation}
+     */
+    ChecklistOrderRepresentation: ChecklistOrderRepresentation,
+    /**
+     * The CommentRepresentation model constructor.
+     * @property {module:model/CommentRepresentation}
+     */
+    CommentRepresentation: CommentRepresentation,
+    /**
+     * The CompleteFormRepresentation model constructor.
+     * @property {module:model/CompleteFormRepresentation}
+     */
+    CompleteFormRepresentation: CompleteFormRepresentation,
+    /**
+     * The ConditionRepresentation model constructor.
+     * @property {module:model/ConditionRepresentation}
+     */
+    ConditionRepresentation: ConditionRepresentation,
+    /**
+     * The CreateEndpointBasicAuthRepresentation model constructor.
+     * @property {module:model/CreateEndpointBasicAuthRepresentation}
+     */
+    CreateEndpointBasicAuthRepresentation: CreateEndpointBasicAuthRepresentation,
+    /**
+     * The CreateProcessInstanceRepresentation model constructor.
+     * @property {module:model/CreateProcessInstanceRepresentation}
+     */
+    CreateProcessInstanceRepresentation: CreateProcessInstanceRepresentation,
+    /**
+     * The CreateTenantRepresentation model constructor.
+     * @property {module:model/CreateTenantRepresentation}
+     */
+    CreateTenantRepresentation: CreateTenantRepresentation,
+    /**
+     * The EndpointBasicAuthRepresentation model constructor.
+     * @property {module:model/EndpointBasicAuthRepresentation}
+     */
+    EndpointBasicAuthRepresentation: EndpointBasicAuthRepresentation,
+    /**
+     * The EndpointConfigurationRepresentation model constructor.
+     * @property {module:model/EndpointConfigurationRepresentation}
+     */
+    EndpointConfigurationRepresentation: EndpointConfigurationRepresentation,
+    /**
+     * The EndpointRequestHeaderRepresentation model constructor.
+     * @property {module:model/EndpointRequestHeaderRepresentation}
+     */
+    EndpointRequestHeaderRepresentation: EndpointRequestHeaderRepresentation,
+    /**
+     * The EntityAttributeScopeRepresentation model constructor.
+     * @property {module:model/EntityAttributeScopeRepresentation}
+     */
+    EntityAttributeScopeRepresentation: EntityAttributeScopeRepresentation,
+    /**
+     * The EntityVariableScopeRepresentation model constructor.
+     * @property {module:model/EntityVariableScopeRepresentation}
+     */
+    EntityVariableScopeRepresentation: EntityVariableScopeRepresentation,
+    /**
+     * The File model constructor.
+     * @property {module:model/File}
+     */
+    File: File,
+    /**
+     * The FormDefinitionRepresentation model constructor.
+     * @property {module:model/FormDefinitionRepresentation}
+     */
+    FormDefinitionRepresentation: FormDefinitionRepresentation,
+    /**
+     * The FormFieldRepresentation model constructor.
+     * @property {module:model/FormFieldRepresentation}
+     */
+    FormFieldRepresentation: FormFieldRepresentation,
+    /**
+     * The FormJavascriptEventRepresentation model constructor.
+     * @property {module:model/FormJavascriptEventRepresentation}
+     */
+    FormJavascriptEventRepresentation: FormJavascriptEventRepresentation,
+    /**
+     * The FormOutcomeRepresentation model constructor.
+     * @property {module:model/FormOutcomeRepresentation}
+     */
+    FormOutcomeRepresentation: FormOutcomeRepresentation,
+    /**
+     * The FormRepresentation model constructor.
+     * @property {module:model/FormRepresentation}
+     */
+    FormRepresentation: FormRepresentation,
+    /**
+     * The FormSaveRepresentation model constructor.
+     * @property {module:model/FormSaveRepresentation}
+     */
+    FormSaveRepresentation: FormSaveRepresentation,
+    /**
+     * The FormScopeRepresentation model constructor.
+     * @property {module:model/FormScopeRepresentation}
+     */
+    FormScopeRepresentation: FormScopeRepresentation,
+    /**
+     * The FormTabRepresentation model constructor.
+     * @property {module:model/FormTabRepresentation}
+     */
+    FormTabRepresentation: FormTabRepresentation,
+    /**
+     * The FormValueRepresentation model constructor.
+     * @property {module:model/FormValueRepresentation}
+     */
+    FormValueRepresentation: FormValueRepresentation,
+    /**
+     * The GroupCapabilityRepresentation model constructor.
+     * @property {module:model/GroupCapabilityRepresentation}
+     */
+    GroupCapabilityRepresentation: GroupCapabilityRepresentation,
+    /**
+     * The GroupRepresentation model constructor.
+     * @property {module:model/GroupRepresentation}
+     */
+    GroupRepresentation: GroupRepresentation,
+    /**
+     * The ImageUploadRepresentation model constructor.
+     * @property {module:model/ImageUploadRepresentation}
+     */
+    ImageUploadRepresentation: ImageUploadRepresentation,
+    /**
+     * The LayoutRepresentation model constructor.
+     * @property {module:model/LayoutRepresentation}
+     */
+    LayoutRepresentation: LayoutRepresentation,
+    /**
+     * The LightAppRepresentation model constructor.
+     * @property {module:model/LightAppRepresentation}
+     */
+    LightAppRepresentation: LightAppRepresentation,
+    /**
+     * The LightGroupRepresentation model constructor.
+     * @property {module:model/LightGroupRepresentation}
+     */
+    LightGroupRepresentation: LightGroupRepresentation,
+    /**
+     * The LightTenantRepresentation model constructor.
+     * @property {module:model/LightTenantRepresentation}
+     */
+    LightTenantRepresentation: LightTenantRepresentation,
+    /**
+     * The LightUserRepresentation model constructor.
+     * @property {module:model/LightUserRepresentation}
+     */
+    LightUserRepresentation: LightUserRepresentation,
+    /**
+     * The MaplongListstring model constructor.
+     * @property {module:model/MaplongListstring}
+     */
+    MaplongListstring: MaplongListstring,
+    /**
+     * The MapstringListEntityVariableScopeRepresentation model constructor.
+     * @property {module:model/MapstringListEntityVariableScopeRepresentation}
+     */
+    MapstringListEntityVariableScopeRepresentation: MapstringListEntityVariableScopeRepresentation,
+    /**
+     * The MapstringListVariableScopeRepresentation model constructor.
+     * @property {module:model/MapstringListVariableScopeRepresentation}
+     */
+    MapstringListVariableScopeRepresentation: MapstringListVariableScopeRepresentation,
+    /**
+     * The Mapstringstring model constructor.
+     * @property {module:model/Mapstringstring}
+     */
+    Mapstringstring: Mapstringstring,
+    /**
+     * The ModelRepresentation model constructor.
+     * @property {module:model/ModelRepresentation}
+     */
+    ModelRepresentation: ModelRepresentation,
+    /**
+     * The ObjectNode model constructor.
+     * @property {module:model/ObjectNode}
+     */
+    ObjectNode: ObjectNode,
+    /**
+     * The OptionRepresentation model constructor.
+     * @property {module:model/OptionRepresentation}
+     */
+    OptionRepresentation: OptionRepresentation,
+    /**
+     * The ProcessInstanceFilterRepresentation model constructor.
+     * @property {module:model/ProcessInstanceFilterRepresentation}
+     */
+    ProcessInstanceFilterRepresentation: ProcessInstanceFilterRepresentation,
+    /**
+     * The ProcessInstanceFilterRequestRepresentation model constructor.
+     * @property {module:model/ProcessInstanceFilterRequestRepresentation}
+     */
+    ProcessInstanceFilterRequestRepresentation: ProcessInstanceFilterRequestRepresentation,
+    /**
+     * The ProcessInstanceRepresentation model constructor.
+     * @property {module:model/ProcessInstanceRepresentation}
+     */
+    ProcessInstanceRepresentation: ProcessInstanceRepresentation,
+    /**
+     * The ProcessScopeIdentifierRepresentation model constructor.
+     * @property {module:model/ProcessScopeIdentifierRepresentation}
+     */
+    ProcessScopeIdentifierRepresentation: ProcessScopeIdentifierRepresentation,
+    /**
+     * The ProcessScopeRepresentation model constructor.
+     * @property {module:model/ProcessScopeRepresentation}
+     */
+    ProcessScopeRepresentation: ProcessScopeRepresentation,
+    /**
+     * The ProcessScopesRequestRepresentation model constructor.
+     * @property {module:model/ProcessScopesRequestRepresentation}
+     */
+    ProcessScopesRequestRepresentation: ProcessScopesRequestRepresentation,
+    /**
+     * The PublishIdentityInfoRepresentation model constructor.
+     * @property {module:model/PublishIdentityInfoRepresentation}
+     */
+    PublishIdentityInfoRepresentation: PublishIdentityInfoRepresentation,
+    /**
+     * The RelatedContentRepresentation model constructor.
+     * @property {module:model/RelatedContentRepresentation}
+     */
+    RelatedContentRepresentation: RelatedContentRepresentation,
+    /**
+     * The ResetPasswordRepresentation model constructor.
+     * @property {module:model/ResetPasswordRepresentation}
+     */
+    ResetPasswordRepresentation: ResetPasswordRepresentation,
+    /**
+     * The RestVariable model constructor.
+     * @property {module:model/RestVariable}
+     */
+    RestVariable: RestVariable,
+    /**
+     * The ResultListDataRepresentation model constructor.
+     * @property {module:model/ResultListDataRepresentation}
+     */
+    ResultListDataRepresentation: ResultListDataRepresentation,
+    /**
+     * The RuntimeAppDefinitionSaveRepresentation model constructor.
+     * @property {module:model/RuntimeAppDefinitionSaveRepresentation}
+     */
+    RuntimeAppDefinitionSaveRepresentation: RuntimeAppDefinitionSaveRepresentation,
+    /**
+     * The SaveFormRepresentation model constructor.
+     * @property {module:model/SaveFormRepresentation}
+     */
+    SaveFormRepresentation: SaveFormRepresentation,
+    /**
+     * The SyncLogEntryRepresentation model constructor.
+     * @property {module:model/SyncLogEntryRepresentation}
+     */
+    SyncLogEntryRepresentation: SyncLogEntryRepresentation,
+    /**
+     * The SystemPropertiesRepresentation model constructor.
+     * @property {module:model/SystemPropertiesRepresentation}
+     */
+    SystemPropertiesRepresentation: SystemPropertiesRepresentation,
+    /**
+     * The TaskFilterRepresentation model constructor.
+     * @property {module:model/TaskFilterRepresentation}
+     */
+    TaskFilterRepresentation: TaskFilterRepresentation,
+    /**
+     * The TaskFilterRequestRepresentation model constructor.
+     * @property {module:model/TaskFilterRequestRepresentation}
+     */
+    TaskFilterRequestRepresentation: TaskFilterRequestRepresentation,
+    /**
+     * The TaskQueryRequestRepresentation model constructor.
+     * @property {module:model/TaskQueryRequestRepresentation}
+     */
+    TaskQueryRequestRepresentation: TaskQueryRequestRepresentation,
+
+    /**
+    * The TaskRepresentation model constructor.
+    * @property {module:model/TaskRepresentation}
+    */
+    TaskRepresentation: TaskRepresentation,
+    /**
+     * The TaskUpdateRepresentation model constructor.
+     * @property {module:model/TaskUpdateRepresentation}
+     */
+    TaskUpdateRepresentation: TaskUpdateRepresentation,
+    /**
+     * The TenantEvent model constructor.
+     * @property {module:model/TenantEvent}
+     */
+    TenantEvent: TenantEvent,
+    /**
+     * The TenantRepresentation model constructor.
+     * @property {module:model/TenantRepresentation}
+     */
+    TenantRepresentation: TenantRepresentation,
+    /**
+     * The UserAccountCredentialsRepresentation model constructor.
+     * @property {module:model/UserAccountCredentialsRepresentation}
+     */
+    UserAccountCredentialsRepresentation: UserAccountCredentialsRepresentation,
+    /**
+     * The UserActionRepresentation model constructor.
+     * @property {module:model/UserActionRepresentation}
+     */
+    UserActionRepresentation: UserActionRepresentation,
+    /**
+     * The UserFilterOrderRepresentation model constructor.
+     * @property {module:model/UserFilterOrderRepresentation}
+     */
+    UserFilterOrderRepresentation: UserFilterOrderRepresentation,
+    /**
+     * The UserProcessInstanceFilterRepresentation model constructor.
+     * @property {module:model/UserProcessInstanceFilterRepresentation}
+     */
+    UserProcessInstanceFilterRepresentation: UserProcessInstanceFilterRepresentation,
+    /**
+     * The UserRepresentation model constructor.
+     * @property {module:model/UserRepresentation}
+     */
+    UserRepresentation: UserRepresentation,
+    /**
+     * The UserTaskFilterRepresentation model constructor.
+     * @property {module:model/UserTaskFilterRepresentation}
+     */
+    UserTaskFilterRepresentation: UserTaskFilterRepresentation,
+    /**
+     * The ValidationErrorRepresentation model constructor.
+     * @property {module:model/ValidationErrorRepresentation}
+     */
+    ValidationErrorRepresentation: ValidationErrorRepresentation,
+    /**
+     * The VariableScopeRepresentation model constructor.
+     * @property {module:model/VariableScopeRepresentation}
+     */
+    VariableScopeRepresentation: VariableScopeRepresentation,
+    /**
+     * The AboutApi service constructor.
+     * @property {module:api/AboutApi}
+     */
+    AboutApi: AboutApi,
+    /**
+     * The AdminEndpointsApi service constructor.
+     * @property {module:api/AdminEndpointsApi}
+     */
+    AdminEndpointsApi: AdminEndpointsApi,
+    /**
+     * The AdminGroupsApi service constructor.
+     * @property {module:api/AdminGroupsApi}
+     */
+    AdminGroupsApi: AdminGroupsApi,
+    /**
+     * The AdminTenantsApi service constructor.
+     * @property {module:api/AdminTenantsApi}
+     */
+    AdminTenantsApi: AdminTenantsApi,
+    /**
+     * The AdminUsersApi service constructor.
+     * @property {module:api/AdminUsersApi}
+     */
+    AdminUsersApi: AdminUsersApi,
+    /**
+     * The AlfrescoApi service constructor.
+     * @property {module:api/AlfrescoApi}
+     */
+    AlfrescoApi: AlfrescoApi,
+    /**
+     * The AppsApi service constructor.
+     * @property {module:api/AppsApi}
+     */
+    AppsApi: AppsApi,
+    /**
+     * The AppsDefinitionApi service constructor.
+     * @property {module:api/AppsDefinitionApi}
+     */
+    AppsDefinitionApi: AppsDefinitionApi,
+    /**
+     * The AppsRuntimeApi service constructor.
+     * @property {module:api/AppsRuntimeApi}
+     */
+    AppsRuntimeApi: AppsRuntimeApi,
+    /**
+     * The CommentsApi service constructor.
+     * @property {module:api/CommentsApi}
+     */
+    CommentsApi: CommentsApi,
+    /**
+     * The ContentApi service constructor.
+     * @property {module:api/ContentApi}
+     */
+    ContentApi: ContentApi,
+    /**
+     * The ContentRenditionApi service constructor.
+     * @property {module:api/ContentRenditionApi}
+     */
+    ContentRenditionApi: ContentRenditionApi,
+    /**
+     * The EditorApi service constructor.
+     * @property {module:api/EditorApi}
+     */
+    EditorApi: EditorApi,
+    /**
+     * The GroupsApi service constructor.
+     * @property {module:api/GroupsApi}
+     */
+    GroupsApi: GroupsApi,
+    /**
+     * The IDMSyncApi service constructor.
+     * @property {module:api/IDMSyncApi}
+     */
+    IDMSyncApi: IDMSyncApi,
+    /**
+     * The IntegrationApi service constructor.
+     * @property {module:api/IntegrationApi}
+     */
+    IntegrationApi: IntegrationApi,
+    /**
+     * The IntegrationAccountApi service constructor.
+     * @property {module:api/IntegrationAccountApi}
+     */
+    IntegrationAccountApi: IntegrationAccountApi,
+    /**
+     * The IntegrationAlfrescoCloudApi service constructor.
+     * @property {module:api/IntegrationAlfrescoCloudApi}
+     */
+    IntegrationAlfrescoCloudApi: IntegrationAlfrescoCloudApi,
+    /**
+     * The IntegrationAlfrescoOnPremiseApi service constructor.
+     * @property {module:api/IntegrationAlfrescoOnPremiseApi}
+     */
+    IntegrationAlfrescoOnPremiseApi: IntegrationAlfrescoOnPremiseApi,
+    /**
+     * The IntegrationBoxApi service constructor.
+     * @property {module:api/IntegrationBoxApi}
+     */
+    IntegrationBoxApi: IntegrationBoxApi,
+    /**
+     * The IntegrationDriveApi service constructor.
+     * @property {module:api/IntegrationDriveApi}
+     */
+    IntegrationDriveApi: IntegrationDriveApi,
+    /**
+     * The ModelBpmnApi service constructor.
+     * @property {module:api/ModelBpmnApi}
+     */
+    ModelBpmnApi: ModelBpmnApi,
+    /**
+     * The ModelsApi service constructor.
+     * @property {module:api/ModelsApi}
+     */
+    ModelsApi: ModelsApi,
+    /**
+     * The ModelsHistoryApi service constructor.
+     * @property {module:api/ModelsHistoryApi}
+     */
+    ModelsHistoryApi: ModelsHistoryApi,
+    /**
+     * The ProcessApi service constructor.
+     * @property {module:api/ProcessApi}
+     */
+    ProcessApi: ProcessApi,
+    /**
+     * The ProcessDefinitionsApi service constructor.
+     * @property {module:api/ProcessDefinitionsApi}
+     */
+    ProcessDefinitionsApi: ProcessDefinitionsApi,
+    /**
+     * The ProcessDefinitionsFormApi service constructor.
+     * @property {module:api/ProcessDefinitionsFormApi}
+     */
+    ProcessDefinitionsFormApi: ProcessDefinitionsFormApi,
+    /**
+     * The ProcessInstancesApi service constructor.
+     * @property {module:api/ProcessInstancesApi}
+     */
+    ProcessInstancesApi: ProcessInstancesApi,
+    /**
+     * The ProcessInstancesInformationApi service constructor.
+     * @property {module:api/ProcessInstancesInformationApi}
+     */
+    ProcessInstancesInformationApi: ProcessInstancesInformationApi,
+    /**
+     * The ProcessInstancesListingApi service constructor.
+     * @property {module:api/ProcessInstancesListingApi}
+     */
+    ProcessInstancesListingApi: ProcessInstancesListingApi,
+    /**
+     * The ProcessScopeApi service constructor.
+     * @property {module:api/ProcessScopeApi}
+     */
+    ProcessScopeApi: ProcessScopeApi,
+    /**
+     * The ProfileApi service constructor.
+     * @property {module:api/ProfileApi}
+     */
+    ProfileApi: ProfileApi,
+    /**
+     * The ScriptFileApi service constructor.
+     * @property {module:api/ScriptFileApi}
+     */
+    ScriptFileApi: ScriptFileApi,
+    /**
+     * The SystemPropertiesApi service constructor.
+     * @property {module:api/SystemPropertiesApi}
+     */
+    SystemPropertiesApi: SystemPropertiesApi,
+    /**
+     * The TaskApi service constructor.
+     * @property {module:api/TaskApi}
+     */
+    TaskApi: TaskApi,
+    /**
+     * The TaskActionsApi service constructor.
+     * @property {module:api/TaskActionsApi}
+     */
+    TaskActionsApi: TaskActionsApi,
+    /**
+     * The TaskCheckListApi service constructor.
+     * @property {module:api/TaskCheckListApi}
+     */
+    TaskCheckListApi: TaskCheckListApi,
+    /**
+     * The TaskFormsApi service constructor.
+     * @property {module:api/TaskFormsApi}
+     */
+    TaskFormsApi: TaskFormsApi,
+    /**
+     * The TemporaryApi service constructor.
+     * @property {module:api/TemporaryApi}
+     */
+    TemporaryApi: TemporaryApi,
+    /**
+     * The UserApi service constructor.
+     * @property {module:api/UserApi}
+     */
+    UserApi: UserApi,
+    /**
+     * The UserFiltersApi service constructor.
+     * @property {module:api/UserFiltersApi}
+     */
+    UserFiltersApi: UserFiltersApi,
+    /**
+     * The UsersWorkflowApi service constructor.
+     * @property {module:api/UsersWorkflowApi}
+     */
+    UsersWorkflowApi: UsersWorkflowApi
+  };
+
+  return exports;
+});
+
+},{"../../alfrescoApiClient":394,"./api/AboutApi":136,"./api/AdminEndpointsApi":137,"./api/AdminGroupsApi":138,"./api/AdminTenantsApi":139,"./api/AdminUsersApi":140,"./api/AlfrescoApi":141,"./api/AppsApi":142,"./api/AppsDefinitionApi":143,"./api/AppsRuntimeApi":144,"./api/CommentsApi":145,"./api/ContentApi":146,"./api/ContentRenditionApi":147,"./api/EditorApi":148,"./api/GroupsApi":149,"./api/IDMSyncApi":150,"./api/IntegrationAccountApi":151,"./api/IntegrationAlfrescoCloudApi":152,"./api/IntegrationAlfrescoOnPremiseApi":153,"./api/IntegrationApi":154,"./api/IntegrationBoxApi":155,"./api/IntegrationDriveApi":156,"./api/ModelBpmnApi":157,"./api/ModelsApi":158,"./api/ModelsHistoryApi":159,"./api/ProcessApi":160,"./api/ProcessDefinitionsApi":161,"./api/ProcessDefinitionsFormApi":162,"./api/ProcessInstancesApi":163,"./api/ProcessInstancesInformationApi":164,"./api/ProcessInstancesListingApi":165,"./api/ProcessScopeApi":166,"./api/ProfileApi":167,"./api/ScriptFileApi":168,"./api/SystemPropertiesApi":169,"./api/TaskActionsApi":170,"./api/TaskApi":171,"./api/TaskCheckListApi":172,"./api/TaskFormsApi":173,"./api/TemporaryApi":174,"./api/UserApi":175,"./api/UserFiltersApi":176,"./api/UsersWorkflowApi":177,"./model/AbstractGroupRepresentation":179,"./model/AbstractRepresentation":180,"./model/AbstractUserRepresentation":181,"./model/AddGroupCapabilitiesRepresentation":182,"./model/AppDefinition":183,"./model/AppDefinitionPublishRepresentation":184,"./model/AppDefinitionRepresentation":185,"./model/AppDefinitionUpdateResultRepresentation":186,"./model/AppModelDefinition":187,"./model/ArrayNode":188,"./model/BoxUserAccountCredentialsRepresentation":189,"./model/BulkUserUpdateRepresentation":190,"./model/ChangePasswordRepresentation":191,"./model/ChecklistOrderRepresentation":192,"./model/CommentRepresentation":193,"./model/CompleteFormRepresentation":194,"./model/ConditionRepresentation":195,"./model/CreateEndpointBasicAuthRepresentation":196,"./model/CreateProcessInstanceRepresentation":197,"./model/CreateTenantRepresentation":198,"./model/EndpointBasicAuthRepresentation":199,"./model/EndpointConfigurationRepresentation":200,"./model/EndpointRequestHeaderRepresentation":201,"./model/EntityAttributeScopeRepresentation":202,"./model/EntityVariableScopeRepresentation":203,"./model/File":204,"./model/FormDefinitionRepresentation":205,"./model/FormFieldRepresentation":206,"./model/FormJavascriptEventRepresentation":207,"./model/FormOutcomeRepresentation":208,"./model/FormRepresentation":209,"./model/FormSaveRepresentation":210,"./model/FormScopeRepresentation":211,"./model/FormTabRepresentation":212,"./model/FormValueRepresentation":213,"./model/GroupCapabilityRepresentation":214,"./model/GroupRepresentation":215,"./model/ImageUploadRepresentation":216,"./model/LayoutRepresentation":217,"./model/LightAppRepresentation":218,"./model/LightGroupRepresentation":219,"./model/LightTenantRepresentation":220,"./model/LightUserRepresentation":221,"./model/MaplongListstring":222,"./model/MapstringListEntityVariableScopeRepresentation":223,"./model/MapstringListVariableScopeRepresentation":224,"./model/Mapstringstring":225,"./model/ModelRepresentation":226,"./model/ObjectNode":227,"./model/OptionRepresentation":228,"./model/ProcessInstanceFilterRepresentation":229,"./model/ProcessInstanceFilterRequestRepresentation":230,"./model/ProcessInstanceRepresentation":231,"./model/ProcessScopeIdentifierRepresentation":232,"./model/ProcessScopeRepresentation":233,"./model/ProcessScopesRequestRepresentation":234,"./model/PublishIdentityInfoRepresentation":235,"./model/RelatedContentRepresentation":236,"./model/ResetPasswordRepresentation":237,"./model/RestVariable":238,"./model/ResultListDataRepresentation":239,"./model/RuntimeAppDefinitionSaveRepresentation":240,"./model/SaveFormRepresentation":241,"./model/SyncLogEntryRepresentation":242,"./model/SystemPropertiesRepresentation":243,"./model/TaskFilterRepresentation":244,"./model/TaskFilterRequestRepresentation":245,"./model/TaskQueryRequestRepresentation":246,"./model/TaskRepresentation":247,"./model/TaskUpdateRepresentation":248,"./model/TenantEvent":249,"./model/TenantRepresentation":250,"./model/UserAccountCredentialsRepresentation":251,"./model/UserActionRepresentation":252,"./model/UserFilterOrderRepresentation":253,"./model/UserProcessInstanceFilterRepresentation":254,"./model/UserRepresentation":255,"./model/UserTaskFilterRepresentation":256,"./model/ValidationErrorRepresentation":257,"./model/VariableScopeRepresentation":258}],179:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AbstractGroupRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AbstractGroupRepresentation model module.
+   * @module model/AbstractGroupRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AbstractGroupRepresentation</code>.
+   * @alias module:model/AbstractGroupRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AbstractGroupRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AbstractGroupRepresentation} obj Optional instance to populate.
+   * @return {module:model/AbstractGroupRepresentation} The populated <code>AbstractGroupRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],180:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AbstractRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AbstractRepresentation model module.
+   * @module model/AbstractRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AbstractRepresentation</code>.
+   * @alias module:model/AbstractRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AbstractRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AbstractRepresentation} obj Optional instance to populate.
+   * @return {module:model/AbstractRepresentation} The populated <code>AbstractRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],181:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AbstractUserRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AbstractUserRepresentation model module.
+   * @module model/AbstractUserRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AbstractUserRepresentation</code>.
+   * @alias module:model/AbstractUserRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AbstractUserRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AbstractUserRepresentation} obj Optional instance to populate.
+   * @return {module:model/AbstractUserRepresentation} The populated <code>AbstractUserRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('email')) {
+        obj['email'] = ApiClient.convertToType(data['email'], 'String');
+      }
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('firstName')) {
+        obj['firstName'] = ApiClient.convertToType(data['firstName'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastName')) {
+        obj['lastName'] = ApiClient.convertToType(data['lastName'], 'String');
+      }
+      if (data.hasOwnProperty('pictureId')) {
+        obj['pictureId'] = ApiClient.convertToType(data['pictureId'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} email
+   */
+  exports.prototype['email'] = undefined;
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {String} firstName
+   */
+  exports.prototype['firstName'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} lastName
+   */
+  exports.prototype['lastName'] = undefined;
+  /**
+   * @member {Integer} pictureId
+   */
+  exports.prototype['pictureId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],182:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AddGroupCapabilitiesRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AddGroupCapabilitiesRepresentation model module.
+   * @module model/AddGroupCapabilitiesRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AddGroupCapabilitiesRepresentation</code>.
+   * @alias module:model/AddGroupCapabilitiesRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AddGroupCapabilitiesRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AddGroupCapabilitiesRepresentation} obj Optional instance to populate.
+   * @return {module:model/AddGroupCapabilitiesRepresentation} The populated <code>AddGroupCapabilitiesRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('capabilities')) {
+        obj['capabilities'] = ApiClient.convertToType(data['capabilities'], ['String']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<String>} capabilities
+   */
+  exports.prototype['capabilities'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],183:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AppModelDefinition', 'model/PublishIdentityInfoRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./AppModelDefinition'), require('./PublishIdentityInfoRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppDefinition = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AppModelDefinition, root.ActivitiPublicRestApi.PublishIdentityInfoRepresentation);
+  }
+})(undefined, function (ApiClient, AppModelDefinition, PublishIdentityInfoRepresentation) {
+  'use strict';
+
+  /**
+   * The AppDefinition model module.
+   * @module model/AppDefinition
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AppDefinition</code>.
+   * @alias module:model/AppDefinition
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AppDefinition</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AppDefinition} obj Optional instance to populate.
+   * @return {module:model/AppDefinition} The populated <code>AppDefinition</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('icon')) {
+        obj['icon'] = ApiClient.convertToType(data['icon'], 'String');
+      }
+      if (data.hasOwnProperty('models')) {
+        obj['models'] = ApiClient.convertToType(data['models'], [AppModelDefinition]);
+      }
+      if (data.hasOwnProperty('publishIdentityInfo')) {
+        obj['publishIdentityInfo'] = ApiClient.convertToType(data['publishIdentityInfo'], [PublishIdentityInfoRepresentation]);
+      }
+      if (data.hasOwnProperty('theme')) {
+        obj['theme'] = ApiClient.convertToType(data['theme'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} icon
+   */
+  exports.prototype['icon'] = undefined;
+  /**
+   * @member {Array.<module:model/AppModelDefinition>} models
+   */
+  exports.prototype['models'] = undefined;
+  /**
+   * @member {Array.<module:model/PublishIdentityInfoRepresentation>} publishIdentityInfo
+   */
+  exports.prototype['publishIdentityInfo'] = undefined;
+  /**
+   * @member {String} theme
+   */
+  exports.prototype['theme'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./AppModelDefinition":187,"./PublishIdentityInfoRepresentation":235}],184:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppDefinitionPublishRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AppDefinitionPublishRepresentation model module.
+   * @module model/AppDefinitionPublishRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AppDefinitionPublishRepresentation</code>.
+   * @alias module:model/AppDefinitionPublishRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AppDefinitionPublishRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AppDefinitionPublishRepresentation} obj Optional instance to populate.
+   * @return {module:model/AppDefinitionPublishRepresentation} The populated <code>AppDefinitionPublishRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('comment')) {
+        obj['comment'] = ApiClient.convertToType(data['comment'], 'String');
+      }
+      if (data.hasOwnProperty('force')) {
+        obj['force'] = ApiClient.convertToType(data['force'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} comment
+   */
+  exports.prototype['comment'] = undefined;
+  /**
+   * @member {Boolean} force
+   */
+  exports.prototype['force'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],185:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppDefinitionRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AppDefinitionRepresentation model module.
+   * @module model/AppDefinitionRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AppDefinitionRepresentation</code>.
+   * @alias module:model/AppDefinitionRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AppDefinitionRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AppDefinitionRepresentation} obj Optional instance to populate.
+   * @return {module:model/AppDefinitionRepresentation} The populated <code>AppDefinitionRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('defaultAppId')) {
+        obj['defaultAppId'] = ApiClient.convertToType(data['defaultAppId'], 'String');
+      }
+      if (data.hasOwnProperty('deploymentId')) {
+        obj['deploymentId'] = ApiClient.convertToType(data['deploymentId'], 'String');
+      }
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('icon')) {
+        obj['icon'] = ApiClient.convertToType(data['icon'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('modelId')) {
+        obj['modelId'] = ApiClient.convertToType(data['modelId'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('theme')) {
+        obj['theme'] = ApiClient.convertToType(data['theme'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} defaultAppId
+   */
+  exports.prototype['defaultAppId'] = undefined;
+  /**
+   * @member {String} deploymentId
+   */
+  exports.prototype['deploymentId'] = undefined;
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {String} icon
+   */
+  exports.prototype['icon'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Integer} modelId
+   */
+  exports.prototype['modelId'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {String} theme
+   */
+  exports.prototype['theme'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],186:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AppDefinitionRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./AppDefinitionRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppDefinitionUpdateResultRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AppDefinitionRepresentation);
+  }
+})(undefined, function (ApiClient, AppDefinitionRepresentation) {
+  'use strict';
+
+  /**
+   * The AppDefinitionUpdateResultRepresentation model module.
+   * @module model/AppDefinitionUpdateResultRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AppDefinitionUpdateResultRepresentation</code>.
+   * @alias module:model/AppDefinitionUpdateResultRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AppDefinitionUpdateResultRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AppDefinitionUpdateResultRepresentation} obj Optional instance to populate.
+   * @return {module:model/AppDefinitionUpdateResultRepresentation} The populated <code>AppDefinitionUpdateResultRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appDefinition')) {
+        obj['appDefinition'] = AppDefinitionRepresentation.constructFromObject(data['appDefinition']);
+      }
+      if (data.hasOwnProperty('customData')) {
+        obj['customData'] = ApiClient.convertToType(data['customData'], Object);
+      }
+      if (data.hasOwnProperty('error')) {
+        obj['error'] = ApiClient.convertToType(data['error'], 'Boolean');
+      }
+      if (data.hasOwnProperty('errorDescription')) {
+        obj['errorDescription'] = ApiClient.convertToType(data['errorDescription'], 'String');
+      }
+      if (data.hasOwnProperty('errorType')) {
+        obj['errorType'] = ApiClient.convertToType(data['errorType'], 'Integer');
+      }
+      if (data.hasOwnProperty('message')) {
+        obj['message'] = ApiClient.convertToType(data['message'], 'String');
+      }
+      if (data.hasOwnProperty('messageKey')) {
+        obj['messageKey'] = ApiClient.convertToType(data['messageKey'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {module:model/AppDefinitionRepresentation} appDefinition
+   */
+  exports.prototype['appDefinition'] = undefined;
+  /**
+   * @member {Object} customData
+   */
+  exports.prototype['customData'] = undefined;
+  /**
+   * @member {Boolean} error
+   */
+  exports.prototype['error'] = undefined;
+  /**
+   * @member {String} errorDescription
+   */
+  exports.prototype['errorDescription'] = undefined;
+  /**
+   * @member {Integer} errorType
+   */
+  exports.prototype['errorType'] = undefined;
+  /**
+   * @member {String} message
+   */
+  exports.prototype['message'] = undefined;
+  /**
+   * @member {String} messageKey
+   */
+  exports.prototype['messageKey'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./AppDefinitionRepresentation":185}],187:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.AppModelDefinition = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The AppModelDefinition model module.
+   * @module model/AppModelDefinition
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>AppModelDefinition</code>.
+   * @alias module:model/AppModelDefinition
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>AppModelDefinition</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/AppModelDefinition} obj Optional instance to populate.
+   * @return {module:model/AppModelDefinition} The populated <code>AppModelDefinition</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('createdBy')) {
+        obj['createdBy'] = ApiClient.convertToType(data['createdBy'], 'Integer');
+      }
+      if (data.hasOwnProperty('createdByFullName')) {
+        obj['createdByFullName'] = ApiClient.convertToType(data['createdByFullName'], 'String');
+      }
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdated')) {
+        obj['lastUpdated'] = ApiClient.convertToType(data['lastUpdated'], 'Date');
+      }
+      if (data.hasOwnProperty('lastUpdatedBy')) {
+        obj['lastUpdatedBy'] = ApiClient.convertToType(data['lastUpdatedBy'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdatedByFullName')) {
+        obj['lastUpdatedByFullName'] = ApiClient.convertToType(data['lastUpdatedByFullName'], 'String');
+      }
+      if (data.hasOwnProperty('modelType')) {
+        obj['modelType'] = ApiClient.convertToType(data['modelType'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('stencilSetId')) {
+        obj['stencilSetId'] = ApiClient.convertToType(data['stencilSetId'], 'Integer');
+      }
+      if (data.hasOwnProperty('version')) {
+        obj['version'] = ApiClient.convertToType(data['version'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} createdBy
+   */
+  exports.prototype['createdBy'] = undefined;
+  /**
+   * @member {String} createdByFullName
+   */
+  exports.prototype['createdByFullName'] = undefined;
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastUpdated
+   */
+  exports.prototype['lastUpdated'] = undefined;
+  /**
+   * @member {Integer} lastUpdatedBy
+   */
+  exports.prototype['lastUpdatedBy'] = undefined;
+  /**
+   * @member {String} lastUpdatedByFullName
+   */
+  exports.prototype['lastUpdatedByFullName'] = undefined;
+  /**
+   * @member {Integer} modelType
+   */
+  exports.prototype['modelType'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} stencilSetId
+   */
+  exports.prototype['stencilSetId'] = undefined;
+  /**
+   * @member {Integer} version
+   */
+  exports.prototype['version'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],188:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ArrayNode = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ArrayNode model module.
+   * @module model/ArrayNode
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ArrayNode</code>.
+   * @alias module:model/ArrayNode
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ArrayNode</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ArrayNode} obj Optional instance to populate.
+   * @return {module:model/ArrayNode} The populated <code>ArrayNode</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('array')) {
+        obj['array'] = ApiClient.convertToType(data['array'], 'Boolean');
+      }
+      if (data.hasOwnProperty('bigDecimal')) {
+        obj['bigDecimal'] = ApiClient.convertToType(data['bigDecimal'], 'Boolean');
+      }
+      if (data.hasOwnProperty('bigInteger')) {
+        obj['bigInteger'] = ApiClient.convertToType(data['bigInteger'], 'Boolean');
+      }
+      if (data.hasOwnProperty('binary')) {
+        obj['binary'] = ApiClient.convertToType(data['binary'], 'Boolean');
+      }
+      if (data.hasOwnProperty('boolean')) {
+        obj['boolean'] = ApiClient.convertToType(data['boolean'], 'Boolean');
+      }
+      if (data.hasOwnProperty('containerNode')) {
+        obj['containerNode'] = ApiClient.convertToType(data['containerNode'], 'Boolean');
+      }
+      if (data.hasOwnProperty('double')) {
+        obj['double'] = ApiClient.convertToType(data['double'], 'Boolean');
+      }
+      if (data.hasOwnProperty('float')) {
+        obj['float'] = ApiClient.convertToType(data['float'], 'Boolean');
+      }
+      if (data.hasOwnProperty('floatingPointNumber')) {
+        obj['floatingPointNumber'] = ApiClient.convertToType(data['floatingPointNumber'], 'Boolean');
+      }
+      if (data.hasOwnProperty('int')) {
+        obj['int'] = ApiClient.convertToType(data['int'], 'Boolean');
+      }
+      if (data.hasOwnProperty('integralNumber')) {
+        obj['integralNumber'] = ApiClient.convertToType(data['integralNumber'], 'Boolean');
+      }
+      if (data.hasOwnProperty('long')) {
+        obj['long'] = ApiClient.convertToType(data['long'], 'Boolean');
+      }
+      if (data.hasOwnProperty('missingNode')) {
+        obj['missingNode'] = ApiClient.convertToType(data['missingNode'], 'Boolean');
+      }
+      if (data.hasOwnProperty('nodeType')) {
+        obj['nodeType'] = ApiClient.convertToType(data['nodeType'], 'String');
+      }
+      if (data.hasOwnProperty('null')) {
+        obj['null'] = ApiClient.convertToType(data['null'], 'Boolean');
+      }
+      if (data.hasOwnProperty('number')) {
+        obj['number'] = ApiClient.convertToType(data['number'], 'Boolean');
+      }
+      if (data.hasOwnProperty('object')) {
+        obj['object'] = ApiClient.convertToType(data['object'], 'Boolean');
+      }
+      if (data.hasOwnProperty('pojo')) {
+        obj['pojo'] = ApiClient.convertToType(data['pojo'], 'Boolean');
+      }
+      if (data.hasOwnProperty('short')) {
+        obj['short'] = ApiClient.convertToType(data['short'], 'Boolean');
+      }
+      if (data.hasOwnProperty('textual')) {
+        obj['textual'] = ApiClient.convertToType(data['textual'], 'Boolean');
+      }
+      if (data.hasOwnProperty('valueNode')) {
+        obj['valueNode'] = ApiClient.convertToType(data['valueNode'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} array
+   */
+  exports.prototype['array'] = undefined;
+  /**
+   * @member {Boolean} bigDecimal
+   */
+  exports.prototype['bigDecimal'] = undefined;
+  /**
+   * @member {Boolean} bigInteger
+   */
+  exports.prototype['bigInteger'] = undefined;
+  /**
+   * @member {Boolean} binary
+   */
+  exports.prototype['binary'] = undefined;
+  /**
+   * @member {Boolean} boolean
+   */
+  exports.prototype['boolean'] = undefined;
+  /**
+   * @member {Boolean} containerNode
+   */
+  exports.prototype['containerNode'] = undefined;
+  /**
+   * @member {Boolean} double
+   */
+  exports.prototype['double'] = undefined;
+  /**
+   * @member {Boolean} float
+   */
+  exports.prototype['float'] = undefined;
+  /**
+   * @member {Boolean} floatingPointNumber
+   */
+  exports.prototype['floatingPointNumber'] = undefined;
+  /**
+   * @member {Boolean} int
+   */
+  exports.prototype['int'] = undefined;
+  /**
+   * @member {Boolean} integralNumber
+   */
+  exports.prototype['integralNumber'] = undefined;
+  /**
+   * @member {Boolean} long
+   */
+  exports.prototype['long'] = undefined;
+  /**
+   * @member {Boolean} missingNode
+   */
+  exports.prototype['missingNode'] = undefined;
+  /**
+   * @member {module:model/ArrayNode.NodeTypeEnum} nodeType
+   */
+  exports.prototype['nodeType'] = undefined;
+  /**
+   * @member {Boolean} null
+   */
+  exports.prototype['null'] = undefined;
+  /**
+   * @member {Boolean} number
+   */
+  exports.prototype['number'] = undefined;
+  /**
+   * @member {Boolean} object
+   */
+  exports.prototype['object'] = undefined;
+  /**
+   * @member {Boolean} pojo
+   */
+  exports.prototype['pojo'] = undefined;
+  /**
+   * @member {Boolean} short
+   */
+  exports.prototype['short'] = undefined;
+  /**
+   * @member {Boolean} textual
+   */
+  exports.prototype['textual'] = undefined;
+  /**
+   * @member {Boolean} valueNode
+   */
+  exports.prototype['valueNode'] = undefined;
+
+  /**
+   * Allowed values for the <code>nodeType</code> property.
+   * @enum {String}
+   * @readonly
+   */
+  exports.NodeTypeEnum = {
+    /**
+     * value: "ARRAY"
+     * @const
+     */
+    "ARRAY": "ARRAY",
+    /**
+     * value: "BINARY"
+     * @const
+     */
+    "BINARY": "BINARY",
+    /**
+     * value: "BOOLEAN"
+     * @const
+     */
+    "BOOLEAN": "BOOLEAN",
+    /**
+     * value: "MISSING"
+     * @const
+     */
+    "MISSING": "MISSING",
+    /**
+     * value: "NULL"
+     * @const
+     */
+    "NULL": "NULL",
+    /**
+     * value: "NUMBER"
+     * @const
+     */
+    "NUMBER": "NUMBER",
+    /**
+     * value: "OBJECT"
+     * @const
+     */
+    "OBJECT": "OBJECT",
+    /**
+     * value: "POJO"
+     * @const
+     */
+    "POJO": "POJO",
+    /**
+     * value: "STRING"
+     * @const
+     */
+    "STRING": "STRING" };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],189:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.BoxUserAccountCredentialsRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The BoxUserAccountCredentialsRepresentation model module.
+   * @module model/BoxUserAccountCredentialsRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>BoxUserAccountCredentialsRepresentation</code>.
+   * @alias module:model/BoxUserAccountCredentialsRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>BoxUserAccountCredentialsRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/BoxUserAccountCredentialsRepresentation} obj Optional instance to populate.
+   * @return {module:model/BoxUserAccountCredentialsRepresentation} The populated <code>BoxUserAccountCredentialsRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('authenticationURL')) {
+        obj['authenticationURL'] = ApiClient.convertToType(data['authenticationURL'], 'String');
+      }
+      if (data.hasOwnProperty('expireDate')) {
+        obj['expireDate'] = ApiClient.convertToType(data['expireDate'], 'Date');
+      }
+      if (data.hasOwnProperty('ownerEmail')) {
+        obj['ownerEmail'] = ApiClient.convertToType(data['ownerEmail'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} authenticationURL
+   */
+  exports.prototype['authenticationURL'] = undefined;
+  /**
+   * @member {Date} expireDate
+   */
+  exports.prototype['expireDate'] = undefined;
+  /**
+   * @member {String} ownerEmail
+   */
+  exports.prototype['ownerEmail'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],190:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.BulkUserUpdateRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The BulkUserUpdateRepresentation model module.
+   * @module model/BulkUserUpdateRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>BulkUserUpdateRepresentation</code>.
+   * @alias module:model/BulkUserUpdateRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>BulkUserUpdateRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/BulkUserUpdateRepresentation} obj Optional instance to populate.
+   * @return {module:model/BulkUserUpdateRepresentation} The populated <code>BulkUserUpdateRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('accountType')) {
+        obj['accountType'] = ApiClient.convertToType(data['accountType'], 'String');
+      }
+      if (data.hasOwnProperty('password')) {
+        obj['password'] = ApiClient.convertToType(data['password'], 'String');
+      }
+      if (data.hasOwnProperty('sendNotifications')) {
+        obj['sendNotifications'] = ApiClient.convertToType(data['sendNotifications'], 'Boolean');
+      }
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('users')) {
+        obj['users'] = ApiClient.convertToType(data['users'], ['Integer']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} accountType
+   */
+  exports.prototype['accountType'] = undefined;
+  /**
+   * @member {String} password
+   */
+  exports.prototype['password'] = undefined;
+  /**
+   * @member {Boolean} sendNotifications
+   */
+  exports.prototype['sendNotifications'] = undefined;
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {Array.<Integer>} users
+   */
+  exports.prototype['users'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],191:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ChangePasswordRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ChangePasswordRepresentation model module.
+   * @module model/ChangePasswordRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ChangePasswordRepresentation</code>.
+   * @alias module:model/ChangePasswordRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ChangePasswordRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ChangePasswordRepresentation} obj Optional instance to populate.
+   * @return {module:model/ChangePasswordRepresentation} The populated <code>ChangePasswordRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('newPassword')) {
+        obj['newPassword'] = ApiClient.convertToType(data['newPassword'], 'String');
+      }
+      if (data.hasOwnProperty('oldPassword')) {
+        obj['oldPassword'] = ApiClient.convertToType(data['oldPassword'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} newPassword
+   */
+  exports.prototype['newPassword'] = undefined;
+  /**
+   * @member {String} oldPassword
+   */
+  exports.prototype['oldPassword'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],192:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ChecklistOrderRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ChecklistOrderRepresentation model module.
+   * @module model/ChecklistOrderRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ChecklistOrderRepresentation</code>.
+   * @alias module:model/ChecklistOrderRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ChecklistOrderRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ChecklistOrderRepresentation} obj Optional instance to populate.
+   * @return {module:model/ChecklistOrderRepresentation} The populated <code>ChecklistOrderRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('order')) {
+        obj['order'] = ApiClient.convertToType(data['order'], ['String']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<String>} order
+   */
+  exports.prototype['order'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],193:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightUserRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightUserRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CommentRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightUserRepresentation);
+  }
+})(undefined, function (ApiClient, LightUserRepresentation) {
+  'use strict';
+
+  /**
+   * The CommentRepresentation model module.
+   * @module model/CommentRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>CommentRepresentation</code>.
+   * @alias module:model/CommentRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>CommentRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CommentRepresentation} obj Optional instance to populate.
+   * @return {module:model/CommentRepresentation} The populated <code>CommentRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('createdBy')) {
+        obj['createdBy'] = LightUserRepresentation.constructFromObject(data['createdBy']);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('message')) {
+        obj['message'] = ApiClient.convertToType(data['message'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {module:model/LightUserRepresentation} createdBy
+   */
+  exports.prototype['createdBy'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} message
+   */
+  exports.prototype['message'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightUserRepresentation":221}],194:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CompleteFormRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The CompleteFormRepresentation model module.
+   * @module model/CompleteFormRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>CompleteFormRepresentation</code>.
+   * @alias module:model/CompleteFormRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>CompleteFormRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CompleteFormRepresentation} obj Optional instance to populate.
+   * @return {module:model/CompleteFormRepresentation} The populated <code>CompleteFormRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('outcome')) {
+        obj['outcome'] = ApiClient.convertToType(data['outcome'], 'String');
+      }
+      if (data.hasOwnProperty('values')) {
+        obj['values'] = ApiClient.convertToType(data['values'], Object);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} outcome
+   */
+  exports.prototype['outcome'] = undefined;
+  /**
+   * @member {Object} values
+   */
+  exports.prototype['values'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],195:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ConditionRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ConditionRepresentation model module.
+   * @module model/ConditionRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ConditionRepresentation</code>.
+   * @alias module:model/ConditionRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ConditionRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ConditionRepresentation} obj Optional instance to populate.
+   * @return {module:model/ConditionRepresentation} The populated <code>ConditionRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('leftFormFieldId')) {
+        obj['leftFormFieldId'] = ApiClient.convertToType(data['leftFormFieldId'], 'String');
+      }
+      if (data.hasOwnProperty('leftRestResponseId')) {
+        obj['leftRestResponseId'] = ApiClient.convertToType(data['leftRestResponseId'], 'String');
+      }
+      if (data.hasOwnProperty('nextConditionOperator')) {
+        obj['nextConditionOperator'] = ApiClient.convertToType(data['nextConditionOperator'], 'String');
+      }
+      if (data.hasOwnProperty('operator')) {
+        obj['operator'] = ApiClient.convertToType(data['operator'], 'String');
+      }
+      if (data.hasOwnProperty('rightFormFieldId')) {
+        obj['rightFormFieldId'] = ApiClient.convertToType(data['rightFormFieldId'], 'String');
+      }
+      if (data.hasOwnProperty('rightRestResponseId')) {
+        obj['rightRestResponseId'] = ApiClient.convertToType(data['rightRestResponseId'], 'String');
+      }
+      if (data.hasOwnProperty('rightType')) {
+        obj['rightType'] = ApiClient.convertToType(data['rightType'], 'String');
+      }
+      if (data.hasOwnProperty('rightValue')) {
+        obj['rightValue'] = ApiClient.convertToType(data['rightValue'], Object);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} leftFormFieldId
+   */
+  exports.prototype['leftFormFieldId'] = undefined;
+  /**
+   * @member {String} leftRestResponseId
+   */
+  exports.prototype['leftRestResponseId'] = undefined;
+  /**
+   * @member {String} nextConditionOperator
+   */
+  exports.prototype['nextConditionOperator'] = undefined;
+  /**
+   * @member {String} operator
+   */
+  exports.prototype['operator'] = undefined;
+  /**
+   * @member {String} rightFormFieldId
+   */
+  exports.prototype['rightFormFieldId'] = undefined;
+  /**
+   * @member {String} rightRestResponseId
+   */
+  exports.prototype['rightRestResponseId'] = undefined;
+  /**
+   * @member {String} rightType
+   */
+  exports.prototype['rightType'] = undefined;
+  /**
+   * @member {Object} rightValue
+   */
+  exports.prototype['rightValue'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],196:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CreateEndpointBasicAuthRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The CreateEndpointBasicAuthRepresentation model module.
+   * @module model/CreateEndpointBasicAuthRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>CreateEndpointBasicAuthRepresentation</code>.
+   * @alias module:model/CreateEndpointBasicAuthRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>CreateEndpointBasicAuthRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CreateEndpointBasicAuthRepresentation} obj Optional instance to populate.
+   * @return {module:model/CreateEndpointBasicAuthRepresentation} The populated <code>CreateEndpointBasicAuthRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('password')) {
+        obj['password'] = ApiClient.convertToType(data['password'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('username')) {
+        obj['username'] = ApiClient.convertToType(data['username'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} password
+   */
+  exports.prototype['password'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {String} username
+   */
+  exports.prototype['username'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],197:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CreateProcessInstanceRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The CreateProcessInstanceRepresentation model module.
+   * @module model/CreateProcessInstanceRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>CreateProcessInstanceRepresentation</code>.
+   * @alias module:model/CreateProcessInstanceRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>CreateProcessInstanceRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CreateProcessInstanceRepresentation} obj Optional instance to populate.
+   * @return {module:model/CreateProcessInstanceRepresentation} The populated <code>CreateProcessInstanceRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('outcome')) {
+        obj['outcome'] = ApiClient.convertToType(data['outcome'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('values')) {
+        obj['values'] = ApiClient.convertToType(data['values'], Object);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} outcome
+   */
+  exports.prototype['outcome'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {Object} values
+   */
+  exports.prototype['values'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],198:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.CreateTenantRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The CreateTenantRepresentation model module.
+   * @module model/CreateTenantRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>CreateTenantRepresentation</code>.
+   * @alias module:model/CreateTenantRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>CreateTenantRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CreateTenantRepresentation} obj Optional instance to populate.
+   * @return {module:model/CreateTenantRepresentation} The populated <code>CreateTenantRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('active')) {
+        obj['active'] = ApiClient.convertToType(data['active'], 'Boolean');
+      }
+      if (data.hasOwnProperty('domain')) {
+        obj['domain'] = ApiClient.convertToType(data['domain'], 'String');
+      }
+      if (data.hasOwnProperty('maxUsers')) {
+        obj['maxUsers'] = ApiClient.convertToType(data['maxUsers'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} active
+   */
+  exports.prototype['active'] = undefined;
+  /**
+   * @member {String} domain
+   */
+  exports.prototype['domain'] = undefined;
+  /**
+   * @member {Integer} maxUsers
+   */
+  exports.prototype['maxUsers'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],199:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EndpointBasicAuthRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The EndpointBasicAuthRepresentation model module.
+   * @module model/EndpointBasicAuthRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>EndpointBasicAuthRepresentation</code>.
+   * @alias module:model/EndpointBasicAuthRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>EndpointBasicAuthRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/EndpointBasicAuthRepresentation} obj Optional instance to populate.
+   * @return {module:model/EndpointBasicAuthRepresentation} The populated <code>EndpointBasicAuthRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdated')) {
+        obj['lastUpdated'] = ApiClient.convertToType(data['lastUpdated'], 'Date');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('username')) {
+        obj['username'] = ApiClient.convertToType(data['username'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastUpdated
+   */
+  exports.prototype['lastUpdated'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {String} username
+   */
+  exports.prototype['username'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],200:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/EndpointRequestHeaderRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./EndpointRequestHeaderRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EndpointConfigurationRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.EndpointRequestHeaderRepresentation);
+  }
+})(undefined, function (ApiClient, EndpointRequestHeaderRepresentation) {
+  'use strict';
+
+  /**
+   * The EndpointConfigurationRepresentation model module.
+   * @module model/EndpointConfigurationRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>EndpointConfigurationRepresentation</code>.
+   * @alias module:model/EndpointConfigurationRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>EndpointConfigurationRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/EndpointConfigurationRepresentation} obj Optional instance to populate.
+   * @return {module:model/EndpointConfigurationRepresentation} The populated <code>EndpointConfigurationRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('basicAuthId')) {
+        obj['basicAuthId'] = ApiClient.convertToType(data['basicAuthId'], 'Integer');
+      }
+      if (data.hasOwnProperty('basicAuthName')) {
+        obj['basicAuthName'] = ApiClient.convertToType(data['basicAuthName'], 'String');
+      }
+      if (data.hasOwnProperty('host')) {
+        obj['host'] = ApiClient.convertToType(data['host'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('path')) {
+        obj['path'] = ApiClient.convertToType(data['path'], 'String');
+      }
+      if (data.hasOwnProperty('port')) {
+        obj['port'] = ApiClient.convertToType(data['port'], 'String');
+      }
+      if (data.hasOwnProperty('protocol')) {
+        obj['protocol'] = ApiClient.convertToType(data['protocol'], 'String');
+      }
+      if (data.hasOwnProperty('requestHeaders')) {
+        obj['requestHeaders'] = ApiClient.convertToType(data['requestHeaders'], [EndpointRequestHeaderRepresentation]);
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} basicAuthId
+   */
+  exports.prototype['basicAuthId'] = undefined;
+  /**
+   * @member {String} basicAuthName
+   */
+  exports.prototype['basicAuthName'] = undefined;
+  /**
+   * @member {String} host
+   */
+  exports.prototype['host'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} path
+   */
+  exports.prototype['path'] = undefined;
+  /**
+   * @member {String} port
+   */
+  exports.prototype['port'] = undefined;
+  /**
+   * @member {String} protocol
+   */
+  exports.prototype['protocol'] = undefined;
+  /**
+   * @member {Array.<module:model/EndpointRequestHeaderRepresentation>} requestHeaders
+   */
+  exports.prototype['requestHeaders'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./EndpointRequestHeaderRepresentation":201}],201:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EndpointRequestHeaderRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The EndpointRequestHeaderRepresentation model module.
+   * @module model/EndpointRequestHeaderRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>EndpointRequestHeaderRepresentation</code>.
+   * @alias module:model/EndpointRequestHeaderRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>EndpointRequestHeaderRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/EndpointRequestHeaderRepresentation} obj Optional instance to populate.
+   * @return {module:model/EndpointRequestHeaderRepresentation} The populated <code>EndpointRequestHeaderRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('value')) {
+        obj['value'] = ApiClient.convertToType(data['value'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} value
+   */
+  exports.prototype['value'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],202:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EntityAttributeScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The EntityAttributeScopeRepresentation model module.
+   * @module model/EntityAttributeScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>EntityAttributeScopeRepresentation</code>.
+   * @alias module:model/EntityAttributeScopeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>EntityAttributeScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/EntityAttributeScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/EntityAttributeScopeRepresentation} The populated <code>EntityAttributeScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],203:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/EntityAttributeScopeRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./EntityAttributeScopeRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.EntityVariableScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.EntityAttributeScopeRepresentation);
+  }
+})(undefined, function (ApiClient, EntityAttributeScopeRepresentation) {
+  'use strict';
+
+  /**
+   * The EntityVariableScopeRepresentation model module.
+   * @module model/EntityVariableScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>EntityVariableScopeRepresentation</code>.
+   * @alias module:model/EntityVariableScopeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>EntityVariableScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/EntityVariableScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/EntityVariableScopeRepresentation} The populated <code>EntityVariableScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('attributes')) {
+        obj['attributes'] = ApiClient.convertToType(data['attributes'], [EntityAttributeScopeRepresentation]);
+      }
+      if (data.hasOwnProperty('entityName')) {
+        obj['entityName'] = ApiClient.convertToType(data['entityName'], 'String');
+      }
+      if (data.hasOwnProperty('mappedDataModel')) {
+        obj['mappedDataModel'] = ApiClient.convertToType(data['mappedDataModel'], 'Integer');
+      }
+      if (data.hasOwnProperty('mappedVariableName')) {
+        obj['mappedVariableName'] = ApiClient.convertToType(data['mappedVariableName'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/EntityAttributeScopeRepresentation>} attributes
+   */
+  exports.prototype['attributes'] = undefined;
+  /**
+   * @member {String} entityName
+   */
+  exports.prototype['entityName'] = undefined;
+  /**
+   * @member {Integer} mappedDataModel
+   */
+  exports.prototype['mappedDataModel'] = undefined;
+  /**
+   * @member {String} mappedVariableName
+   */
+  exports.prototype['mappedVariableName'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./EntityAttributeScopeRepresentation":202}],204:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.File = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The File model module.
+   * @module model/File
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>File</code>.
+   * @alias module:model/File
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>File</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/File} obj Optional instance to populate.
+   * @return {module:model/File} The populated <code>File</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('absolute')) {
+        obj['absolute'] = ApiClient.convertToType(data['absolute'], 'Boolean');
+      }
+      if (data.hasOwnProperty('absoluteFile')) {
+        obj['absoluteFile'] = ApiClient.convertToType(data['absoluteFile'], File);
+      }
+      if (data.hasOwnProperty('absolutePath')) {
+        obj['absolutePath'] = ApiClient.convertToType(data['absolutePath'], 'String');
+      }
+      if (data.hasOwnProperty('canonicalFile')) {
+        obj['canonicalFile'] = ApiClient.convertToType(data['canonicalFile'], File);
+      }
+      if (data.hasOwnProperty('canonicalPath')) {
+        obj['canonicalPath'] = ApiClient.convertToType(data['canonicalPath'], 'String');
+      }
+      if (data.hasOwnProperty('directory')) {
+        obj['directory'] = ApiClient.convertToType(data['directory'], 'Boolean');
+      }
+      if (data.hasOwnProperty('file')) {
+        obj['file'] = ApiClient.convertToType(data['file'], 'Boolean');
+      }
+      if (data.hasOwnProperty('freeSpace')) {
+        obj['freeSpace'] = ApiClient.convertToType(data['freeSpace'], 'Integer');
+      }
+      if (data.hasOwnProperty('hidden')) {
+        obj['hidden'] = ApiClient.convertToType(data['hidden'], 'Boolean');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('parent')) {
+        obj['parent'] = ApiClient.convertToType(data['parent'], 'String');
+      }
+      if (data.hasOwnProperty('parentFile')) {
+        obj['parentFile'] = ApiClient.convertToType(data['parentFile'], File);
+      }
+      if (data.hasOwnProperty('path')) {
+        obj['path'] = ApiClient.convertToType(data['path'], 'String');
+      }
+      if (data.hasOwnProperty('totalSpace')) {
+        obj['totalSpace'] = ApiClient.convertToType(data['totalSpace'], 'Integer');
+      }
+      if (data.hasOwnProperty('usableSpace')) {
+        obj['usableSpace'] = ApiClient.convertToType(data['usableSpace'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} absolute
+   */
+  exports.prototype['absolute'] = undefined;
+  /**
+   * @member {File} absoluteFile
+   */
+  exports.prototype['absoluteFile'] = undefined;
+  /**
+   * @member {String} absolutePath
+   */
+  exports.prototype['absolutePath'] = undefined;
+  /**
+   * @member {File} canonicalFile
+   */
+  exports.prototype['canonicalFile'] = undefined;
+  /**
+   * @member {String} canonicalPath
+   */
+  exports.prototype['canonicalPath'] = undefined;
+  /**
+   * @member {Boolean} directory
+   */
+  exports.prototype['directory'] = undefined;
+  /**
+   * @member {Boolean} file
+   */
+  exports.prototype['file'] = undefined;
+  /**
+   * @member {Integer} freeSpace
+   */
+  exports.prototype['freeSpace'] = undefined;
+  /**
+   * @member {Boolean} hidden
+   */
+  exports.prototype['hidden'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} parent
+   */
+  exports.prototype['parent'] = undefined;
+  /**
+   * @member {File} parentFile
+   */
+  exports.prototype['parentFile'] = undefined;
+  /**
+   * @member {String} path
+   */
+  exports.prototype['path'] = undefined;
+  /**
+   * @member {Integer} totalSpace
+   */
+  exports.prototype['totalSpace'] = undefined;
+  /**
+   * @member {Integer} usableSpace
+   */
+  exports.prototype['usableSpace'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],205:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormFieldRepresentation', 'model/FormJavascriptEventRepresentation', 'model/FormOutcomeRepresentation', 'model/FormTabRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./FormFieldRepresentation'), require('./FormJavascriptEventRepresentation'), require('./FormOutcomeRepresentation'), require('./FormTabRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormDefinitionRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormFieldRepresentation, root.ActivitiPublicRestApi.FormJavascriptEventRepresentation, root.ActivitiPublicRestApi.FormOutcomeRepresentation, root.ActivitiPublicRestApi.FormTabRepresentation);
+  }
+})(undefined, function (ApiClient, FormFieldRepresentation, FormJavascriptEventRepresentation, FormOutcomeRepresentation, FormTabRepresentation) {
+  'use strict';
+
+  /**
+   * The FormDefinitionRepresentation model module.
+   * @module model/FormDefinitionRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormDefinitionRepresentation</code>.
+   * @alias module:model/FormDefinitionRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormDefinitionRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormDefinitionRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormDefinitionRepresentation} The populated <code>FormDefinitionRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('className')) {
+        obj['className'] = ApiClient.convertToType(data['className'], 'String');
+      }
+      if (data.hasOwnProperty('customFieldTemplates')) {
+        obj['customFieldTemplates'] = ApiClient.convertToType(data['customFieldTemplates'], { 'String': 'String' });
+      }
+      if (data.hasOwnProperty('fields')) {
+        obj['fields'] = ApiClient.convertToType(data['fields'], [FormFieldRepresentation]);
+      }
+      if (data.hasOwnProperty('gridsterForm')) {
+        obj['gridsterForm'] = ApiClient.convertToType(data['gridsterForm'], 'Boolean');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('javascriptEvents')) {
+        obj['javascriptEvents'] = ApiClient.convertToType(data['javascriptEvents'], [FormJavascriptEventRepresentation]);
+      }
+      if (data.hasOwnProperty('metadata')) {
+        obj['metadata'] = ApiClient.convertToType(data['metadata'], { 'String': 'String' });
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('outcomeTarget')) {
+        obj['outcomeTarget'] = ApiClient.convertToType(data['outcomeTarget'], 'String');
+      }
+      if (data.hasOwnProperty('outcomes')) {
+        obj['outcomes'] = ApiClient.convertToType(data['outcomes'], [FormOutcomeRepresentation]);
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionKey')) {
+        obj['processDefinitionKey'] = ApiClient.convertToType(data['processDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionName')) {
+        obj['processDefinitionName'] = ApiClient.convertToType(data['processDefinitionName'], 'String');
+      }
+      if (data.hasOwnProperty('selectedOutcome')) {
+        obj['selectedOutcome'] = ApiClient.convertToType(data['selectedOutcome'], 'String');
+      }
+      if (data.hasOwnProperty('style')) {
+        obj['style'] = ApiClient.convertToType(data['style'], 'String');
+      }
+      if (data.hasOwnProperty('tabs')) {
+        obj['tabs'] = ApiClient.convertToType(data['tabs'], [FormTabRepresentation]);
+      }
+      if (data.hasOwnProperty('taskDefinitionKey')) {
+        obj['taskDefinitionKey'] = ApiClient.convertToType(data['taskDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('taskId')) {
+        obj['taskId'] = ApiClient.convertToType(data['taskId'], 'String');
+      }
+      if (data.hasOwnProperty('taskName')) {
+        obj['taskName'] = ApiClient.convertToType(data['taskName'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} className
+   */
+  exports.prototype['className'] = undefined;
+  /**
+   * @member {Object.<String, String>} customFieldTemplates
+   */
+  exports.prototype['customFieldTemplates'] = undefined;
+  /**
+   * @member {Array.<module:model/FormFieldRepresentation>} fields
+   */
+  exports.prototype['fields'] = undefined;
+  /**
+   * @member {Boolean} gridsterForm
+   */
+  exports.prototype['gridsterForm'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Array.<module:model/FormJavascriptEventRepresentation>} javascriptEvents
+   */
+  exports.prototype['javascriptEvents'] = undefined;
+  /**
+   * @member {Object.<String, String>} metadata
+   */
+  exports.prototype['metadata'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} outcomeTarget
+   */
+  exports.prototype['outcomeTarget'] = undefined;
+  /**
+   * @member {Array.<module:model/FormOutcomeRepresentation>} outcomes
+   */
+  exports.prototype['outcomes'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {String} processDefinitionKey
+   */
+  exports.prototype['processDefinitionKey'] = undefined;
+  /**
+   * @member {String} processDefinitionName
+   */
+  exports.prototype['processDefinitionName'] = undefined;
+  /**
+   * @member {String} selectedOutcome
+   */
+  exports.prototype['selectedOutcome'] = undefined;
+  /**
+   * @member {String} style
+   */
+  exports.prototype['style'] = undefined;
+  /**
+   * @member {Array.<module:model/FormTabRepresentation>} tabs
+   */
+  exports.prototype['tabs'] = undefined;
+  /**
+   * @member {String} taskDefinitionKey
+   */
+  exports.prototype['taskDefinitionKey'] = undefined;
+  /**
+   * @member {String} taskId
+   */
+  exports.prototype['taskId'] = undefined;
+  /**
+   * @member {String} taskName
+   */
+  exports.prototype['taskName'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./FormFieldRepresentation":206,"./FormJavascriptEventRepresentation":207,"./FormOutcomeRepresentation":208,"./FormTabRepresentation":212}],206:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ConditionRepresentation', 'model/LayoutRepresentation', 'model/OptionRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ConditionRepresentation'), require('./LayoutRepresentation'), require('./OptionRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormFieldRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ConditionRepresentation, root.ActivitiPublicRestApi.LayoutRepresentation, root.ActivitiPublicRestApi.OptionRepresentation);
+  }
+})(undefined, function (ApiClient, ConditionRepresentation, LayoutRepresentation, OptionRepresentation) {
+  'use strict';
+
+  /**
+   * The FormFieldRepresentation model module.
+   * @module model/FormFieldRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormFieldRepresentation</code>.
+   * @alias module:model/FormFieldRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormFieldRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormFieldRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormFieldRepresentation} The populated <code>FormFieldRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('className')) {
+        obj['className'] = ApiClient.convertToType(data['className'], 'String');
+      }
+      if (data.hasOwnProperty('col')) {
+        obj['col'] = ApiClient.convertToType(data['col'], 'Integer');
+      }
+      if (data.hasOwnProperty('colspan')) {
+        obj['colspan'] = ApiClient.convertToType(data['colspan'], 'Integer');
+      }
+      if (data.hasOwnProperty('hasEmptyValue')) {
+        obj['hasEmptyValue'] = ApiClient.convertToType(data['hasEmptyValue'], 'Boolean');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('layout')) {
+        obj['layout'] = LayoutRepresentation.constructFromObject(data['layout']);
+      }
+      if (data.hasOwnProperty('maxLength')) {
+        obj['maxLength'] = ApiClient.convertToType(data['maxLength'], 'Integer');
+      }
+      if (data.hasOwnProperty('maxValue')) {
+        obj['maxValue'] = ApiClient.convertToType(data['maxValue'], 'String');
+      }
+      if (data.hasOwnProperty('minLength')) {
+        obj['minLength'] = ApiClient.convertToType(data['minLength'], 'Integer');
+      }
+      if (data.hasOwnProperty('minValue')) {
+        obj['minValue'] = ApiClient.convertToType(data['minValue'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('optionType')) {
+        obj['optionType'] = ApiClient.convertToType(data['optionType'], 'String');
+      }
+      if (data.hasOwnProperty('options')) {
+        obj['options'] = ApiClient.convertToType(data['options'], [OptionRepresentation]);
+      }
+      if (data.hasOwnProperty('overrideId')) {
+        obj['overrideId'] = ApiClient.convertToType(data['overrideId'], 'Boolean');
+      }
+      if (data.hasOwnProperty('params')) {
+        obj['params'] = ApiClient.convertToType(data['params'], Object);
+      }
+      if (data.hasOwnProperty('placeholder')) {
+        obj['placeholder'] = ApiClient.convertToType(data['placeholder'], 'String');
+      }
+      if (data.hasOwnProperty('readOnly')) {
+        obj['readOnly'] = ApiClient.convertToType(data['readOnly'], 'Boolean');
+      }
+      if (data.hasOwnProperty('regexPattern')) {
+        obj['regexPattern'] = ApiClient.convertToType(data['regexPattern'], 'String');
+      }
+      if (data.hasOwnProperty('required')) {
+        obj['required'] = ApiClient.convertToType(data['required'], 'Boolean');
+      }
+      if (data.hasOwnProperty('restIdProperty')) {
+        obj['restIdProperty'] = ApiClient.convertToType(data['restIdProperty'], 'String');
+      }
+      if (data.hasOwnProperty('restLabelProperty')) {
+        obj['restLabelProperty'] = ApiClient.convertToType(data['restLabelProperty'], 'String');
+      }
+      if (data.hasOwnProperty('restResponsePath')) {
+        obj['restResponsePath'] = ApiClient.convertToType(data['restResponsePath'], 'String');
+      }
+      if (data.hasOwnProperty('restUrl')) {
+        obj['restUrl'] = ApiClient.convertToType(data['restUrl'], 'String');
+      }
+      if (data.hasOwnProperty('row')) {
+        obj['row'] = ApiClient.convertToType(data['row'], 'Integer');
+      }
+      if (data.hasOwnProperty('sizeX')) {
+        obj['sizeX'] = ApiClient.convertToType(data['sizeX'], 'Integer');
+      }
+      if (data.hasOwnProperty('sizeY')) {
+        obj['sizeY'] = ApiClient.convertToType(data['sizeY'], 'Integer');
+      }
+      if (data.hasOwnProperty('tab')) {
+        obj['tab'] = ApiClient.convertToType(data['tab'], 'String');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+      if (data.hasOwnProperty('value')) {
+        obj['value'] = ApiClient.convertToType(data['value'], Object);
+      }
+      if (data.hasOwnProperty('visibilityCondition')) {
+        obj['visibilityCondition'] = ConditionRepresentation.constructFromObject(data['visibilityCondition']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} className
+   */
+  exports.prototype['className'] = undefined;
+  /**
+   * @member {Integer} col
+   */
+  exports.prototype['col'] = undefined;
+  /**
+   * @member {Integer} colspan
+   */
+  exports.prototype['colspan'] = undefined;
+  /**
+   * @member {Boolean} hasEmptyValue
+   */
+  exports.prototype['hasEmptyValue'] = undefined;
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {module:model/LayoutRepresentation} layout
+   */
+  exports.prototype['layout'] = undefined;
+  /**
+   * @member {Integer} maxLength
+   */
+  exports.prototype['maxLength'] = undefined;
+  /**
+   * @member {String} maxValue
+   */
+  exports.prototype['maxValue'] = undefined;
+  /**
+   * @member {Integer} minLength
+   */
+  exports.prototype['minLength'] = undefined;
+  /**
+   * @member {String} minValue
+   */
+  exports.prototype['minValue'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} optionType
+   */
+  exports.prototype['optionType'] = undefined;
+  /**
+   * @member {Array.<module:model/OptionRepresentation>} options
+   */
+  exports.prototype['options'] = undefined;
+  /**
+   * @member {Boolean} overrideId
+   */
+  exports.prototype['overrideId'] = undefined;
+  /**
+   * @member {Object} params
+   */
+  exports.prototype['params'] = undefined;
+  /**
+   * @member {String} placeholder
+   */
+  exports.prototype['placeholder'] = undefined;
+  /**
+   * @member {Boolean} readOnly
+   */
+  exports.prototype['readOnly'] = undefined;
+  /**
+   * @member {String} regexPattern
+   */
+  exports.prototype['regexPattern'] = undefined;
+  /**
+   * @member {Boolean} required
+   */
+  exports.prototype['required'] = undefined;
+  /**
+   * @member {String} restIdProperty
+   */
+  exports.prototype['restIdProperty'] = undefined;
+  /**
+   * @member {String} restLabelProperty
+   */
+  exports.prototype['restLabelProperty'] = undefined;
+  /**
+   * @member {String} restResponsePath
+   */
+  exports.prototype['restResponsePath'] = undefined;
+  /**
+   * @member {String} restUrl
+   */
+  exports.prototype['restUrl'] = undefined;
+  /**
+   * @member {Integer} row
+   */
+  exports.prototype['row'] = undefined;
+  /**
+   * @member {Integer} sizeX
+   */
+  exports.prototype['sizeX'] = undefined;
+  /**
+   * @member {Integer} sizeY
+   */
+  exports.prototype['sizeY'] = undefined;
+  /**
+   * @member {String} tab
+   */
+  exports.prototype['tab'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+  /**
+   * @member {Object} value
+   */
+  exports.prototype['value'] = undefined;
+  /**
+   * @member {module:model/ConditionRepresentation} visibilityCondition
+   */
+  exports.prototype['visibilityCondition'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./ConditionRepresentation":195,"./LayoutRepresentation":217,"./OptionRepresentation":228}],207:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormJavascriptEventRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The FormJavascriptEventRepresentation model module.
+   * @module model/FormJavascriptEventRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormJavascriptEventRepresentation</code>.
+   * @alias module:model/FormJavascriptEventRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormJavascriptEventRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormJavascriptEventRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormJavascriptEventRepresentation} The populated <code>FormJavascriptEventRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('event')) {
+        obj['event'] = ApiClient.convertToType(data['event'], 'String');
+      }
+      if (data.hasOwnProperty('javascriptLogic')) {
+        obj['javascriptLogic'] = ApiClient.convertToType(data['javascriptLogic'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} event
+   */
+  exports.prototype['event'] = undefined;
+  /**
+   * @member {String} javascriptLogic
+   */
+  exports.prototype['javascriptLogic'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],208:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormOutcomeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The FormOutcomeRepresentation model module.
+   * @module model/FormOutcomeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormOutcomeRepresentation</code>.
+   * @alias module:model/FormOutcomeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormOutcomeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormOutcomeRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormOutcomeRepresentation} The populated <code>FormOutcomeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],209:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormDefinitionRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./FormDefinitionRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormDefinitionRepresentation);
+  }
+})(undefined, function (ApiClient, FormDefinitionRepresentation) {
+  'use strict';
+
+  /**
+   * The FormRepresentation model module.
+   * @module model/FormRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormRepresentation</code>.
+   * @alias module:model/FormRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormRepresentation} The populated <code>FormRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('formDefinition')) {
+        obj['formDefinition'] = FormDefinitionRepresentation.constructFromObject(data['formDefinition']);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdated')) {
+        obj['lastUpdated'] = ApiClient.convertToType(data['lastUpdated'], 'Date');
+      }
+      if (data.hasOwnProperty('lastUpdatedBy')) {
+        obj['lastUpdatedBy'] = ApiClient.convertToType(data['lastUpdatedBy'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdatedByFullName')) {
+        obj['lastUpdatedByFullName'] = ApiClient.convertToType(data['lastUpdatedByFullName'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('referenceId')) {
+        obj['referenceId'] = ApiClient.convertToType(data['referenceId'], 'Integer');
+      }
+      if (data.hasOwnProperty('stencilSetId')) {
+        obj['stencilSetId'] = ApiClient.convertToType(data['stencilSetId'], 'Integer');
+      }
+      if (data.hasOwnProperty('version')) {
+        obj['version'] = ApiClient.convertToType(data['version'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {module:model/FormDefinitionRepresentation} formDefinition
+   */
+  exports.prototype['formDefinition'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastUpdated
+   */
+  exports.prototype['lastUpdated'] = undefined;
+  /**
+   * @member {Integer} lastUpdatedBy
+   */
+  exports.prototype['lastUpdatedBy'] = undefined;
+  /**
+   * @member {String} lastUpdatedByFullName
+   */
+  exports.prototype['lastUpdatedByFullName'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} referenceId
+   */
+  exports.prototype['referenceId'] = undefined;
+  /**
+   * @member {Integer} stencilSetId
+   */
+  exports.prototype['stencilSetId'] = undefined;
+  /**
+   * @member {Integer} version
+   */
+  exports.prototype['version'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./FormDefinitionRepresentation":205}],210:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormRepresentation', 'model/ProcessScopeIdentifierRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./FormRepresentation'), require('./ProcessScopeIdentifierRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormSaveRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormRepresentation, root.ActivitiPublicRestApi.ProcessScopeIdentifierRepresentation);
+  }
+})(undefined, function (ApiClient, FormRepresentation, ProcessScopeIdentifierRepresentation) {
+  'use strict';
+
+  /**
+   * The FormSaveRepresentation model module.
+   * @module model/FormSaveRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormSaveRepresentation</code>.
+   * @alias module:model/FormSaveRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormSaveRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormSaveRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormSaveRepresentation} The populated <code>FormSaveRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('comment')) {
+        obj['comment'] = ApiClient.convertToType(data['comment'], 'String');
+      }
+      if (data.hasOwnProperty('formImageBase64')) {
+        obj['formImageBase64'] = ApiClient.convertToType(data['formImageBase64'], 'String');
+      }
+      if (data.hasOwnProperty('formRepresentation')) {
+        obj['formRepresentation'] = FormRepresentation.constructFromObject(data['formRepresentation']);
+      }
+      if (data.hasOwnProperty('newVersion')) {
+        obj['newVersion'] = ApiClient.convertToType(data['newVersion'], 'Boolean');
+      }
+      if (data.hasOwnProperty('processScopeIdentifiers')) {
+        obj['processScopeIdentifiers'] = ApiClient.convertToType(data['processScopeIdentifiers'], [ProcessScopeIdentifierRepresentation]);
+      }
+      if (data.hasOwnProperty('reusable')) {
+        obj['reusable'] = ApiClient.convertToType(data['reusable'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} comment
+   */
+  exports.prototype['comment'] = undefined;
+  /**
+   * @member {String} formImageBase64
+   */
+  exports.prototype['formImageBase64'] = undefined;
+  /**
+   * @member {module:model/FormRepresentation} formRepresentation
+   */
+  exports.prototype['formRepresentation'] = undefined;
+  /**
+   * @member {Boolean} newVersion
+   */
+  exports.prototype['newVersion'] = undefined;
+  /**
+   * @member {Array.<module:model/ProcessScopeIdentifierRepresentation>} processScopeIdentifiers
+   */
+  exports.prototype['processScopeIdentifiers'] = undefined;
+  /**
+   * @member {Boolean} reusable
+   */
+  exports.prototype['reusable'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./FormRepresentation":209,"./ProcessScopeIdentifierRepresentation":232}],211:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormFieldRepresentation', 'model/FormOutcomeRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./FormFieldRepresentation'), require('./FormOutcomeRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormFieldRepresentation, root.ActivitiPublicRestApi.FormOutcomeRepresentation);
+  }
+})(undefined, function (ApiClient, FormFieldRepresentation, FormOutcomeRepresentation) {
+  'use strict';
+
+  /**
+   * The FormScopeRepresentation model module.
+   * @module model/FormScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormScopeRepresentation</code>.
+   * @alias module:model/FormScopeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormScopeRepresentation} The populated <code>FormScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('fieldVariables')) {
+        obj['fieldVariables'] = ApiClient.convertToType(data['fieldVariables'], [FormFieldRepresentation]);
+      }
+      if (data.hasOwnProperty('fields')) {
+        obj['fields'] = ApiClient.convertToType(data['fields'], [FormFieldRepresentation]);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('outcomes')) {
+        obj['outcomes'] = ApiClient.convertToType(data['outcomes'], [FormOutcomeRepresentation]);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {Array.<module:model/FormFieldRepresentation>} fieldVariables
+   */
+  exports.prototype['fieldVariables'] = undefined;
+  /**
+   * @member {Array.<module:model/FormFieldRepresentation>} fields
+   */
+  exports.prototype['fields'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Array.<module:model/FormOutcomeRepresentation>} outcomes
+   */
+  exports.prototype['outcomes'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./FormFieldRepresentation":206,"./FormOutcomeRepresentation":208}],212:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ConditionRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ConditionRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormTabRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ConditionRepresentation);
+  }
+})(undefined, function (ApiClient, ConditionRepresentation) {
+  'use strict';
+
+  /**
+   * The FormTabRepresentation model module.
+   * @module model/FormTabRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormTabRepresentation</code>.
+   * @alias module:model/FormTabRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormTabRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormTabRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormTabRepresentation} The populated <code>FormTabRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('title')) {
+        obj['title'] = ApiClient.convertToType(data['title'], 'String');
+      }
+      if (data.hasOwnProperty('visibilityCondition')) {
+        obj['visibilityCondition'] = ConditionRepresentation.constructFromObject(data['visibilityCondition']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} title
+   */
+  exports.prototype['title'] = undefined;
+  /**
+   * @member {module:model/ConditionRepresentation} visibilityCondition
+   */
+  exports.prototype['visibilityCondition'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./ConditionRepresentation":195}],213:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.FormValueRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The FormValueRepresentation model module.
+   * @module model/FormValueRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>FormValueRepresentation</code>.
+   * @alias module:model/FormValueRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>FormValueRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/FormValueRepresentation} obj Optional instance to populate.
+   * @return {module:model/FormValueRepresentation} The populated <code>FormValueRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],214:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.GroupCapabilityRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The GroupCapabilityRepresentation model module.
+   * @module model/GroupCapabilityRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>GroupCapabilityRepresentation</code>.
+   * @alias module:model/GroupCapabilityRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>GroupCapabilityRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/GroupCapabilityRepresentation} obj Optional instance to populate.
+   * @return {module:model/GroupCapabilityRepresentation} The populated <code>GroupCapabilityRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],215:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/GroupCapabilityRepresentation', 'model/GroupRepresentation', 'model/UserRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./GroupCapabilityRepresentation'), require('./GroupRepresentation'), require('./UserRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.GroupRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.GroupCapabilityRepresentation, root.ActivitiPublicRestApi.GroupRepresentation, root.ActivitiPublicRestApi.UserRepresentation);
+  }
+})(undefined, function (ApiClient, GroupCapabilityRepresentation, GroupRepresentation, UserRepresentation) {
+  'use strict';
+
+  /**
+   * The GroupRepresentation model module.
+   * @module model/GroupRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>GroupRepresentation</code>.
+   * @alias module:model/GroupRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>GroupRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/GroupRepresentation} obj Optional instance to populate.
+   * @return {module:model/GroupRepresentation} The populated <code>GroupRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('capabilities')) {
+        obj['capabilities'] = ApiClient.convertToType(data['capabilities'], [GroupCapabilityRepresentation]);
+      }
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('groups')) {
+        obj['groups'] = ApiClient.convertToType(data['groups'], [GroupRepresentation]);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastSyncTimeStamp')) {
+        obj['lastSyncTimeStamp'] = ApiClient.convertToType(data['lastSyncTimeStamp'], 'Date');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('parentGroupId')) {
+        obj['parentGroupId'] = ApiClient.convertToType(data['parentGroupId'], 'Integer');
+      }
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'Integer');
+      }
+      if (data.hasOwnProperty('userCount')) {
+        obj['userCount'] = ApiClient.convertToType(data['userCount'], 'Integer');
+      }
+      if (data.hasOwnProperty('users')) {
+        obj['users'] = ApiClient.convertToType(data['users'], [UserRepresentation]);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/GroupCapabilityRepresentation>} capabilities
+   */
+  exports.prototype['capabilities'] = undefined;
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {Array.<module:model/GroupRepresentation>} groups
+   */
+  exports.prototype['groups'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastSyncTimeStamp
+   */
+  exports.prototype['lastSyncTimeStamp'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} parentGroupId
+   */
+  exports.prototype['parentGroupId'] = undefined;
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {Integer} type
+   */
+  exports.prototype['type'] = undefined;
+  /**
+   * @member {Integer} userCount
+   */
+  exports.prototype['userCount'] = undefined;
+  /**
+   * @member {Array.<module:model/UserRepresentation>} users
+   */
+  exports.prototype['users'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./GroupCapabilityRepresentation":214,"./GroupRepresentation":215,"./UserRepresentation":255}],216:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ImageUploadRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ImageUploadRepresentation model module.
+   * @module model/ImageUploadRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ImageUploadRepresentation</code>.
+   * @alias module:model/ImageUploadRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ImageUploadRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ImageUploadRepresentation} obj Optional instance to populate.
+   * @return {module:model/ImageUploadRepresentation} The populated <code>ImageUploadRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('userId')) {
+        obj['userId'] = ApiClient.convertToType(data['userId'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Integer} userId
+   */
+  exports.prototype['userId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],217:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.LayoutRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The LayoutRepresentation model module.
+   * @module model/LayoutRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>LayoutRepresentation</code>.
+   * @alias module:model/LayoutRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>LayoutRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/LayoutRepresentation} obj Optional instance to populate.
+   * @return {module:model/LayoutRepresentation} The populated <code>LayoutRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('colspan')) {
+        obj['colspan'] = ApiClient.convertToType(data['colspan'], 'Integer');
+      }
+      if (data.hasOwnProperty('column')) {
+        obj['column'] = ApiClient.convertToType(data['column'], 'Integer');
+      }
+      if (data.hasOwnProperty('row')) {
+        obj['row'] = ApiClient.convertToType(data['row'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} colspan
+   */
+  exports.prototype['colspan'] = undefined;
+  /**
+   * @member {Integer} column
+   */
+  exports.prototype['column'] = undefined;
+  /**
+   * @member {Integer} row
+   */
+  exports.prototype['row'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],218:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.LightAppRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The LightAppRepresentation model module.
+   * @module model/LightAppRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>LightAppRepresentation</code>.
+   * @alias module:model/LightAppRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>LightAppRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/LightAppRepresentation} obj Optional instance to populate.
+   * @return {module:model/LightAppRepresentation} The populated <code>LightAppRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('icon')) {
+        obj['icon'] = ApiClient.convertToType(data['icon'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('theme')) {
+        obj['theme'] = ApiClient.convertToType(data['theme'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {String} icon
+   */
+  exports.prototype['icon'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} theme
+   */
+  exports.prototype['theme'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],219:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightGroupRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightGroupRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.LightGroupRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightGroupRepresentation);
+  }
+})(undefined, function (ApiClient, LightGroupRepresentation) {
+  'use strict';
+
+  /**
+   * The LightGroupRepresentation model module.
+   * @module model/LightGroupRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>LightGroupRepresentation</code>.
+   * @alias module:model/LightGroupRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>LightGroupRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/LightGroupRepresentation} obj Optional instance to populate.
+   * @return {module:model/LightGroupRepresentation} The populated <code>LightGroupRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('groups')) {
+        obj['groups'] = ApiClient.convertToType(data['groups'], [LightGroupRepresentation]);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {Array.<module:model/LightGroupRepresentation>} groups
+   */
+  exports.prototype['groups'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightGroupRepresentation":219}],220:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.LightTenantRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The LightTenantRepresentation model module.
+   * @module model/LightTenantRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>LightTenantRepresentation</code>.
+   * @alias module:model/LightTenantRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>LightTenantRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/LightTenantRepresentation} obj Optional instance to populate.
+   * @return {module:model/LightTenantRepresentation} The populated <code>LightTenantRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],221:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.LightUserRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The LightUserRepresentation model module.
+   * @module model/LightUserRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>LightUserRepresentation</code>.
+   * @alias module:model/LightUserRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>LightUserRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/LightUserRepresentation} obj Optional instance to populate.
+   * @return {module:model/LightUserRepresentation} The populated <code>LightUserRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('email')) {
+        obj['email'] = ApiClient.convertToType(data['email'], 'String');
+      }
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('firstName')) {
+        obj['firstName'] = ApiClient.convertToType(data['firstName'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastName')) {
+        obj['lastName'] = ApiClient.convertToType(data['lastName'], 'String');
+      }
+      if (data.hasOwnProperty('pictureId')) {
+        obj['pictureId'] = ApiClient.convertToType(data['pictureId'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} email
+   */
+  exports.prototype['email'] = undefined;
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {String} firstName
+   */
+  exports.prototype['firstName'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} lastName
+   */
+  exports.prototype['lastName'] = undefined;
+  /**
+   * @member {Integer} pictureId
+   */
+  exports.prototype['pictureId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],222:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.MaplongListstring = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The MaplongListstring model module.
+   * @module model/MaplongListstring
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>MaplongListstring</code>.
+   * @alias module:model/MaplongListstring
+   * @class
+   * @extends Object
+   */
+
+  var exports = function exports() {
+    var _this = this;
+
+    return _this;
+  };
+
+  /**
+   * Constructs a <code>MaplongListstring</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/MaplongListstring} obj Optional instance to populate.
+   * @return {module:model/MaplongListstring} The populated <code>MaplongListstring</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, Array);
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],223:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.MapstringListEntityVariableScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The MapstringListEntityVariableScopeRepresentation model module.
+   * @module model/MapstringListEntityVariableScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>MapstringListEntityVariableScopeRepresentation</code>.
+   * @alias module:model/MapstringListEntityVariableScopeRepresentation
+   * @class
+   * @extends Object
+   */
+
+  var exports = function exports() {
+    var _this = this;
+
+    return _this;
+  };
+
+  /**
+   * Constructs a <code>MapstringListEntityVariableScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/MapstringListEntityVariableScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/MapstringListEntityVariableScopeRepresentation} The populated <code>MapstringListEntityVariableScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, Array);
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],224:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.MapstringListVariableScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The MapstringListVariableScopeRepresentation model module.
+   * @module model/MapstringListVariableScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>MapstringListVariableScopeRepresentation</code>.
+   * @alias module:model/MapstringListVariableScopeRepresentation
+   * @class
+   * @extends Object
+   */
+
+  var exports = function exports() {
+    var _this = this;
+
+    return _this;
+  };
+
+  /**
+   * Constructs a <code>MapstringListVariableScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/MapstringListVariableScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/MapstringListVariableScopeRepresentation} The populated <code>MapstringListVariableScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, Array);
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],225:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.Mapstringstring = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The Mapstringstring model module.
+   * @module model/Mapstringstring
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>Mapstringstring</code>.
+   * @alias module:model/Mapstringstring
+   * @class
+   * @extends Object
+   */
+
+  var exports = function exports() {
+    var _this = this;
+
+    return _this;
+  };
+
+  /**
+   * Constructs a <code>Mapstringstring</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/Mapstringstring} obj Optional instance to populate.
+   * @return {module:model/Mapstringstring} The populated <code>Mapstringstring</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+      ApiClient.constructFromObject(data, obj, String);
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],226:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ModelRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ModelRepresentation model module.
+   * @module model/ModelRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ModelRepresentation</code>.
+   * @alias module:model/ModelRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ModelRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ModelRepresentation} obj Optional instance to populate.
+   * @return {module:model/ModelRepresentation} The populated <code>ModelRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('comment')) {
+        obj['comment'] = ApiClient.convertToType(data['comment'], 'String');
+      }
+      if (data.hasOwnProperty('createdBy')) {
+        obj['createdBy'] = ApiClient.convertToType(data['createdBy'], 'Integer');
+      }
+      if (data.hasOwnProperty('createdByFullName')) {
+        obj['createdByFullName'] = ApiClient.convertToType(data['createdByFullName'], 'String');
+      }
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('favorite')) {
+        obj['favorite'] = ApiClient.convertToType(data['favorite'], 'Boolean');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdated')) {
+        obj['lastUpdated'] = ApiClient.convertToType(data['lastUpdated'], 'Date');
+      }
+      if (data.hasOwnProperty('lastUpdatedBy')) {
+        obj['lastUpdatedBy'] = ApiClient.convertToType(data['lastUpdatedBy'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdatedByFullName')) {
+        obj['lastUpdatedByFullName'] = ApiClient.convertToType(data['lastUpdatedByFullName'], 'String');
+      }
+      if (data.hasOwnProperty('latestVersion')) {
+        obj['latestVersion'] = ApiClient.convertToType(data['latestVersion'], 'Boolean');
+      }
+      if (data.hasOwnProperty('modelType')) {
+        obj['modelType'] = ApiClient.convertToType(data['modelType'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('permission')) {
+        obj['permission'] = ApiClient.convertToType(data['permission'], 'String');
+      }
+      if (data.hasOwnProperty('referenceId')) {
+        obj['referenceId'] = ApiClient.convertToType(data['referenceId'], 'Integer');
+      }
+      if (data.hasOwnProperty('stencilSet')) {
+        obj['stencilSet'] = ApiClient.convertToType(data['stencilSet'], 'Integer');
+      }
+      if (data.hasOwnProperty('version')) {
+        obj['version'] = ApiClient.convertToType(data['version'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} comment
+   */
+  exports.prototype['comment'] = undefined;
+  /**
+   * @member {Integer} createdBy
+   */
+  exports.prototype['createdBy'] = undefined;
+  /**
+   * @member {String} createdByFullName
+   */
+  exports.prototype['createdByFullName'] = undefined;
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {Boolean} favorite
+   */
+  exports.prototype['favorite'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastUpdated
+   */
+  exports.prototype['lastUpdated'] = undefined;
+  /**
+   * @member {Integer} lastUpdatedBy
+   */
+  exports.prototype['lastUpdatedBy'] = undefined;
+  /**
+   * @member {String} lastUpdatedByFullName
+   */
+  exports.prototype['lastUpdatedByFullName'] = undefined;
+  /**
+   * @member {Boolean} latestVersion
+   */
+  exports.prototype['latestVersion'] = undefined;
+  /**
+   * @member {Integer} modelType
+   */
+  exports.prototype['modelType'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} permission
+   */
+  exports.prototype['permission'] = undefined;
+  /**
+   * @member {Integer} referenceId
+   */
+  exports.prototype['referenceId'] = undefined;
+  /**
+   * @member {Integer} stencilSet
+   */
+  exports.prototype['stencilSet'] = undefined;
+  /**
+   * @member {Integer} version
+   */
+  exports.prototype['version'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],227:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ObjectNode = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ObjectNode model module.
+   * @module model/ObjectNode
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ObjectNode</code>.
+   * @alias module:model/ObjectNode
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ObjectNode</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ObjectNode} obj Optional instance to populate.
+   * @return {module:model/ObjectNode} The populated <code>ObjectNode</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+    }
+    return obj;
+  };
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],228:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.OptionRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The OptionRepresentation model module.
+   * @module model/OptionRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>OptionRepresentation</code>.
+   * @alias module:model/OptionRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>OptionRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/OptionRepresentation} obj Optional instance to populate.
+   * @return {module:model/OptionRepresentation} The populated <code>OptionRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],229:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstanceFilterRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ProcessInstanceFilterRepresentation model module.
+   * @module model/ProcessInstanceFilterRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessInstanceFilterRepresentation</code>.
+   * @alias module:model/ProcessInstanceFilterRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessInstanceFilterRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessInstanceFilterRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessInstanceFilterRepresentation} The populated <code>ProcessInstanceFilterRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('asc')) {
+        obj['asc'] = ApiClient.convertToType(data['asc'], 'Boolean');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionKey')) {
+        obj['processDefinitionKey'] = ApiClient.convertToType(data['processDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('sort')) {
+        obj['sort'] = ApiClient.convertToType(data['sort'], 'String');
+      }
+      if (data.hasOwnProperty('state')) {
+        obj['state'] = ApiClient.convertToType(data['state'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} asc
+   */
+  exports.prototype['asc'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {String} processDefinitionKey
+   */
+  exports.prototype['processDefinitionKey'] = undefined;
+  /**
+   * @member {String} sort
+   */
+  exports.prototype['sort'] = undefined;
+  /**
+   * @member {String} state
+   */
+  exports.prototype['state'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],230:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessInstanceFilterRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ProcessInstanceFilterRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstanceFilterRequestRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessInstanceFilterRepresentation);
+  }
+})(undefined, function (ApiClient, ProcessInstanceFilterRepresentation) {
+  'use strict';
+
+  /**
+   * The ProcessInstanceFilterRequestRepresentation model module.
+   * @module model/ProcessInstanceFilterRequestRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessInstanceFilterRequestRepresentation</code>.
+   * @alias module:model/ProcessInstanceFilterRequestRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessInstanceFilterRequestRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessInstanceFilterRequestRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessInstanceFilterRequestRepresentation} The populated <code>ProcessInstanceFilterRequestRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appDefinitionId')) {
+        obj['appDefinitionId'] = ApiClient.convertToType(data['appDefinitionId'], 'Integer');
+      }
+      if (data.hasOwnProperty('filter')) {
+        obj['filter'] = ProcessInstanceFilterRepresentation.constructFromObject(data['filter']);
+      }
+      if (data.hasOwnProperty('filterId')) {
+        obj['filterId'] = ApiClient.convertToType(data['filterId'], 'Integer');
+      }
+      if (data.hasOwnProperty('page')) {
+        obj['page'] = ApiClient.convertToType(data['page'], 'Integer');
+      }
+      if (data.hasOwnProperty('size')) {
+        obj['size'] = ApiClient.convertToType(data['size'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} appDefinitionId
+   */
+  exports.prototype['appDefinitionId'] = undefined;
+  /**
+   * @member {module:model/ProcessInstanceFilterRepresentation} filter
+   */
+  exports.prototype['filter'] = undefined;
+  /**
+   * @member {Integer} filterId
+   */
+  exports.prototype['filterId'] = undefined;
+  /**
+   * @member {Integer} page
+   */
+  exports.prototype['page'] = undefined;
+  /**
+   * @member {Integer} size
+   */
+  exports.prototype['size'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./ProcessInstanceFilterRepresentation":229}],231:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightUserRepresentation', 'model/RestVariable'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightUserRepresentation'), require('./RestVariable'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessInstanceRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightUserRepresentation, root.ActivitiPublicRestApi.RestVariable);
+  }
+})(undefined, function (ApiClient, LightUserRepresentation, RestVariable) {
+  'use strict';
+
+  /**
+   * The ProcessInstanceRepresentation model module.
+   * @module model/ProcessInstanceRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessInstanceRepresentation</code>.
+   * @alias module:model/ProcessInstanceRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessInstanceRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessInstanceRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessInstanceRepresentation} The populated <code>ProcessInstanceRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('businessKey')) {
+        obj['businessKey'] = ApiClient.convertToType(data['businessKey'], 'String');
+      }
+      if (data.hasOwnProperty('ended')) {
+        obj['ended'] = ApiClient.convertToType(data['ended'], 'Date');
+      }
+      if (data.hasOwnProperty('graphicalNotationDefined')) {
+        obj['graphicalNotationDefined'] = ApiClient.convertToType(data['graphicalNotationDefined'], 'Boolean');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionCategory')) {
+        obj['processDefinitionCategory'] = ApiClient.convertToType(data['processDefinitionCategory'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionDeploymentId')) {
+        obj['processDefinitionDeploymentId'] = ApiClient.convertToType(data['processDefinitionDeploymentId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionDescription')) {
+        obj['processDefinitionDescription'] = ApiClient.convertToType(data['processDefinitionDescription'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionKey')) {
+        obj['processDefinitionKey'] = ApiClient.convertToType(data['processDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionName')) {
+        obj['processDefinitionName'] = ApiClient.convertToType(data['processDefinitionName'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionVersion')) {
+        obj['processDefinitionVersion'] = ApiClient.convertToType(data['processDefinitionVersion'], 'Integer');
+      }
+      if (data.hasOwnProperty('startFormDefined')) {
+        obj['startFormDefined'] = ApiClient.convertToType(data['startFormDefined'], 'Boolean');
+      }
+      if (data.hasOwnProperty('started')) {
+        obj['started'] = ApiClient.convertToType(data['started'], 'Date');
+      }
+      if (data.hasOwnProperty('startedBy')) {
+        obj['startedBy'] = LightUserRepresentation.constructFromObject(data['startedBy']);
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'String');
+      }
+      if (data.hasOwnProperty('variables')) {
+        obj['variables'] = ApiClient.convertToType(data['variables'], [RestVariable]);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} businessKey
+   */
+  exports.prototype['businessKey'] = undefined;
+  /**
+   * @member {Date} ended
+   */
+  exports.prototype['ended'] = undefined;
+  /**
+   * @member {Boolean} graphicalNotationDefined
+   */
+  exports.prototype['graphicalNotationDefined'] = undefined;
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} processDefinitionCategory
+   */
+  exports.prototype['processDefinitionCategory'] = undefined;
+  /**
+   * @member {String} processDefinitionDeploymentId
+   */
+  exports.prototype['processDefinitionDeploymentId'] = undefined;
+  /**
+   * @member {String} processDefinitionDescription
+   */
+  exports.prototype['processDefinitionDescription'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {String} processDefinitionKey
+   */
+  exports.prototype['processDefinitionKey'] = undefined;
+  /**
+   * @member {String} processDefinitionName
+   */
+  exports.prototype['processDefinitionName'] = undefined;
+  /**
+   * @member {Integer} processDefinitionVersion
+   */
+  exports.prototype['processDefinitionVersion'] = undefined;
+  /**
+   * @member {Boolean} startFormDefined
+   */
+  exports.prototype['startFormDefined'] = undefined;
+  /**
+   * @member {Date} started
+   */
+  exports.prototype['started'] = undefined;
+  /**
+   * @member {module:model/LightUserRepresentation} startedBy
+   */
+  exports.prototype['startedBy'] = undefined;
+  /**
+   * @member {String} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {Array.<module:model/RestVariable>} variables
+   */
+  exports.prototype['variables'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightUserRepresentation":221,"./RestVariable":238}],232:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessScopeIdentifierRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ProcessScopeIdentifierRepresentation model module.
+   * @module model/ProcessScopeIdentifierRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessScopeIdentifierRepresentation</code>.
+   * @alias module:model/ProcessScopeIdentifierRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessScopeIdentifierRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessScopeIdentifierRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessScopeIdentifierRepresentation} The populated <code>ProcessScopeIdentifierRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('processActivityId')) {
+        obj['processActivityId'] = ApiClient.convertToType(data['processActivityId'], 'String');
+      }
+      if (data.hasOwnProperty('processModelId')) {
+        obj['processModelId'] = ApiClient.convertToType(data['processModelId'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} processActivityId
+   */
+  exports.prototype['processActivityId'] = undefined;
+  /**
+   * @member {Integer} processModelId
+   */
+  exports.prototype['processModelId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],233:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/FormScopeRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./FormScopeRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.FormScopeRepresentation);
+  }
+})(undefined, function (ApiClient, FormScopeRepresentation) {
+  'use strict';
+
+  /**
+   * The ProcessScopeRepresentation model module.
+   * @module model/ProcessScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessScopeRepresentation</code>.
+   * @alias module:model/ProcessScopeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessScopeRepresentation} The populated <code>ProcessScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('activityIds')) {
+        obj['activityIds'] = ApiClient.convertToType(data['activityIds'], ['String']);
+      }
+      if (data.hasOwnProperty('activityIdsByCollapsedSubProcessIdMap')) {
+        obj['activityIdsByCollapsedSubProcessIdMap'] = ApiClient.convertToType(data['activityIdsByCollapsedSubProcessIdMap'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('activityIdsByDecisionTableIdMap')) {
+        obj['activityIdsByDecisionTableIdMap'] = ApiClient.convertToType(data['activityIdsByDecisionTableIdMap'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('activityIdsByFormIdMap')) {
+        obj['activityIdsByFormIdMap'] = ApiClient.convertToType(data['activityIdsByFormIdMap'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('activityIdsWithExcludedSubProcess')) {
+        obj['activityIdsWithExcludedSubProcess'] = ApiClient.convertToType(data['activityIdsWithExcludedSubProcess'], ['String']);
+      }
+      if (data.hasOwnProperty('customStencilVariables')) {
+        obj['customStencilVariables'] = ApiClient.convertToType(data['customStencilVariables'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('entityVariables')) {
+        obj['entityVariables'] = ApiClient.convertToType(data['entityVariables'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('executionVariables')) {
+        obj['executionVariables'] = ApiClient.convertToType(data['executionVariables'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('fieldToVariableMappings')) {
+        obj['fieldToVariableMappings'] = ApiClient.convertToType(data['fieldToVariableMappings'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('forms')) {
+        obj['forms'] = ApiClient.convertToType(data['forms'], [FormScopeRepresentation]);
+      }
+      if (data.hasOwnProperty('metadataVariables')) {
+        obj['metadataVariables'] = ApiClient.convertToType(data['metadataVariables'], { 'String': Array });
+      }
+      if (data.hasOwnProperty('modelId')) {
+        obj['modelId'] = ApiClient.convertToType(data['modelId'], 'Integer');
+      }
+      if (data.hasOwnProperty('processModelType')) {
+        obj['processModelType'] = ApiClient.convertToType(data['processModelType'], 'Integer');
+      }
+      if (data.hasOwnProperty('responseVariables')) {
+        obj['responseVariables'] = ApiClient.convertToType(data['responseVariables'], { 'String': Array });
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<String>} activityIds
+   */
+  exports.prototype['activityIds'] = undefined;
+  /**
+   * @member {Object.<String, Array>} activityIdsByCollapsedSubProcessIdMap
+   */
+  exports.prototype['activityIdsByCollapsedSubProcessIdMap'] = undefined;
+  /**
+   * @member {Object.<String, Array>} activityIdsByDecisionTableIdMap
+   */
+  exports.prototype['activityIdsByDecisionTableIdMap'] = undefined;
+  /**
+   * @member {Object.<String, Array>} activityIdsByFormIdMap
+   */
+  exports.prototype['activityIdsByFormIdMap'] = undefined;
+  /**
+   * @member {Array.<String>} activityIdsWithExcludedSubProcess
+   */
+  exports.prototype['activityIdsWithExcludedSubProcess'] = undefined;
+  /**
+   * @member {Object.<String, Array>} customStencilVariables
+   */
+  exports.prototype['customStencilVariables'] = undefined;
+  /**
+   * @member {Object.<String, Array>} entityVariables
+   */
+  exports.prototype['entityVariables'] = undefined;
+  /**
+   * @member {Object.<String, Array>} executionVariables
+   */
+  exports.prototype['executionVariables'] = undefined;
+  /**
+   * @member {Object.<String, Array>} fieldToVariableMappings
+   */
+  exports.prototype['fieldToVariableMappings'] = undefined;
+  /**
+   * @member {Array.<module:model/FormScopeRepresentation>} forms
+   */
+  exports.prototype['forms'] = undefined;
+  /**
+   * @member {Object.<String, Array>} metadataVariables
+   */
+  exports.prototype['metadataVariables'] = undefined;
+  /**
+   * @member {Integer} modelId
+   */
+  exports.prototype['modelId'] = undefined;
+  /**
+   * @member {Integer} processModelType
+   */
+  exports.prototype['processModelType'] = undefined;
+  /**
+   * @member {Object.<String, Array>} responseVariables
+   */
+  exports.prototype['responseVariables'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./FormScopeRepresentation":211}],234:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessScopeIdentifierRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ProcessScopeIdentifierRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ProcessScopesRequestRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessScopeIdentifierRepresentation);
+  }
+})(undefined, function (ApiClient, ProcessScopeIdentifierRepresentation) {
+  'use strict';
+
+  /**
+   * The ProcessScopesRequestRepresentation model module.
+   * @module model/ProcessScopesRequestRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ProcessScopesRequestRepresentation</code>.
+   * @alias module:model/ProcessScopesRequestRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ProcessScopesRequestRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ProcessScopesRequestRepresentation} obj Optional instance to populate.
+   * @return {module:model/ProcessScopesRequestRepresentation} The populated <code>ProcessScopesRequestRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('identifiers')) {
+        obj['identifiers'] = ApiClient.convertToType(data['identifiers'], [ProcessScopeIdentifierRepresentation]);
+      }
+      if (data.hasOwnProperty('overriddenModel')) {
+        obj['overriddenModel'] = ApiClient.convertToType(data['overriddenModel'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/ProcessScopeIdentifierRepresentation>} identifiers
+   */
+  exports.prototype['identifiers'] = undefined;
+  /**
+   * @member {String} overriddenModel
+   */
+  exports.prototype['overriddenModel'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./ProcessScopeIdentifierRepresentation":232}],235:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightGroupRepresentation', 'model/LightUserRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightGroupRepresentation'), require('./LightUserRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.PublishIdentityInfoRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightGroupRepresentation, root.ActivitiPublicRestApi.LightUserRepresentation);
+  }
+})(undefined, function (ApiClient, LightGroupRepresentation, LightUserRepresentation) {
+  'use strict';
+
+  /**
+   * The PublishIdentityInfoRepresentation model module.
+   * @module model/PublishIdentityInfoRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>PublishIdentityInfoRepresentation</code>.
+   * @alias module:model/PublishIdentityInfoRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>PublishIdentityInfoRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/PublishIdentityInfoRepresentation} obj Optional instance to populate.
+   * @return {module:model/PublishIdentityInfoRepresentation} The populated <code>PublishIdentityInfoRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('group')) {
+        obj['group'] = LightGroupRepresentation.constructFromObject(data['group']);
+      }
+      if (data.hasOwnProperty('person')) {
+        obj['person'] = LightUserRepresentation.constructFromObject(data['person']);
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {module:model/LightGroupRepresentation} group
+   */
+  exports.prototype['group'] = undefined;
+  /**
+   * @member {module:model/LightUserRepresentation} person
+   */
+  exports.prototype['person'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightGroupRepresentation":219,"./LightUserRepresentation":221}],236:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightUserRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightUserRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.RelatedContentRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightUserRepresentation);
+  }
+})(undefined, function (ApiClient, LightUserRepresentation) {
+  'use strict';
+
+  /**
+   * The RelatedContentRepresentation model module.
+   * @module model/RelatedContentRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>RelatedContentRepresentation</code>.
+   * @alias module:model/RelatedContentRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>RelatedContentRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/RelatedContentRepresentation} obj Optional instance to populate.
+   * @return {module:model/RelatedContentRepresentation} The populated <code>RelatedContentRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('contentAvailable')) {
+        obj['contentAvailable'] = ApiClient.convertToType(data['contentAvailable'], 'Boolean');
+      }
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('createdBy')) {
+        obj['createdBy'] = LightUserRepresentation.constructFromObject(data['createdBy']);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('link')) {
+        obj['link'] = ApiClient.convertToType(data['link'], 'Boolean');
+      }
+      if (data.hasOwnProperty('linkUrl')) {
+        obj['linkUrl'] = ApiClient.convertToType(data['linkUrl'], 'String');
+      }
+      if (data.hasOwnProperty('mimeType')) {
+        obj['mimeType'] = ApiClient.convertToType(data['mimeType'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('previewStatus')) {
+        obj['previewStatus'] = ApiClient.convertToType(data['previewStatus'], 'String');
+      }
+      if (data.hasOwnProperty('simpleType')) {
+        obj['simpleType'] = ApiClient.convertToType(data['simpleType'], 'String');
+      }
+      if (data.hasOwnProperty('source')) {
+        obj['source'] = ApiClient.convertToType(data['source'], 'String');
+      }
+      if (data.hasOwnProperty('sourceId')) {
+        obj['sourceId'] = ApiClient.convertToType(data['sourceId'], 'String');
+      }
+      if (data.hasOwnProperty('thumbnailStatus')) {
+        obj['thumbnailStatus'] = ApiClient.convertToType(data['thumbnailStatus'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} contentAvailable
+   */
+  exports.prototype['contentAvailable'] = undefined;
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {module:model/LightUserRepresentation} createdBy
+   */
+  exports.prototype['createdBy'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Boolean} link
+   */
+  exports.prototype['link'] = undefined;
+  /**
+   * @member {String} linkUrl
+   */
+  exports.prototype['linkUrl'] = undefined;
+  /**
+   * @member {String} mimeType
+   */
+  exports.prototype['mimeType'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} previewStatus
+   */
+  exports.prototype['previewStatus'] = undefined;
+  /**
+   * @member {String} simpleType
+   */
+  exports.prototype['simpleType'] = undefined;
+  /**
+   * @member {String} source
+   */
+  exports.prototype['source'] = undefined;
+  /**
+   * @member {String} sourceId
+   */
+  exports.prototype['sourceId'] = undefined;
+  /**
+   * @member {String} thumbnailStatus
+   */
+  exports.prototype['thumbnailStatus'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightUserRepresentation":221}],237:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ResetPasswordRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ResetPasswordRepresentation model module.
+   * @module model/ResetPasswordRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ResetPasswordRepresentation</code>.
+   * @alias module:model/ResetPasswordRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ResetPasswordRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ResetPasswordRepresentation} obj Optional instance to populate.
+   * @return {module:model/ResetPasswordRepresentation} The populated <code>ResetPasswordRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('email')) {
+        obj['email'] = ApiClient.convertToType(data['email'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} email
+   */
+  exports.prototype['email'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],238:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.RestVariable = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The RestVariable model module.
+   * @module model/RestVariable
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>RestVariable</code>.
+   * @alias module:model/RestVariable
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>RestVariable</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/RestVariable} obj Optional instance to populate.
+   * @return {module:model/RestVariable} The populated <code>RestVariable</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('scope')) {
+        obj['scope'] = ApiClient.convertToType(data['scope'], 'String');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+      if (data.hasOwnProperty('value')) {
+        obj['value'] = ApiClient.convertToType(data['value'], Object);
+      }
+      if (data.hasOwnProperty('valueUrl')) {
+        obj['valueUrl'] = ApiClient.convertToType(data['valueUrl'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} scope
+   */
+  exports.prototype['scope'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+  /**
+   * @member {Object} value
+   */
+  exports.prototype['value'] = undefined;
+  /**
+   * @member {String} valueUrl
+   */
+  exports.prototype['valueUrl'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],239:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AbstractRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./AbstractRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ResultListDataRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AbstractRepresentation);
+  }
+})(undefined, function (ApiClient, AbstractRepresentation) {
+  'use strict';
+
+  /**
+   * The ResultListDataRepresentation model module.
+   * @module model/ResultListDataRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ResultListDataRepresentation</code>.
+   * @alias module:model/ResultListDataRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ResultListDataRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ResultListDataRepresentation} obj Optional instance to populate.
+   * @return {module:model/ResultListDataRepresentation} The populated <code>ResultListDataRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('data')) {
+        obj['data'] = ApiClient.convertToType(data['data'], 'object');
+      }
+      if (data.hasOwnProperty('size')) {
+        obj['size'] = ApiClient.convertToType(data['size'], 'Integer');
+      }
+      if (data.hasOwnProperty('start')) {
+        obj['start'] = ApiClient.convertToType(data['start'], 'Integer');
+      }
+      if (data.hasOwnProperty('total')) {
+        obj['total'] = ApiClient.convertToType(data['total'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/AbstractRepresentation>} data
+   */
+  exports.prototype['data'] = undefined;
+  /**
+   * @member {Integer} size
+   */
+  exports.prototype['size'] = undefined;
+  /**
+   * @member {Integer} start
+   */
+  exports.prototype['start'] = undefined;
+  /**
+   * @member {Integer} total
+   */
+  exports.prototype['total'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./AbstractRepresentation":180}],240:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/AppDefinitionRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./AppDefinitionRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.RuntimeAppDefinitionSaveRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.AppDefinitionRepresentation);
+  }
+})(undefined, function (ApiClient, AppDefinitionRepresentation) {
+  'use strict';
+
+  /**
+   * The RuntimeAppDefinitionSaveRepresentation model module.
+   * @module model/RuntimeAppDefinitionSaveRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>RuntimeAppDefinitionSaveRepresentation</code>.
+   * @alias module:model/RuntimeAppDefinitionSaveRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>RuntimeAppDefinitionSaveRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/RuntimeAppDefinitionSaveRepresentation} obj Optional instance to populate.
+   * @return {module:model/RuntimeAppDefinitionSaveRepresentation} The populated <code>RuntimeAppDefinitionSaveRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appDefinitions')) {
+        obj['appDefinitions'] = ApiClient.convertToType(data['appDefinitions'], [AppDefinitionRepresentation]);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/AppDefinitionRepresentation>} appDefinitions
+   */
+  exports.prototype['appDefinitions'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./AppDefinitionRepresentation":185}],241:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.SaveFormRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The SaveFormRepresentation model module.
+   * @module model/SaveFormRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>SaveFormRepresentation</code>.
+   * @alias module:model/SaveFormRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>SaveFormRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/SaveFormRepresentation} obj Optional instance to populate.
+   * @return {module:model/SaveFormRepresentation} The populated <code>SaveFormRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('values')) {
+        obj['values'] = ApiClient.convertToType(data['values'], Object);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Object} values
+   */
+  exports.prototype['values'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],242:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.SyncLogEntryRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The SyncLogEntryRepresentation model module.
+   * @module model/SyncLogEntryRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>SyncLogEntryRepresentation</code>.
+   * @alias module:model/SyncLogEntryRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>SyncLogEntryRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/SyncLogEntryRepresentation} obj Optional instance to populate.
+   * @return {module:model/SyncLogEntryRepresentation} The populated <code>SyncLogEntryRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('timeStamp')) {
+        obj['timeStamp'] = ApiClient.convertToType(data['timeStamp'], 'Date');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} timeStamp
+   */
+  exports.prototype['timeStamp'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],243:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.SystemPropertiesRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The SystemPropertiesRepresentation model module.
+   * @module model/SystemPropertiesRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>SystemPropertiesRepresentation</code>.
+   * @alias module:model/SystemPropertiesRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>SystemPropertiesRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/SystemPropertiesRepresentation} obj Optional instance to populate.
+   * @return {module:model/SystemPropertiesRepresentation} The populated <code>SystemPropertiesRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('allowInvolveByEmail')) {
+        obj['allowInvolveByEmail'] = ApiClient.convertToType(data['allowInvolveByEmail'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} allowInvolveByEmail
+   */
+  exports.prototype['allowInvolveByEmail'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],244:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskFilterRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The TaskFilterRepresentation model module.
+   * @module model/TaskFilterRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TaskFilterRepresentation</code>.
+   * @alias module:model/TaskFilterRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TaskFilterRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TaskFilterRepresentation} obj Optional instance to populate.
+   * @return {module:model/TaskFilterRepresentation} The populated <code>TaskFilterRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('asc')) {
+        obj['asc'] = ApiClient.convertToType(data['asc'], 'Boolean');
+      }
+      if (data.hasOwnProperty('assignment')) {
+        obj['assignment'] = ApiClient.convertToType(data['assignment'], 'String');
+      }
+      if (data.hasOwnProperty('dueAfter')) {
+        obj['dueAfter'] = ApiClient.convertToType(data['dueAfter'], 'Date');
+      }
+      if (data.hasOwnProperty('dueBefore')) {
+        obj['dueBefore'] = ApiClient.convertToType(data['dueBefore'], 'Date');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionKey')) {
+        obj['processDefinitionKey'] = ApiClient.convertToType(data['processDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('sort')) {
+        obj['sort'] = ApiClient.convertToType(data['sort'], 'String');
+      }
+      if (data.hasOwnProperty('state')) {
+        obj['state'] = ApiClient.convertToType(data['state'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} asc
+   */
+  exports.prototype['asc'] = undefined;
+  /**
+   * @member {String} assignment
+   */
+  exports.prototype['assignment'] = undefined;
+  /**
+   * @member {Date} dueAfter
+   */
+  exports.prototype['dueAfter'] = undefined;
+  /**
+   * @member {Date} dueBefore
+   */
+  exports.prototype['dueBefore'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {String} processDefinitionKey
+   */
+  exports.prototype['processDefinitionKey'] = undefined;
+  /**
+   * @member {String} sort
+   */
+  exports.prototype['sort'] = undefined;
+  /**
+   * @member {String} state
+   */
+  exports.prototype['state'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],245:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/TaskFilterRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./TaskFilterRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskFilterRequestRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.TaskFilterRepresentation);
+  }
+})(undefined, function (ApiClient, TaskFilterRepresentation) {
+  'use strict';
+
+  /**
+   * The TaskFilterRequestRepresentation model module.
+   * @module model/TaskFilterRequestRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TaskFilterRequestRepresentation</code>.
+   * @alias module:model/TaskFilterRequestRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TaskFilterRequestRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TaskFilterRequestRepresentation} obj Optional instance to populate.
+   * @return {module:model/TaskFilterRequestRepresentation} The populated <code>TaskFilterRequestRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appDefinitionId')) {
+        obj['appDefinitionId'] = ApiClient.convertToType(data['appDefinitionId'], 'Integer');
+      }
+      if (data.hasOwnProperty('filter')) {
+        obj['filter'] = TaskFilterRepresentation.constructFromObject(data['filter']);
+      }
+      if (data.hasOwnProperty('filterId')) {
+        obj['filterId'] = ApiClient.convertToType(data['filterId'], 'Integer');
+      }
+      if (data.hasOwnProperty('page')) {
+        obj['page'] = ApiClient.convertToType(data['page'], 'Integer');
+      }
+      if (data.hasOwnProperty('size')) {
+        obj['size'] = ApiClient.convertToType(data['size'], 'Integer');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} appDefinitionId
+   */
+  exports.prototype['appDefinitionId'] = undefined;
+  /**
+   * @member {module:model/TaskFilterRepresentation} filter
+   */
+  exports.prototype['filter'] = undefined;
+  /**
+   * @member {Integer} filterId
+   */
+  exports.prototype['filterId'] = undefined;
+  /**
+   * @member {Integer} page
+   */
+  exports.prototype['page'] = undefined;
+  /**
+   * @member {Integer} size
+   */
+  exports.prototype['size'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./TaskFilterRepresentation":244}],246:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['ApiClient'], factory);
+    } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+        // CommonJS-like environments that support module.exports, like Node.
+        module.exports = factory(require('../../../alfrescoApiClient'));
+    } else {
+        // Browser globals (root is window)
+        if (!root.ActivitiPublicRestApi) {
+            root.ActivitiPublicRestApi = {};
+        }
+        root.ActivitiPublicRestApi.TaskQueryRequestRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+    }
+})(undefined, function (ApiClient) {
+    'use strict';
+
+    /**
+     * The TaskQueryRequestRepresentation model module.
+     * @module model/TaskQueryRequestRepresentation
+     * @version 1.4.0
+     */
+
+    /**
+     * Constructs a new <code>TaskQueryRequestRepresentation</code>.
+     * @alias module:model/TaskQueryRequestRepresentation
+     * @class
+     */
+
+    var exports = function exports() {
+        var _this = this;
+    };
+
+    exports.constructFromObject = function (data, obj) {
+        if (data) {
+            obj = obj || new exports();
+
+            if (data.hasOwnProperty('processInstanceId')) {
+                obj['processInstanceId'] = ApiClient.convertToType(data['processInstanceId'], 'Integer');
+            }
+            if (data.hasOwnProperty('text')) {
+                obj['text'] = TaskFilterRepresentation.constructFromObject(data['text'], 'String');
+            }
+            if (data.hasOwnProperty('assignment')) {
+                obj['assignment'] = ApiClient.convertToType(data['assignment']);
+            }
+            if (data.hasOwnProperty('state')) {
+                obj['state'] = ApiClient.convertToType(data['state'], 'String');
+            }
+            if (data.hasOwnProperty('sort')) {
+                obj['sort'] = ApiClient.convertToType(data['sort'], 'String');
+            }
+            if (data.hasOwnProperty('page')) {
+                obj['page'] = ApiClient.convertToType(data['page'], 'Integer');
+            }
+            if (data.hasOwnProperty('size')) {
+                obj['size'] = ApiClient.convertToType(data['size'], 'Integer');
+            }
+        }
+        return obj;
+    };
+
+    /**
+     * @member {Integer} processInstanceId
+     */
+    exports.prototype['processInstanceId'] = undefined;
+    /**
+     * @member {String} text
+     */
+    exports.prototype['text'] = undefined;
+    /**
+     * @member {assignment} assignment
+     */
+    exports.prototype['assignment'] = undefined;
+    /**
+     * @member {String} state
+     */
+    exports.prototype['state'] = undefined;
+    /**
+     * @member {String} sort
+     */
+    exports.prototype['sort'] = undefined;
+    /**
+     * @member {Integer} page
+     */
+    exports.prototype['page'] = undefined;
+    /**
+     * @member {Integer} size
+     */
+    exports.prototype['size'] = undefined;
+
+    return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],247:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/LightUserRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LightUserRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.LightUserRepresentation);
+  }
+})(undefined, function (ApiClient, LightUserRepresentation) {
+  'use strict';
+
+  /**
+   * The TaskRepresentation model module.
+   * @module model/TaskRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TaskRepresentation</code>.
+   * @alias module:model/TaskRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TaskRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TaskRepresentation} obj Optional instance to populate.
+   * @return {module:model/TaskRepresentation} The populated <code>TaskRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('adhocTaskCanBeReassigned')) {
+        obj['adhocTaskCanBeReassigned'] = ApiClient.convertToType(data['adhocTaskCanBeReassigned'], 'Boolean');
+      }
+      if (data.hasOwnProperty('assignee')) {
+        obj['assignee'] = LightUserRepresentation.constructFromObject(data['assignee']);
+      }
+      if (data.hasOwnProperty('category')) {
+        obj['category'] = ApiClient.convertToType(data['category'], 'String');
+      }
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('dueDate')) {
+        obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Date');
+      }
+      if (data.hasOwnProperty('duration')) {
+        obj['duration'] = ApiClient.convertToType(data['duration'], 'Integer');
+      }
+      if (data.hasOwnProperty('endDate')) {
+        obj['endDate'] = ApiClient.convertToType(data['endDate'], 'Date');
+      }
+      if (data.hasOwnProperty('formKey')) {
+        obj['formKey'] = ApiClient.convertToType(data['formKey'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('initiatorCanCompleteTask')) {
+        obj['initiatorCanCompleteTask'] = ApiClient.convertToType(data['initiatorCanCompleteTask'], 'Boolean');
+      }
+      if (data.hasOwnProperty('involvedPeople')) {
+        obj['involvedPeople'] = ApiClient.convertToType(data['involvedPeople'], [LightUserRepresentation]);
+      }
+      if (data.hasOwnProperty('memberOfCandidateGroup')) {
+        obj['memberOfCandidateGroup'] = ApiClient.convertToType(data['memberOfCandidateGroup'], 'Boolean');
+      }
+      if (data.hasOwnProperty('memberOfCandidateUsers')) {
+        obj['memberOfCandidateUsers'] = ApiClient.convertToType(data['memberOfCandidateUsers'], 'Boolean');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('parentTaskId')) {
+        obj['parentTaskId'] = ApiClient.convertToType(data['parentTaskId'], 'String');
+      }
+      if (data.hasOwnProperty('parentTaskName')) {
+        obj['parentTaskName'] = ApiClient.convertToType(data['parentTaskName'], 'String');
+      }
+      if (data.hasOwnProperty('priority')) {
+        obj['priority'] = ApiClient.convertToType(data['priority'], 'Integer');
+      }
+      if (data.hasOwnProperty('processDefinitionCategory')) {
+        obj['processDefinitionCategory'] = ApiClient.convertToType(data['processDefinitionCategory'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionDeploymentId')) {
+        obj['processDefinitionDeploymentId'] = ApiClient.convertToType(data['processDefinitionDeploymentId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionDescription')) {
+        obj['processDefinitionDescription'] = ApiClient.convertToType(data['processDefinitionDescription'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionId')) {
+        obj['processDefinitionId'] = ApiClient.convertToType(data['processDefinitionId'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionKey')) {
+        obj['processDefinitionKey'] = ApiClient.convertToType(data['processDefinitionKey'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionName')) {
+        obj['processDefinitionName'] = ApiClient.convertToType(data['processDefinitionName'], 'String');
+      }
+      if (data.hasOwnProperty('processDefinitionVersion')) {
+        obj['processDefinitionVersion'] = ApiClient.convertToType(data['processDefinitionVersion'], 'Integer');
+      }
+      if (data.hasOwnProperty('processInstanceId')) {
+        obj['processInstanceId'] = ApiClient.convertToType(data['processInstanceId'], 'String');
+      }
+      if (data.hasOwnProperty('processInstanceName')) {
+        obj['processInstanceName'] = ApiClient.convertToType(data['processInstanceName'], 'String');
+      }
+      if (data.hasOwnProperty('processInstanceStartUserId')) {
+        obj['processInstanceStartUserId'] = ApiClient.convertToType(data['processInstanceStartUserId'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} adhocTaskCanBeReassigned
+   */
+  exports.prototype['adhocTaskCanBeReassigned'] = undefined;
+  /**
+   * @member {module:model/LightUserRepresentation} assignee
+   */
+  exports.prototype['assignee'] = undefined;
+  /**
+   * @member {String} category
+   */
+  exports.prototype['category'] = undefined;
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {Date} dueDate
+   */
+  exports.prototype['dueDate'] = undefined;
+  /**
+   * @member {Integer} duration
+   */
+  exports.prototype['duration'] = undefined;
+  /**
+   * @member {Date} endDate
+   */
+  exports.prototype['endDate'] = undefined;
+  /**
+   * @member {String} formKey
+   */
+  exports.prototype['formKey'] = undefined;
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Boolean} initiatorCanCompleteTask
+   */
+  exports.prototype['initiatorCanCompleteTask'] = undefined;
+  /**
+   * @member {Array.<module:model/LightUserRepresentation>} involvedPeople
+   */
+  exports.prototype['involvedPeople'] = undefined;
+  /**
+   * @member {Boolean} memberOfCandidateGroup
+   */
+  exports.prototype['memberOfCandidateGroup'] = undefined;
+  /**
+   * @member {Boolean} memberOfCandidateUsers
+   */
+  exports.prototype['memberOfCandidateUsers'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} parentTaskId
+   */
+  exports.prototype['parentTaskId'] = undefined;
+  /**
+   * @member {String} parentTaskName
+   */
+  exports.prototype['parentTaskName'] = undefined;
+  /**
+   * @member {Integer} priority
+   */
+  exports.prototype['priority'] = undefined;
+  /**
+   * @member {String} processDefinitionCategory
+   */
+  exports.prototype['processDefinitionCategory'] = undefined;
+  /**
+   * @member {String} processDefinitionDeploymentId
+   */
+  exports.prototype['processDefinitionDeploymentId'] = undefined;
+  /**
+   * @member {String} processDefinitionDescription
+   */
+  exports.prototype['processDefinitionDescription'] = undefined;
+  /**
+   * @member {String} processDefinitionId
+   */
+  exports.prototype['processDefinitionId'] = undefined;
+  /**
+   * @member {String} processDefinitionKey
+   */
+  exports.prototype['processDefinitionKey'] = undefined;
+  /**
+   * @member {String} processDefinitionName
+   */
+  exports.prototype['processDefinitionName'] = undefined;
+  /**
+   * @member {Integer} processDefinitionVersion
+   */
+  exports.prototype['processDefinitionVersion'] = undefined;
+  /**
+   * @member {String} processInstanceId
+   */
+  exports.prototype['processInstanceId'] = undefined;
+  /**
+   * @member {String} processInstanceName
+   */
+  exports.prototype['processInstanceName'] = undefined;
+  /**
+   * @member {String} processInstanceStartUserId
+   */
+  exports.prototype['processInstanceStartUserId'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./LightUserRepresentation":221}],248:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TaskUpdateRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The TaskUpdateRepresentation model module.
+   * @module model/TaskUpdateRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TaskUpdateRepresentation</code>.
+   * @alias module:model/TaskUpdateRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TaskUpdateRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TaskUpdateRepresentation} obj Optional instance to populate.
+   * @return {module:model/TaskUpdateRepresentation} The populated <code>TaskUpdateRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
+      }
+      if (data.hasOwnProperty('descriptionSet')) {
+        obj['descriptionSet'] = ApiClient.convertToType(data['descriptionSet'], 'Boolean');
+      }
+      if (data.hasOwnProperty('dueDate')) {
+        obj['dueDate'] = ApiClient.convertToType(data['dueDate'], 'Date');
+      }
+      if (data.hasOwnProperty('dueDateSet')) {
+        obj['dueDateSet'] = ApiClient.convertToType(data['dueDateSet'], 'Boolean');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('nameSet')) {
+        obj['nameSet'] = ApiClient.convertToType(data['nameSet'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} description
+   */
+  exports.prototype['description'] = undefined;
+  /**
+   * @member {Boolean} descriptionSet
+   */
+  exports.prototype['descriptionSet'] = undefined;
+  /**
+   * @member {Date} dueDate
+   */
+  exports.prototype['dueDate'] = undefined;
+  /**
+   * @member {Boolean} dueDateSet
+   */
+  exports.prototype['dueDateSet'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Boolean} nameSet
+   */
+  exports.prototype['nameSet'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],249:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TenantEvent = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The TenantEvent model module.
+   * @module model/TenantEvent
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TenantEvent</code>.
+   * @alias module:model/TenantEvent
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TenantEvent</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TenantEvent} obj Optional instance to populate.
+   * @return {module:model/TenantEvent} The populated <code>TenantEvent</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('eventTime')) {
+        obj['eventTime'] = ApiClient.convertToType(data['eventTime'], 'Date');
+      }
+      if (data.hasOwnProperty('eventType')) {
+        obj['eventType'] = ApiClient.convertToType(data['eventType'], 'String');
+      }
+      if (data.hasOwnProperty('extraInfo')) {
+        obj['extraInfo'] = ApiClient.convertToType(data['extraInfo'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('userId')) {
+        obj['userId'] = ApiClient.convertToType(data['userId'], 'Integer');
+      }
+      if (data.hasOwnProperty('userName')) {
+        obj['userName'] = ApiClient.convertToType(data['userName'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Date} eventTime
+   */
+  exports.prototype['eventTime'] = undefined;
+  /**
+   * @member {String} eventType
+   */
+  exports.prototype['eventType'] = undefined;
+  /**
+   * @member {String} extraInfo
+   */
+  exports.prototype['extraInfo'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {Integer} userId
+   */
+  exports.prototype['userId'] = undefined;
+  /**
+   * @member {String} userName
+   */
+  exports.prototype['userName'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],250:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.TenantRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The TenantRepresentation model module.
+   * @module model/TenantRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>TenantRepresentation</code>.
+   * @alias module:model/TenantRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>TenantRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/TenantRepresentation} obj Optional instance to populate.
+   * @return {module:model/TenantRepresentation} The populated <code>TenantRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('active')) {
+        obj['active'] = ApiClient.convertToType(data['active'], 'Boolean');
+      }
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('domain')) {
+        obj['domain'] = ApiClient.convertToType(data['domain'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastUpdate')) {
+        obj['lastUpdate'] = ApiClient.convertToType(data['lastUpdate'], 'Date');
+      }
+      if (data.hasOwnProperty('logoId')) {
+        obj['logoId'] = ApiClient.convertToType(data['logoId'], 'Integer');
+      }
+      if (data.hasOwnProperty('maxUsers')) {
+        obj['maxUsers'] = ApiClient.convertToType(data['maxUsers'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Boolean} active
+   */
+  exports.prototype['active'] = undefined;
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {String} domain
+   */
+  exports.prototype['domain'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Date} lastUpdate
+   */
+  exports.prototype['lastUpdate'] = undefined;
+  /**
+   * @member {Integer} logoId
+   */
+  exports.prototype['logoId'] = undefined;
+  /**
+   * @member {Integer} maxUsers
+   */
+  exports.prototype['maxUsers'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],251:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserAccountCredentialsRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The UserAccountCredentialsRepresentation model module.
+   * @module model/UserAccountCredentialsRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserAccountCredentialsRepresentation</code>.
+   * @alias module:model/UserAccountCredentialsRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserAccountCredentialsRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserAccountCredentialsRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserAccountCredentialsRepresentation} The populated <code>UserAccountCredentialsRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('password')) {
+        obj['password'] = ApiClient.convertToType(data['password'], 'String');
+      }
+      if (data.hasOwnProperty('username')) {
+        obj['username'] = ApiClient.convertToType(data['username'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} password
+   */
+  exports.prototype['password'] = undefined;
+  /**
+   * @member {String} username
+   */
+  exports.prototype['username'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],252:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserActionRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The UserActionRepresentation model module.
+   * @module model/UserActionRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserActionRepresentation</code>.
+   * @alias module:model/UserActionRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserActionRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserActionRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserActionRepresentation} The populated <code>UserActionRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('action')) {
+        obj['action'] = ApiClient.convertToType(data['action'], 'String');
+      }
+      if (data.hasOwnProperty('newPassword')) {
+        obj['newPassword'] = ApiClient.convertToType(data['newPassword'], 'String');
+      }
+      if (data.hasOwnProperty('oldPassword')) {
+        obj['oldPassword'] = ApiClient.convertToType(data['oldPassword'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} action
+   */
+  exports.prototype['action'] = undefined;
+  /**
+   * @member {String} newPassword
+   */
+  exports.prototype['newPassword'] = undefined;
+  /**
+   * @member {String} oldPassword
+   */
+  exports.prototype['oldPassword'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],253:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserFilterOrderRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The UserFilterOrderRepresentation model module.
+   * @module model/UserFilterOrderRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserFilterOrderRepresentation</code>.
+   * @alias module:model/UserFilterOrderRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserFilterOrderRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserFilterOrderRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserFilterOrderRepresentation} The populated <code>UserFilterOrderRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appId')) {
+        obj['appId'] = ApiClient.convertToType(data['appId'], 'Integer');
+      }
+      if (data.hasOwnProperty('order')) {
+        obj['order'] = ApiClient.convertToType(data['order'], ['Integer']);
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} appId
+   */
+  exports.prototype['appId'] = undefined;
+  /**
+   * @member {Array.<Integer>} order
+   */
+  exports.prototype['order'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],254:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/ProcessInstanceFilterRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ProcessInstanceFilterRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserProcessInstanceFilterRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.ProcessInstanceFilterRepresentation);
+  }
+})(undefined, function (ApiClient, ProcessInstanceFilterRepresentation) {
+  'use strict';
+
+  /**
+   * The UserProcessInstanceFilterRepresentation model module.
+   * @module model/UserProcessInstanceFilterRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserProcessInstanceFilterRepresentation</code>.
+   * @alias module:model/UserProcessInstanceFilterRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserProcessInstanceFilterRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserProcessInstanceFilterRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserProcessInstanceFilterRepresentation} The populated <code>UserProcessInstanceFilterRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appId')) {
+        obj['appId'] = ApiClient.convertToType(data['appId'], 'Integer');
+      }
+      if (data.hasOwnProperty('filter')) {
+        obj['filter'] = ProcessInstanceFilterRepresentation.constructFromObject(data['filter']);
+      }
+      if (data.hasOwnProperty('icon')) {
+        obj['icon'] = ApiClient.convertToType(data['icon'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('index')) {
+        obj['index'] = ApiClient.convertToType(data['index'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('recent')) {
+        obj['recent'] = ApiClient.convertToType(data['recent'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} appId
+   */
+  exports.prototype['appId'] = undefined;
+  /**
+   * @member {module:model/ProcessInstanceFilterRepresentation} filter
+   */
+  exports.prototype['filter'] = undefined;
+  /**
+   * @member {String} icon
+   */
+  exports.prototype['icon'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Integer} index
+   */
+  exports.prototype['index'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Boolean} recent
+   */
+  exports.prototype['recent'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./ProcessInstanceFilterRepresentation":229}],255:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/GroupRepresentation', 'model/LightAppRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./GroupRepresentation'), require('./LightAppRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.GroupRepresentation, root.ActivitiPublicRestApi.LightAppRepresentation);
+  }
+})(undefined, function (ApiClient, GroupRepresentation, LightAppRepresentation) {
+  'use strict';
+
+  /**
+   * The UserRepresentation model module.
+   * @module model/UserRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserRepresentation</code>.
+   * @alias module:model/UserRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserRepresentation} The populated <code>UserRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('apps')) {
+        obj['apps'] = ApiClient.convertToType(data['apps'], [LightAppRepresentation]);
+      }
+      if (data.hasOwnProperty('capabilities')) {
+        obj['capabilities'] = ApiClient.convertToType(data['capabilities'], ['String']);
+      }
+      if (data.hasOwnProperty('company')) {
+        obj['company'] = ApiClient.convertToType(data['company'], 'String');
+      }
+      if (data.hasOwnProperty('created')) {
+        obj['created'] = ApiClient.convertToType(data['created'], 'Date');
+      }
+      if (data.hasOwnProperty('email')) {
+        obj['email'] = ApiClient.convertToType(data['email'], 'String');
+      }
+      if (data.hasOwnProperty('externalId')) {
+        obj['externalId'] = ApiClient.convertToType(data['externalId'], 'String');
+      }
+      if (data.hasOwnProperty('firstName')) {
+        obj['firstName'] = ApiClient.convertToType(data['firstName'], 'String');
+      }
+      if (data.hasOwnProperty('fullname')) {
+        obj['fullname'] = ApiClient.convertToType(data['fullname'], 'String');
+      }
+      if (data.hasOwnProperty('groups')) {
+        obj['groups'] = ApiClient.convertToType(data['groups'], [GroupRepresentation]);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('lastName')) {
+        obj['lastName'] = ApiClient.convertToType(data['lastName'], 'String');
+      }
+      if (data.hasOwnProperty('lastUpdate')) {
+        obj['lastUpdate'] = ApiClient.convertToType(data['lastUpdate'], 'Date');
+      }
+      if (data.hasOwnProperty('latestSyncTimeStamp')) {
+        obj['latestSyncTimeStamp'] = ApiClient.convertToType(data['latestSyncTimeStamp'], 'Date');
+      }
+      if (data.hasOwnProperty('password')) {
+        obj['password'] = ApiClient.convertToType(data['password'], 'String');
+      }
+      if (data.hasOwnProperty('pictureId')) {
+        obj['pictureId'] = ApiClient.convertToType(data['pictureId'], 'Integer');
+      }
+      if (data.hasOwnProperty('status')) {
+        obj['status'] = ApiClient.convertToType(data['status'], 'String');
+      }
+      if (data.hasOwnProperty('tenantId')) {
+        obj['tenantId'] = ApiClient.convertToType(data['tenantId'], 'Integer');
+      }
+      if (data.hasOwnProperty('tenantName')) {
+        obj['tenantName'] = ApiClient.convertToType(data['tenantName'], 'String');
+      }
+      if (data.hasOwnProperty('tenantPictureId')) {
+        obj['tenantPictureId'] = ApiClient.convertToType(data['tenantPictureId'], 'Integer');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Array.<module:model/LightAppRepresentation>} apps
+   */
+  exports.prototype['apps'] = undefined;
+  /**
+   * @member {Array.<String>} capabilities
+   */
+  exports.prototype['capabilities'] = undefined;
+  /**
+   * @member {String} company
+   */
+  exports.prototype['company'] = undefined;
+  /**
+   * @member {Date} created
+   */
+  exports.prototype['created'] = undefined;
+  /**
+   * @member {String} email
+   */
+  exports.prototype['email'] = undefined;
+  /**
+   * @member {String} externalId
+   */
+  exports.prototype['externalId'] = undefined;
+  /**
+   * @member {String} firstName
+   */
+  exports.prototype['firstName'] = undefined;
+  /**
+   * @member {String} fullname
+   */
+  exports.prototype['fullname'] = undefined;
+  /**
+   * @member {Array.<module:model/GroupRepresentation>} groups
+   */
+  exports.prototype['groups'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} lastName
+   */
+  exports.prototype['lastName'] = undefined;
+  /**
+   * @member {Date} lastUpdate
+   */
+  exports.prototype['lastUpdate'] = undefined;
+  /**
+   * @member {Date} latestSyncTimeStamp
+   */
+  exports.prototype['latestSyncTimeStamp'] = undefined;
+  /**
+   * @member {String} password
+   */
+  exports.prototype['password'] = undefined;
+  /**
+   * @member {Integer} pictureId
+   */
+  exports.prototype['pictureId'] = undefined;
+  /**
+   * @member {String} status
+   */
+  exports.prototype['status'] = undefined;
+  /**
+   * @member {Integer} tenantId
+   */
+  exports.prototype['tenantId'] = undefined;
+  /**
+   * @member {String} tenantName
+   */
+  exports.prototype['tenantName'] = undefined;
+  /**
+   * @member {Integer} tenantPictureId
+   */
+  exports.prototype['tenantPictureId'] = undefined;
+  /**
+   * @member {String} type
+   */
+  exports.prototype['type'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./GroupRepresentation":215,"./LightAppRepresentation":218}],256:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient', 'model/TaskFilterRepresentation'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./TaskFilterRepresentation'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.UserTaskFilterRepresentation = factory(root.ActivitiPublicRestApi.ApiClient, root.ActivitiPublicRestApi.TaskFilterRepresentation);
+  }
+})(undefined, function (ApiClient, TaskFilterRepresentation) {
+  'use strict';
+
+  /**
+   * The UserTaskFilterRepresentation model module.
+   * @module model/UserTaskFilterRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>UserTaskFilterRepresentation</code>.
+   * @alias module:model/UserTaskFilterRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>UserTaskFilterRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/UserTaskFilterRepresentation} obj Optional instance to populate.
+   * @return {module:model/UserTaskFilterRepresentation} The populated <code>UserTaskFilterRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('appId')) {
+        obj['appId'] = ApiClient.convertToType(data['appId'], 'Integer');
+      }
+      if (data.hasOwnProperty('filter')) {
+        obj['filter'] = TaskFilterRepresentation.constructFromObject(data['filter']);
+      }
+      if (data.hasOwnProperty('icon')) {
+        obj['icon'] = ApiClient.convertToType(data['icon'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'Integer');
+      }
+      if (data.hasOwnProperty('index')) {
+        obj['index'] = ApiClient.convertToType(data['index'], 'Integer');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('recent')) {
+        obj['recent'] = ApiClient.convertToType(data['recent'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {Integer} appId
+   */
+  exports.prototype['appId'] = undefined;
+  /**
+   * @member {module:model/TaskFilterRepresentation} filter
+   */
+  exports.prototype['filter'] = undefined;
+  /**
+   * @member {String} icon
+   */
+  exports.prototype['icon'] = undefined;
+  /**
+   * @member {Integer} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {Integer} index
+   */
+  exports.prototype['index'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {Boolean} recent
+   */
+  exports.prototype['recent'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394,"./TaskFilterRepresentation":244}],257:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.ValidationErrorRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The ValidationErrorRepresentation model module.
+   * @module model/ValidationErrorRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>ValidationErrorRepresentation</code>.
+   * @alias module:model/ValidationErrorRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>ValidationErrorRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/ValidationErrorRepresentation} obj Optional instance to populate.
+   * @return {module:model/ValidationErrorRepresentation} The populated <code>ValidationErrorRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('defaultDescription')) {
+        obj['defaultDescription'] = ApiClient.convertToType(data['defaultDescription'], 'String');
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('problem')) {
+        obj['problem'] = ApiClient.convertToType(data['problem'], 'String');
+      }
+      if (data.hasOwnProperty('problemReference')) {
+        obj['problemReference'] = ApiClient.convertToType(data['problemReference'], 'String');
+      }
+      if (data.hasOwnProperty('validatorSetName')) {
+        obj['validatorSetName'] = ApiClient.convertToType(data['validatorSetName'], 'String');
+      }
+      if (data.hasOwnProperty('warning')) {
+        obj['warning'] = ApiClient.convertToType(data['warning'], 'Boolean');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} defaultDescription
+   */
+  exports.prototype['defaultDescription'] = undefined;
+  /**
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * @member {String} name
+   */
+  exports.prototype['name'] = undefined;
+  /**
+   * @member {String} problem
+   */
+  exports.prototype['problem'] = undefined;
+  /**
+   * @member {String} problemReference
+   */
+  exports.prototype['problemReference'] = undefined;
+  /**
+   * @member {String} validatorSetName
+   */
+  exports.prototype['validatorSetName'] = undefined;
+  /**
+   * @member {Boolean} warning
+   */
+  exports.prototype['warning'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],258:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['ApiClient'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'));
+  } else {
+    // Browser globals (root is window)
+    if (!root.ActivitiPublicRestApi) {
+      root.ActivitiPublicRestApi = {};
+    }
+    root.ActivitiPublicRestApi.VariableScopeRepresentation = factory(root.ActivitiPublicRestApi.ApiClient);
+  }
+})(undefined, function (ApiClient) {
+  'use strict';
+
+  /**
+   * The VariableScopeRepresentation model module.
+   * @module model/VariableScopeRepresentation
+   * @version 1.4.0
+   */
+
+  /**
+   * Constructs a new <code>VariableScopeRepresentation</code>.
+   * @alias module:model/VariableScopeRepresentation
+   * @class
+   */
+
+  var exports = function exports() {
+    var _this = this;
+  };
+
+  /**
+   * Constructs a <code>VariableScopeRepresentation</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/VariableScopeRepresentation} obj Optional instance to populate.
+   * @return {module:model/VariableScopeRepresentation} The populated <code>VariableScopeRepresentation</code> instance.
+   */
+  exports.constructFromObject = function (data, obj) {
+    if (data) {
+      obj = obj || new exports();
+
+      if (data.hasOwnProperty('mapVariable')) {
+        obj['mapVariable'] = ApiClient.convertToType(data['mapVariable'], 'String');
+      }
+      if (data.hasOwnProperty('mappedColumn')) {
+        obj['mappedColumn'] = ApiClient.convertToType(data['mappedColumn'], 'String');
+      }
+      if (data.hasOwnProperty('mappedDataModel')) {
+        obj['mappedDataModel'] = ApiClient.convertToType(data['mappedDataModel'], 'Integer');
+      }
+      if (data.hasOwnProperty('mappedEntity')) {
+        obj['mappedEntity'] = ApiClient.convertToType(data['mappedEntity'], 'String');
+      }
+      if (data.hasOwnProperty('mappedVariableName')) {
+        obj['mappedVariableName'] = ApiClient.convertToType(data['mappedVariableName'], 'String');
+      }
+      if (data.hasOwnProperty('processVariableName')) {
+        obj['processVariableName'] = ApiClient.convertToType(data['processVariableName'], 'String');
+      }
+      if (data.hasOwnProperty('processVariableType')) {
+        obj['processVariableType'] = ApiClient.convertToType(data['processVariableType'], 'String');
+      }
+    }
+    return obj;
+  };
+
+  /**
+   * @member {String} mapVariable
+   */
+  exports.prototype['mapVariable'] = undefined;
+  /**
+   * @member {String} mappedColumn
+   */
+  exports.prototype['mappedColumn'] = undefined;
+  /**
+   * @member {Integer} mappedDataModel
+   */
+  exports.prototype['mappedDataModel'] = undefined;
+  /**
+   * @member {String} mappedEntity
+   */
+  exports.prototype['mappedEntity'] = undefined;
+  /**
+   * @member {String} mappedVariableName
+   */
+  exports.prototype['mappedVariableName'] = undefined;
+  /**
+   * @member {String} processVariableName
+   */
+  exports.prototype['processVariableName'] = undefined;
+  /**
+   * @member {String} processVariableType
+   */
+  exports.prototype['processVariableType'] = undefined;
+
+  return exports;
+});
+
+},{"../../../alfrescoApiClient":394}],259:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['../../../alfrescoApiClient', '../model/Error', '../model/LoginTicketEntry', '../model/LoginRequest', '../model/ValidateTicketEntry'], factory);
+  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+    // CommonJS-like environments that support module.exports, like Node.
+    module.exports = factory(require('../../../alfrescoApiClient'), require('../model/Error'), require('../model/LoginTicketEntry'), require('../model/LoginRequest'), require('../model/ValidateTicketEntry'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -37581,7 +56266,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136,"../model/Error":139,"../model/LoginRequest":141,"../model/LoginTicketEntry":142,"../model/ValidateTicketEntry":144}],138:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394,"../model/Error":261,"../model/LoginRequest":263,"../model/LoginTicketEntry":264,"../model/ValidateTicketEntry":266}],260:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37589,10 +56274,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['./ApiClient', './model/Error', './model/ErrorError', './model/LoginRequest', './model/LoginTicketEntry', './model/LoginTicketEntryEntry', './model/ValidateTicketEntry', './model/ValidateTicketEntryEntry', './api/AuthenticationApi'], factory);
+    define(['../../alfrescoApiClient', './model/Error', './model/ErrorError', './model/LoginRequest', './model/LoginTicketEntry', './model/LoginTicketEntryEntry', './model/ValidateTicketEntry', './model/ValidateTicketEntryEntry', './api/AuthenticationApi'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('./ApiClient'), require('./model/Error'), require('./model/ErrorError'), require('./model/LoginRequest'), require('./model/LoginTicketEntry'), require('./model/LoginTicketEntryEntry'), require('./model/ValidateTicketEntry'), require('./model/ValidateTicketEntryEntry'), require('./api/AuthenticationApi'));
+    module.exports = factory(require('../../alfrescoApiClient'), require('./model/Error'), require('./model/ErrorError'), require('./model/LoginRequest'), require('./model/LoginTicketEntry'), require('./model/LoginTicketEntryEntry'), require('./model/ValidateTicketEntry'), require('./model/ValidateTicketEntryEntry'), require('./api/AuthenticationApi'));
   }
 })(function (ApiClient, Error, ErrorError, LoginRequest, LoginTicketEntry, LoginTicketEntryEntry, ValidateTicketEntry, ValidateTicketEntryEntry, AuthenticationApi) {
   'use strict';
@@ -37680,7 +56365,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"./ApiClient":136,"./api/AuthenticationApi":137,"./model/Error":139,"./model/ErrorError":140,"./model/LoginRequest":141,"./model/LoginTicketEntry":142,"./model/LoginTicketEntryEntry":143,"./model/ValidateTicketEntry":144,"./model/ValidateTicketEntryEntry":145}],139:[function(require,module,exports){
+},{"../../alfrescoApiClient":394,"./api/AuthenticationApi":259,"./model/Error":261,"./model/ErrorError":262,"./model/LoginRequest":263,"./model/LoginTicketEntry":264,"./model/LoginTicketEntryEntry":265,"./model/ValidateTicketEntry":266,"./model/ValidateTicketEntryEntry":267}],261:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37688,10 +56373,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', './ErrorError'], factory);
+    define(['../../../alfrescoApiClient', './ErrorError'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./ErrorError'));
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ErrorError'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -37742,7 +56427,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136,"./ErrorError":140}],140:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394,"./ErrorError":262}],262:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37750,10 +56435,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient'], factory);
+    define(['../../../alfrescoApiClient'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'));
+    module.exports = factory(require('../../../alfrescoApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -37855,7 +56540,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136}],141:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394}],263:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37863,10 +56548,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient'], factory);
+    define(['../../../alfrescoApiClient'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'));
+    module.exports = factory(require('../../../alfrescoApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -37925,7 +56610,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136}],142:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394}],264:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37933,10 +56618,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', './LoginTicketEntryEntry'], factory);
+    define(['../../../alfrescoApiClient', './LoginTicketEntryEntry'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./LoginTicketEntryEntry'));
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./LoginTicketEntryEntry'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -37987,7 +56672,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136,"./LoginTicketEntryEntry":143}],143:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394,"./LoginTicketEntryEntry":265}],265:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -37995,10 +56680,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient'], factory);
+    define(['../../../alfrescoApiClient'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'));
+    module.exports = factory(require('../../../alfrescoApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -38057,7 +56742,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136}],144:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394}],266:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -38065,10 +56750,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', './ValidateTicketEntryEntry'], factory);
+    define(['../../../alfrescoApiClient', './ValidateTicketEntryEntry'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('./ValidateTicketEntryEntry'));
+    module.exports = factory(require('../../../alfrescoApiClient'), require('./ValidateTicketEntryEntry'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -38119,7 +56804,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136,"./ValidateTicketEntryEntry":145}],145:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394,"./ValidateTicketEntryEntry":267}],267:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -38127,10 +56812,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient'], factory);
+    define(['../../../alfrescoApiClient'], factory);
   } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'));
+    module.exports = factory(require('../../../alfrescoApiClient'));
   } else {
     // Browser globals (root is window)
     if (!root.AlfrescoAuthRestApi) {
@@ -38181,7 +56866,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":136}],146:[function(require,module,exports){
+},{"../../../alfrescoApiClient":394}],268:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -38649,7 +57334,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":8,"fs":6,"superagent":125}],147:[function(require,module,exports){
+},{"buffer":8,"fs":6,"superagent":125}],269:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -38842,7 +57527,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/AssocTargetBody":169,"../model/Error":187,"../model/NodeAssocPaging":201}],148:[function(require,module,exports){
+},{"../ApiClient":268,"../model/AssocTargetBody":291,"../model/Error":309,"../model/NodeAssocPaging":323}],270:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -40203,7 +58888,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/AssocChildBody":167,"../model/AssocTargetBody":169,"../model/CopyBody":179,"../model/DeletedNodeEntry":181,"../model/DeletedNodesPaging":184,"../model/EmailSharedLinkBody":186,"../model/Error":187,"../model/MoveBody":197,"../model/NodeAssocPaging":201,"../model/NodeBody":203,"../model/NodeBody1":204,"../model/NodeChildAssocPaging":207,"../model/NodeEntry":209,"../model/NodePaging":213,"../model/NodeSharedLinkEntry":216,"../model/NodeSharedLinkPaging":217,"../model/RenditionBody":240,"../model/RenditionEntry":241,"../model/RenditionPaging":242,"../model/SharedLinkBody":244,"../model/SiteBody":246,"../model/SiteEntry":250}],149:[function(require,module,exports){
+},{"../ApiClient":268,"../model/AssocChildBody":289,"../model/AssocTargetBody":291,"../model/CopyBody":301,"../model/DeletedNodeEntry":303,"../model/DeletedNodesPaging":306,"../model/EmailSharedLinkBody":308,"../model/Error":309,"../model/MoveBody":319,"../model/NodeAssocPaging":323,"../model/NodeBody":325,"../model/NodeBody1":326,"../model/NodeChildAssocPaging":329,"../model/NodeEntry":331,"../model/NodePaging":335,"../model/NodeSharedLinkEntry":338,"../model/NodeSharedLinkPaging":339,"../model/RenditionBody":362,"../model/RenditionEntry":363,"../model/RenditionPaging":364,"../model/SharedLinkBody":366,"../model/SiteBody":368,"../model/SiteEntry":372}],271:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -40565,7 +59250,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/AssocChildBody":167,"../model/Error":187,"../model/MoveBody":197,"../model/NodeAssocPaging":201,"../model/NodeBody1":204,"../model/NodeChildAssocPaging":207,"../model/NodeEntry":209,"../model/NodePaging":213}],150:[function(require,module,exports){
+},{"../ApiClient":268,"../model/AssocChildBody":289,"../model/Error":309,"../model/MoveBody":319,"../model/NodeAssocPaging":323,"../model/NodeBody1":326,"../model/NodeChildAssocPaging":329,"../model/NodeEntry":331,"../model/NodePaging":335}],272:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -40763,7 +59448,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/CommentBody":172,"../model/CommentBody1":173,"../model/CommentEntry":174,"../model/CommentPaging":175,"../model/Error":187}],151:[function(require,module,exports){
+},{"../ApiClient":268,"../model/CommentBody":294,"../model/CommentBody1":295,"../model/CommentEntry":296,"../model/CommentPaging":297,"../model/Error":309}],273:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -40957,7 +59642,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/FavoriteBody":190,"../model/FavoriteEntry":191,"../model/FavoritePaging":192}],152:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/FavoriteBody":312,"../model/FavoriteEntry":313,"../model/FavoritePaging":314}],274:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -41034,7 +59719,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/PersonNetworkEntry":226}],153:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/PersonNetworkEntry":348}],275:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -41569,7 +60254,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/CopyBody":179,"../model/DeletedNodeEntry":181,"../model/DeletedNodesPaging":184,"../model/Error":187,"../model/MoveBody":197,"../model/NodeBody":203,"../model/NodeBody1":204,"../model/NodeEntry":209,"../model/NodePaging":213}],154:[function(require,module,exports){
+},{"../ApiClient":268,"../model/CopyBody":301,"../model/DeletedNodeEntry":303,"../model/DeletedNodesPaging":306,"../model/Error":309,"../model/MoveBody":319,"../model/NodeBody":325,"../model/NodeBody1":326,"../model/NodeEntry":331,"../model/NodePaging":335}],276:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -42378,7 +61063,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/ActivityPaging":165,"../model/Error":187,"../model/FavoriteBody":190,"../model/FavoriteEntry":191,"../model/FavoritePaging":192,"../model/FavoriteSiteBody":194,"../model/InlineResponse201":195,"../model/PersonEntry":224,"../model/PersonNetworkEntry":226,"../model/PersonNetworkPaging":227,"../model/PreferenceEntry":230,"../model/PreferencePaging":231,"../model/SiteEntry":250,"../model/SiteMembershipBody":256,"../model/SiteMembershipBody1":257,"../model/SiteMembershipRequestEntry":259,"../model/SiteMembershipRequestPaging":260,"../model/SitePaging":262}],155:[function(require,module,exports){
+},{"../ApiClient":268,"../model/ActivityPaging":287,"../model/Error":309,"../model/FavoriteBody":312,"../model/FavoriteEntry":313,"../model/FavoritePaging":314,"../model/FavoriteSiteBody":316,"../model/InlineResponse201":317,"../model/PersonEntry":346,"../model/PersonNetworkEntry":348,"../model/PersonNetworkPaging":349,"../model/PreferenceEntry":352,"../model/PreferencePaging":353,"../model/SiteEntry":372,"../model/SiteMembershipBody":378,"../model/SiteMembershipBody1":379,"../model/SiteMembershipRequestEntry":381,"../model/SiteMembershipRequestPaging":382,"../model/SitePaging":384}],277:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -42570,7 +61255,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/RatingBody":235,"../model/RatingEntry":236,"../model/RatingPaging":237}],156:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/RatingBody":357,"../model/RatingEntry":358,"../model/RatingPaging":359}],278:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -42827,7 +61512,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/RenditionBody":240,"../model/RenditionEntry":241,"../model/RenditionPaging":242}],157:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/RenditionBody":362,"../model/RenditionEntry":363,"../model/RenditionPaging":364}],279:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -42915,7 +61600,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/NodePaging":213}],158:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/NodePaging":335}],280:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -43156,7 +61841,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/EmailSharedLinkBody":186,"../model/Error":187,"../model/NodeSharedLinkEntry":216,"../model/NodeSharedLinkPaging":217,"../model/SharedLinkBody":244}],159:[function(require,module,exports){
+},{"../ApiClient":268,"../model/EmailSharedLinkBody":308,"../model/Error":309,"../model/NodeSharedLinkEntry":338,"../model/NodeSharedLinkPaging":339,"../model/SharedLinkBody":366}],281:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -43606,7 +62291,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/SiteBody":246,"../model/SiteContainerEntry":248,"../model/SiteContainerPaging":249,"../model/SiteEntry":250,"../model/SiteMemberBody":252,"../model/SiteMemberEntry":253,"../model/SiteMemberPaging":254,"../model/SiteMemberRoleBody":255,"../model/SitePaging":262}],160:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/SiteBody":368,"../model/SiteContainerEntry":370,"../model/SiteContainerPaging":371,"../model/SiteEntry":372,"../model/SiteMemberBody":374,"../model/SiteMemberEntry":375,"../model/SiteMemberPaging":376,"../model/SiteMemberRoleBody":377,"../model/SitePaging":384}],282:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -43856,7 +62541,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"../model/Error":187,"../model/TagBody":265,"../model/TagBody1":266,"../model/TagEntry":267,"../model/TagPaging":268}],161:[function(require,module,exports){
+},{"../ApiClient":268,"../model/Error":309,"../model/TagBody":387,"../model/TagBody1":388,"../model/TagEntry":389,"../model/TagPaging":390}],283:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -44530,7 +63215,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"./ApiClient":146,"./api/AssociationsApi":147,"./api/ChangesApi":148,"./api/ChildAssociationsApi":149,"./api/CommentsApi":150,"./api/FavoritesApi":151,"./api/NetworksApi":152,"./api/NodesApi":153,"./api/PeopleApi":154,"./api/RatingsApi":155,"./api/RenditionsApi":156,"./api/SearchApi":157,"./api/SharedlinksApi":158,"./api/SitesApi":159,"./api/TagsApi":160,"./model/Activity":162,"./model/ActivityActivitySummary":163,"./model/ActivityEntry":164,"./model/ActivityPaging":165,"./model/ActivityPagingList":166,"./model/AssocChildBody":167,"./model/AssocInfo":168,"./model/AssocTargetBody":169,"./model/ChildAssocInfo":170,"./model/Comment":171,"./model/CommentBody":172,"./model/CommentBody1":173,"./model/CommentEntry":174,"./model/CommentPaging":175,"./model/CommentPagingList":176,"./model/Company":177,"./model/ContentInfo":178,"./model/CopyBody":179,"./model/DeletedNode":180,"./model/DeletedNodeEntry":181,"./model/DeletedNodeMinimal":182,"./model/DeletedNodeMinimalEntry":183,"./model/DeletedNodesPaging":184,"./model/DeletedNodesPagingList":185,"./model/EmailSharedLinkBody":186,"./model/Error":187,"./model/ErrorError":188,"./model/Favorite":189,"./model/FavoriteBody":190,"./model/FavoriteEntry":191,"./model/FavoritePaging":192,"./model/FavoritePagingList":193,"./model/FavoriteSiteBody":194,"./model/InlineResponse201":195,"./model/InlineResponse201Entry":196,"./model/MoveBody":197,"./model/NetworkQuota":198,"./model/NodeAssocMinimal":199,"./model/NodeAssocMinimalEntry":200,"./model/NodeAssocPaging":201,"./model/NodeAssocPagingList":202,"./model/NodeBody":203,"./model/NodeBody1":204,"./model/NodeChildAssocMinimal":205,"./model/NodeChildAssocMinimalEntry":206,"./model/NodeChildAssocPaging":207,"./model/NodeChildAssocPagingList":208,"./model/NodeEntry":209,"./model/NodeFull":210,"./model/NodeMinimal":211,"./model/NodeMinimalEntry":212,"./model/NodePaging":213,"./model/NodePagingList":214,"./model/NodeSharedLink":215,"./model/NodeSharedLinkEntry":216,"./model/NodeSharedLinkPaging":217,"./model/NodeSharedLinkPagingList":218,"./model/NodesnodeIdchildrenContent":219,"./model/Pagination":220,"./model/PathElement":221,"./model/PathInfo":222,"./model/Person":223,"./model/PersonEntry":224,"./model/PersonNetwork":225,"./model/PersonNetworkEntry":226,"./model/PersonNetworkPaging":227,"./model/PersonNetworkPagingList":228,"./model/Preference":229,"./model/PreferenceEntry":230,"./model/PreferencePaging":231,"./model/PreferencePagingList":232,"./model/Rating":233,"./model/RatingAggregate":234,"./model/RatingBody":235,"./model/RatingEntry":236,"./model/RatingPaging":237,"./model/RatingPagingList":238,"./model/Rendition":239,"./model/RenditionBody":240,"./model/RenditionEntry":241,"./model/RenditionPaging":242,"./model/RenditionPagingList":243,"./model/SharedLinkBody":244,"./model/Site":245,"./model/SiteBody":246,"./model/SiteContainer":247,"./model/SiteContainerEntry":248,"./model/SiteContainerPaging":249,"./model/SiteEntry":250,"./model/SiteMember":251,"./model/SiteMemberBody":252,"./model/SiteMemberEntry":253,"./model/SiteMemberPaging":254,"./model/SiteMemberRoleBody":255,"./model/SiteMembershipBody":256,"./model/SiteMembershipBody1":257,"./model/SiteMembershipRequest":258,"./model/SiteMembershipRequestEntry":259,"./model/SiteMembershipRequestPaging":260,"./model/SiteMembershipRequestPagingList":261,"./model/SitePaging":262,"./model/SitePagingList":263,"./model/Tag":264,"./model/TagBody":265,"./model/TagBody1":266,"./model/TagEntry":267,"./model/TagPaging":268,"./model/TagPagingList":269,"./model/UserInfo":270}],162:[function(require,module,exports){
+},{"./ApiClient":268,"./api/AssociationsApi":269,"./api/ChangesApi":270,"./api/ChildAssociationsApi":271,"./api/CommentsApi":272,"./api/FavoritesApi":273,"./api/NetworksApi":274,"./api/NodesApi":275,"./api/PeopleApi":276,"./api/RatingsApi":277,"./api/RenditionsApi":278,"./api/SearchApi":279,"./api/SharedlinksApi":280,"./api/SitesApi":281,"./api/TagsApi":282,"./model/Activity":284,"./model/ActivityActivitySummary":285,"./model/ActivityEntry":286,"./model/ActivityPaging":287,"./model/ActivityPagingList":288,"./model/AssocChildBody":289,"./model/AssocInfo":290,"./model/AssocTargetBody":291,"./model/ChildAssocInfo":292,"./model/Comment":293,"./model/CommentBody":294,"./model/CommentBody1":295,"./model/CommentEntry":296,"./model/CommentPaging":297,"./model/CommentPagingList":298,"./model/Company":299,"./model/ContentInfo":300,"./model/CopyBody":301,"./model/DeletedNode":302,"./model/DeletedNodeEntry":303,"./model/DeletedNodeMinimal":304,"./model/DeletedNodeMinimalEntry":305,"./model/DeletedNodesPaging":306,"./model/DeletedNodesPagingList":307,"./model/EmailSharedLinkBody":308,"./model/Error":309,"./model/ErrorError":310,"./model/Favorite":311,"./model/FavoriteBody":312,"./model/FavoriteEntry":313,"./model/FavoritePaging":314,"./model/FavoritePagingList":315,"./model/FavoriteSiteBody":316,"./model/InlineResponse201":317,"./model/InlineResponse201Entry":318,"./model/MoveBody":319,"./model/NetworkQuota":320,"./model/NodeAssocMinimal":321,"./model/NodeAssocMinimalEntry":322,"./model/NodeAssocPaging":323,"./model/NodeAssocPagingList":324,"./model/NodeBody":325,"./model/NodeBody1":326,"./model/NodeChildAssocMinimal":327,"./model/NodeChildAssocMinimalEntry":328,"./model/NodeChildAssocPaging":329,"./model/NodeChildAssocPagingList":330,"./model/NodeEntry":331,"./model/NodeFull":332,"./model/NodeMinimal":333,"./model/NodeMinimalEntry":334,"./model/NodePaging":335,"./model/NodePagingList":336,"./model/NodeSharedLink":337,"./model/NodeSharedLinkEntry":338,"./model/NodeSharedLinkPaging":339,"./model/NodeSharedLinkPagingList":340,"./model/NodesnodeIdchildrenContent":341,"./model/Pagination":342,"./model/PathElement":343,"./model/PathInfo":344,"./model/Person":345,"./model/PersonEntry":346,"./model/PersonNetwork":347,"./model/PersonNetworkEntry":348,"./model/PersonNetworkPaging":349,"./model/PersonNetworkPagingList":350,"./model/Preference":351,"./model/PreferenceEntry":352,"./model/PreferencePaging":353,"./model/PreferencePagingList":354,"./model/Rating":355,"./model/RatingAggregate":356,"./model/RatingBody":357,"./model/RatingEntry":358,"./model/RatingPaging":359,"./model/RatingPagingList":360,"./model/Rendition":361,"./model/RenditionBody":362,"./model/RenditionEntry":363,"./model/RenditionPaging":364,"./model/RenditionPagingList":365,"./model/SharedLinkBody":366,"./model/Site":367,"./model/SiteBody":368,"./model/SiteContainer":369,"./model/SiteContainerEntry":370,"./model/SiteContainerPaging":371,"./model/SiteEntry":372,"./model/SiteMember":373,"./model/SiteMemberBody":374,"./model/SiteMemberEntry":375,"./model/SiteMemberPaging":376,"./model/SiteMemberRoleBody":377,"./model/SiteMembershipBody":378,"./model/SiteMembershipBody1":379,"./model/SiteMembershipRequest":380,"./model/SiteMembershipRequestEntry":381,"./model/SiteMembershipRequestPaging":382,"./model/SiteMembershipRequestPagingList":383,"./model/SitePaging":384,"./model/SitePagingList":385,"./model/Tag":386,"./model/TagBody":387,"./model/TagBody1":388,"./model/TagEntry":389,"./model/TagPaging":390,"./model/TagPagingList":391,"./model/UserInfo":392}],284:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -44804,7 +63489,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ActivityActivitySummary":163}],163:[function(require,module,exports){
+},{"../ApiClient":268,"./ActivityActivitySummary":285}],285:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -44899,7 +63584,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],164:[function(require,module,exports){
+},{"../ApiClient":268}],286:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -44965,7 +63650,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Activity":162}],165:[function(require,module,exports){
+},{"../ApiClient":268,"./Activity":284}],287:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45027,7 +63712,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ActivityPagingList":166}],166:[function(require,module,exports){
+},{"../ApiClient":268,"./ActivityPagingList":288}],288:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45103,7 +63788,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ActivityEntry":164,"./Pagination":220}],167:[function(require,module,exports){
+},{"../ApiClient":268,"./ActivityEntry":286,"./Pagination":342}],289:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45173,7 +63858,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],168:[function(require,module,exports){
+},{"../ApiClient":268}],290:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45235,7 +63920,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],169:[function(require,module,exports){
+},{"../ApiClient":268}],291:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45305,7 +63990,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],170:[function(require,module,exports){
+},{"../ApiClient":268}],292:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45375,7 +64060,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],171:[function(require,module,exports){
+},{"../ApiClient":268}],293:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45521,7 +64206,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Person":223}],172:[function(require,module,exports){
+},{"../ApiClient":268,"./Person":345}],294:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45587,7 +64272,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],173:[function(require,module,exports){
+},{"../ApiClient":268}],295:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45653,7 +64338,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],174:[function(require,module,exports){
+},{"../ApiClient":268}],296:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45719,7 +64404,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Comment":171}],175:[function(require,module,exports){
+},{"../ApiClient":268,"./Comment":293}],297:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45781,7 +64466,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./CommentPagingList":176}],176:[function(require,module,exports){
+},{"../ApiClient":268,"./CommentPagingList":298}],298:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45857,7 +64542,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./CommentEntry":174,"./Pagination":220}],177:[function(require,module,exports){
+},{"../ApiClient":268,"./CommentEntry":296,"./Pagination":342}],299:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -45975,7 +64660,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],178:[function(require,module,exports){
+},{"../ApiClient":268}],300:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46061,7 +64746,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],179:[function(require,module,exports){
+},{"../ApiClient":268}],301:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46131,7 +64816,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],180:[function(require,module,exports){
+},{"../ApiClient":268}],302:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46211,7 +64896,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178,"./NodeFull":210,"./UserInfo":270}],181:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300,"./NodeFull":332,"./UserInfo":392}],303:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46273,7 +64958,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./DeletedNode":180}],182:[function(require,module,exports){
+},{"../ApiClient":268,"./DeletedNode":302}],304:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46353,7 +65038,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178,"./NodeMinimal":211,"./PathElement":221,"./UserInfo":270}],183:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300,"./NodeMinimal":333,"./PathElement":343,"./UserInfo":392}],305:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46415,7 +65100,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./DeletedNodeMinimal":182}],184:[function(require,module,exports){
+},{"../ApiClient":268,"./DeletedNodeMinimal":304}],306:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46477,7 +65162,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./DeletedNodesPagingList":185}],185:[function(require,module,exports){
+},{"../ApiClient":268,"./DeletedNodesPagingList":307}],307:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46547,7 +65232,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./DeletedNodeMinimalEntry":183,"./Pagination":220}],186:[function(require,module,exports){
+},{"../ApiClient":268,"./DeletedNodeMinimalEntry":305,"./Pagination":342}],308:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46633,7 +65318,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],187:[function(require,module,exports){
+},{"../ApiClient":268}],309:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46695,7 +65380,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ErrorError":188}],188:[function(require,module,exports){
+},{"../ApiClient":268,"./ErrorError":310}],310:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46808,7 +65493,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],189:[function(require,module,exports){
+},{"../ApiClient":268}],311:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46896,7 +65581,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],190:[function(require,module,exports){
+},{"../ApiClient":268}],312:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -46962,7 +65647,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],191:[function(require,module,exports){
+},{"../ApiClient":268}],313:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47028,7 +65713,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Favorite":189}],192:[function(require,module,exports){
+},{"../ApiClient":268,"./Favorite":311}],314:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47090,7 +65775,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./FavoritePagingList":193}],193:[function(require,module,exports){
+},{"../ApiClient":268,"./FavoritePagingList":315}],315:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47166,7 +65851,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./FavoriteEntry":191,"./Pagination":220}],194:[function(require,module,exports){
+},{"../ApiClient":268,"./FavoriteEntry":313,"./Pagination":342}],316:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47228,7 +65913,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],195:[function(require,module,exports){
+},{"../ApiClient":268}],317:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47290,7 +65975,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./InlineResponse201Entry":196}],196:[function(require,module,exports){
+},{"../ApiClient":268,"./InlineResponse201Entry":318}],318:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47356,7 +66041,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],197:[function(require,module,exports){
+},{"../ApiClient":268}],319:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47426,7 +66111,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],198:[function(require,module,exports){
+},{"../ApiClient":268}],320:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47513,7 +66198,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],199:[function(require,module,exports){
+},{"../ApiClient":268}],321:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47663,7 +66348,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./AssocInfo":168,"./ContentInfo":178,"./UserInfo":270}],200:[function(require,module,exports){
+},{"../ApiClient":268,"./AssocInfo":290,"./ContentInfo":300,"./UserInfo":392}],322:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47729,7 +66414,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeAssocMinimal":199}],201:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeAssocMinimal":321}],323:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47791,7 +66476,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeAssocPagingList":202}],202:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeAssocPagingList":324}],324:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47861,7 +66546,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeAssocMinimalEntry":200,"./Pagination":220}],203:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeAssocMinimalEntry":322,"./Pagination":342}],325:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -47947,7 +66632,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],204:[function(require,module,exports){
+},{"../ApiClient":268}],326:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48049,7 +66734,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodesnodeIdchildrenContent":219}],205:[function(require,module,exports){
+},{"../ApiClient":268,"./NodesnodeIdchildrenContent":341}],327:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48199,7 +66884,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ChildAssocInfo":170,"./ContentInfo":178,"./UserInfo":270}],206:[function(require,module,exports){
+},{"../ApiClient":268,"./ChildAssocInfo":292,"./ContentInfo":300,"./UserInfo":392}],328:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48265,7 +66950,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeChildAssocMinimal":205}],207:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeChildAssocMinimal":327}],329:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48327,7 +67012,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeChildAssocPagingList":208}],208:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeChildAssocPagingList":330}],330:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48397,7 +67082,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeChildAssocMinimalEntry":206,"./Pagination":220}],209:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeChildAssocMinimalEntry":328,"./Pagination":342}],331:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48463,7 +67148,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeFull":210}],210:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeFull":332}],332:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48629,7 +67314,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178,"./UserInfo":270}],211:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300,"./UserInfo":392}],333:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48712,6 +67397,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       if (data.hasOwnProperty('path')) {
         obj['path'] = PathElement.constructFromObject(data['path']);
       }
+      if (data.hasOwnProperty('properties')) {
+        obj['properties'] = data['properties'];
+      }
     }
     return obj;
   };
@@ -48779,7 +67467,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178,"./PathElement":221,"./UserInfo":270}],212:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300,"./PathElement":343,"./UserInfo":392}],334:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48845,7 +67533,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeMinimal":211}],213:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeMinimal":333}],335:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48907,7 +67595,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodePagingList":214}],214:[function(require,module,exports){
+},{"../ApiClient":268,"./NodePagingList":336}],336:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -48977,7 +67665,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeMinimalEntry":212,"./Pagination":220}],215:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeMinimalEntry":334,"./Pagination":342}],337:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49095,7 +67783,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178,"./UserInfo":270}],216:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300,"./UserInfo":392}],338:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49161,7 +67849,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeSharedLink":215}],217:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeSharedLink":337}],339:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49223,7 +67911,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeSharedLinkPagingList":218}],218:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeSharedLinkPagingList":340}],340:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49299,7 +67987,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NodeSharedLinkEntry":216,"./Pagination":220}],219:[function(require,module,exports){
+},{"../ApiClient":268,"./NodeSharedLinkEntry":338,"./Pagination":342}],341:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49369,7 +68057,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],220:[function(require,module,exports){
+},{"../ApiClient":268}],342:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49479,7 +68167,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],221:[function(require,module,exports){
+},{"../ApiClient":268}],343:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49549,7 +68237,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],222:[function(require,module,exports){
+},{"../ApiClient":268}],344:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49627,7 +68315,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./PathElement":221}],223:[function(require,module,exports){
+},{"../ApiClient":268,"./PathElement":343}],345:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49840,7 +68528,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Company":177}],224:[function(require,module,exports){
+},{"../ApiClient":268,"./Company":299}],346:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -49906,7 +68594,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Person":223}],225:[function(require,module,exports){
+},{"../ApiClient":268,"./Person":345}],347:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50051,7 +68739,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./NetworkQuota":198}],226:[function(require,module,exports){
+},{"../ApiClient":268,"./NetworkQuota":320}],348:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50117,7 +68805,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./PersonNetwork":225}],227:[function(require,module,exports){
+},{"../ApiClient":268,"./PersonNetwork":347}],349:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50179,7 +68867,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./PersonNetworkPagingList":228}],228:[function(require,module,exports){
+},{"../ApiClient":268,"./PersonNetworkPagingList":350}],350:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50255,7 +68943,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./PersonNetworkEntry":226}],229:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./PersonNetworkEntry":348}],351:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50334,7 +69022,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],230:[function(require,module,exports){
+},{"../ApiClient":268}],352:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50400,7 +69088,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Preference":229}],231:[function(require,module,exports){
+},{"../ApiClient":268,"./Preference":351}],353:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50462,7 +69150,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./PreferencePagingList":232}],232:[function(require,module,exports){
+},{"../ApiClient":268,"./PreferencePagingList":354}],354:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50538,7 +69226,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./PreferenceEntry":230}],233:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./PreferenceEntry":352}],355:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50630,7 +69318,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./RatingAggregate":234}],234:[function(require,module,exports){
+},{"../ApiClient":268,"./RatingAggregate":356}],356:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50704,7 +69392,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],235:[function(require,module,exports){
+},{"../ApiClient":268}],357:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50802,7 +69490,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],236:[function(require,module,exports){
+},{"../ApiClient":268}],358:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50868,7 +69556,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Rating":233}],237:[function(require,module,exports){
+},{"../ApiClient":268,"./Rating":355}],359:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -50930,7 +69618,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./RatingPagingList":238}],238:[function(require,module,exports){
+},{"../ApiClient":268,"./RatingPagingList":360}],360:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51006,7 +69694,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./RatingEntry":236}],239:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./RatingEntry":358}],361:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51084,7 +69772,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./ContentInfo":178}],240:[function(require,module,exports){
+},{"../ApiClient":268,"./ContentInfo":300}],362:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51146,7 +69834,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],241:[function(require,module,exports){
+},{"../ApiClient":268}],363:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51212,7 +69900,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Rendition":239}],242:[function(require,module,exports){
+},{"../ApiClient":268,"./Rendition":361}],364:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51274,7 +69962,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./RenditionPagingList":243}],243:[function(require,module,exports){
+},{"../ApiClient":268,"./RenditionPagingList":365}],365:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51344,7 +70032,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./RenditionEntry":241}],244:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./RenditionEntry":363}],366:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51406,7 +70094,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],245:[function(require,module,exports){
+},{"../ApiClient":268}],367:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51544,7 +70232,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],246:[function(require,module,exports){
+},{"../ApiClient":268}],368:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51663,7 +70351,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],247:[function(require,module,exports){
+},{"../ApiClient":268}],369:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51739,7 +70427,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],248:[function(require,module,exports){
+},{"../ApiClient":268}],370:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51805,7 +70493,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SiteContainer":247}],249:[function(require,module,exports){
+},{"../ApiClient":268,"./SiteContainer":369}],371:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51867,7 +70555,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SitePagingList":263}],250:[function(require,module,exports){
+},{"../ApiClient":268,"./SitePagingList":385}],372:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -51933,7 +70621,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Site":245}],251:[function(require,module,exports){
+},{"../ApiClient":268,"./Site":367}],373:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52050,7 +70738,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Person":223}],252:[function(require,module,exports){
+},{"../ApiClient":268,"./Person":345}],374:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52151,7 +70839,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],253:[function(require,module,exports){
+},{"../ApiClient":268}],375:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52217,7 +70905,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SiteMember":251}],254:[function(require,module,exports){
+},{"../ApiClient":268,"./SiteMember":373}],376:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52279,7 +70967,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SitePagingList":263}],255:[function(require,module,exports){
+},{"../ApiClient":268,"./SitePagingList":385}],377:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52372,7 +71060,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],256:[function(require,module,exports){
+},{"../ApiClient":268}],378:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52450,7 +71138,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],257:[function(require,module,exports){
+},{"../ApiClient":268}],379:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52512,7 +71200,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],258:[function(require,module,exports){
+},{"../ApiClient":268}],380:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52598,7 +71286,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Site":245}],259:[function(require,module,exports){
+},{"../ApiClient":268,"./Site":367}],381:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52664,7 +71352,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SiteMembershipRequest":258}],260:[function(require,module,exports){
+},{"../ApiClient":268,"./SiteMembershipRequest":380}],382:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52726,7 +71414,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SiteMembershipRequestPagingList":261}],261:[function(require,module,exports){
+},{"../ApiClient":268,"./SiteMembershipRequestPagingList":383}],383:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52802,7 +71490,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./SiteMembershipRequestEntry":259}],262:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./SiteMembershipRequestEntry":381}],384:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52864,7 +71552,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./SitePagingList":263}],263:[function(require,module,exports){
+},{"../ApiClient":268,"./SitePagingList":385}],385:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -52930,7 +71618,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220}],264:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342}],386:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53006,7 +71694,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],265:[function(require,module,exports){
+},{"../ApiClient":268}],387:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53072,7 +71760,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],266:[function(require,module,exports){
+},{"../ApiClient":268}],388:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53134,7 +71822,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],267:[function(require,module,exports){
+},{"../ApiClient":268}],389:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53200,7 +71888,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Tag":264}],268:[function(require,module,exports){
+},{"../ApiClient":268,"./Tag":386}],390:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53262,7 +71950,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./TagPagingList":269}],269:[function(require,module,exports){
+},{"../ApiClient":268,"./TagPagingList":391}],391:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53338,7 +72026,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146,"./Pagination":220,"./TagEntry":267}],270:[function(require,module,exports){
+},{"../ApiClient":268,"./Pagination":342,"./TagEntry":389}],392:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -53408,7 +72096,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return exports;
 });
 
-},{"../ApiClient":146}],271:[function(require,module,exports){
+},{"../ApiClient":268}],393:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -53417,14 +72105,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AlfrescoCoreRestApi = require('./alfresco-core-rest-api/src/index.js');
 var AlfrescoAuthRestApi = require('./alfresco-auth-rest-api/src/index');
+var AlfrescoActivitiApi = require('./alfresco-activiti-rest-api/src/index');
 var AlfrescoMock = require('../test/mockObjects/mockAlfrescoApi.js');
-var AlfrescoApiClient = require('./alfrescoApiClient');
 var AlfrescoContent = require('./alfrescoContent');
 var AlfrescoNode = require('./alfrescoNode');
 var AlfrescoSearch = require('./alfrescoSearch');
 var AlfrescoUpload = require('./alfrescoUpload');
 var AlfrescoWebScriptApi = require('./alfrescoWebScript');
 var Emitter = require('event-emitter');
+var EcmAuth = require('./ecmAuth');
+var BpmAuth = require('./bpmAuth');
+var _ = require('lodash');
 
 var AlfrescoApi = function () {
     /**
@@ -53432,13 +72123,14 @@ var AlfrescoApi = function () {
      *
      *      config = {
      *        host:       // alfrescoHost Your share server IP or DNS name
+     *        hostActiviti: // hostActiviti Your activiti server IP or DNS name
      *        contextRoot: // contextRoot default value alfresco
-     *        username:   // Username to login in share
-     *        password:   // Password to login in share
+     *        username:   // Username to login
+     *        password:   // Password to login
+     *        provider:   // ECM BPM ALL
      *        ticket:     // Ticket if you already have a ticket you can pass only the ticket and skip the login, in this case you don't need username and password
      *    };
      */
-
     function AlfrescoApi(config) {
         _classCallCheck(this, AlfrescoApi);
 
@@ -53448,15 +72140,7 @@ var AlfrescoApi = function () {
 
     /**
      * @param {Object} config
-     *
-     *      config = {
-     *        host:       // alfrescoHost Your share server IP or DNS name
-     *        contextRoot: // contextRoot default value alfresco
-     *        username:   // Username to login in share
-     *        password:   // Password to login in share
-     *        ticket:     // Ticket if you already have a ticket you can pass only the ticket and skip the login, in this case you don't need username and password
-     *    };
-     * */
+     */
 
 
     _createClass(AlfrescoApi, [{
@@ -53464,36 +72148,61 @@ var AlfrescoApi = function () {
         value: function changeConfig(config) {
             this.config = {
                 host: config.host || 'http://127.0.0.1:8080',
+                hostActiviti: config.hostActiviti || 'http://127.0.0.1:9999',
                 contextRoot: config.contextRoot || 'alfresco',
                 username: config.username,
                 password: config.password,
+                provider: config.provider || 'ECM',
                 ticket: config.ticket
             };
 
-            this.apiAuthUrl = this.config.host + '/' + this.config.contextRoot + '/api/-default-/public/authentication/versions/1'; //Auth Call
-            this.apiCoreUrl = this.config.host + '/' + this.config.contextRoot + '/api/-default-/public/alfresco/versions/1'; //Core Call
+            if (this.config.provider === 'BPM' || this.config.provider === 'ALL') {
+                this.bpmAuth = new BpmAuth(this.config);
+                AlfrescoActivitiApi.ApiClient.instance = this.bpmAuth.getClient();
+                this.activiti = AlfrescoActivitiApi;
+                this._instantiateObjects(this.activiti);
+            }
 
-            this.createClients(this.config.host);
+            if (this.config.provider === 'ECM' || this.config.provider === 'ALL') {
+                this.ecmAuth = new EcmAuth(this.config);
+                AlfrescoCoreRestApi.ApiClient.instance = this.ecmAuth.getClient();
+                this.core = AlfrescoCoreRestApi;
+                if (this.isLoggedIn()) {
+                    this._instantiateObjects(AlfrescoCoreRestApi);
+                }
+            }
 
-            AlfrescoCoreRestApi.ApiClient.instance = this.getClient();
             this.nodes = this.node = new AlfrescoNode();
             this.search = new AlfrescoSearch();
-            this.content = new AlfrescoContent(this.apiCoreUrl, this.config);
+            this.content = new AlfrescoContent(this.ecmAuth);
             this.upload = new AlfrescoUpload();
             this.webScript = new AlfrescoWebScriptApi();
         }
-
-        /**
-         * build  Alfresco API Clients
-         *
-         * @param {String} host
-         * */
-
     }, {
-        key: 'createClients',
-        value: function createClients(host) {
-            this.alfrescoClient = new AlfrescoApiClient(host);
-            this.alfrescoClientAuth = new AlfrescoApiClient(host);
+        key: '_instantiateObjects',
+        value: function _instantiateObjects(module, client) {
+            var _this = this;
+
+            var classArray = Object.keys(module);
+
+            classArray.forEach(function (currentClass) {
+                var obj = _this._stringToObject(currentClass, module, client);
+                var nameObj = _.lowerFirst(currentClass);
+                if (!module[nameObj]) {
+                    module[nameObj] = obj;
+                }
+            });
+        }
+    }, {
+        key: '_stringToObject',
+        value: function _stringToObject(nameClass, module, client) {
+            try {
+                if (typeof module[nameClass] === 'function') {
+                    return new module[nameClass](client);
+                }
+            } catch (error) {
+                console.log(nameClass + '  ' + error);
+            }
         }
 
         /**
@@ -53505,29 +72214,7 @@ var AlfrescoApi = function () {
     }, {
         key: 'getClient',
         value: function getClient() {
-            if (this.alfrescoClient) {
-                this.alfrescoClient.basePath = this.apiCoreUrl;
-                this.alfrescoClient.authentications.basicAuth.username = 'ROLE_TICKET';
-                this.alfrescoClient.authentications.basicAuth.password = this.config.ticket;
-                return this.alfrescoClient;
-            }
-        }
-
-        /**
-         * return an Alfresco API Client
-         *
-         * @returns {ApiClient} Alfresco API Client
-         * */
-
-    }, {
-        key: 'getClientAuth',
-        value: function getClientAuth() {
-            if (this.alfrescoClientAuth) {
-                this.alfrescoClientAuth.basePath = this.apiAuthUrl;
-                this.alfrescoClientAuth.authentications.basicAuth.username = 'ROLE_TICKET';
-                this.alfrescoClientAuth.authentications.basicAuth.password = this.config.ticket;
-                return this.alfrescoClientAuth;
-            }
+            return this.ecmAuth.getClient();
         }
 
         /**
@@ -53539,24 +72226,37 @@ var AlfrescoApi = function () {
     }, {
         key: 'login',
         value: function login() {
-            var _this = this;
+            var _this2 = this;
 
-            var apiInstance = new AlfrescoAuthRestApi.AuthenticationApi(this.getClientAuth());
-            var loginRequest = new AlfrescoAuthRestApi.LoginRequest();
+            if (this.config.provider && this.config.provider.toUpperCase() === 'BPM') {
+                return this.bpmAuth.login();
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ECM') {
+                var promise = this.ecmAuth.login();
+                promise.then(function (data) {
+                    _this2._instantiateObjects(AlfrescoCoreRestApi, _this2.ecmAuth.getClient());
+                });
+                return promise;
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ALL') {
+                return this._loginBPMECM();
+            }
+        }
+    }, {
+        key: '_loginBPMECM',
+        value: function _loginBPMECM() {
+            var _this3 = this;
 
-            loginRequest.userId = this.config.username;
-            loginRequest.password = this.config.password;
+            var ecmPromise = this.ecmAuth.login();
+            var bpmPromise = this.bpmAuth.login();
 
             this.promise = new Promise(function (resolve, reject) {
-                apiInstance.createTicket(loginRequest).then(function (data) {
-                    _this.setTicket(data.entry.id);
-                    _this.promise.emit('success');
-                    resolve(data.entry.id);
+                Promise.all([ecmPromise, bpmPromise]).then(function (data) {
+                    _this3.promise.emit('success');
+                    resolve(data);
                 }, function (error) {
                     if (error.status === 401) {
-                        _this.promise.emit('unauthorized');
+                        _this3.promise.emit('unauthorized');
                     }
-                    _this.promise.emit('error');
+                    _this3.promise.emit('error');
                     reject(error);
                 });
             });
@@ -53575,20 +72275,31 @@ var AlfrescoApi = function () {
     }, {
         key: 'logout',
         value: function logout() {
-            var _this2 = this;
+            if (this.config.provider && this.config.provider.toUpperCase() === 'BPM') {
+                return this.bpmAuth.logout();
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ECM') {
+                return this.ecmAuth.logout();
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ALL') {
+                return this._logoutBPMECM();
+            }
+        }
+    }, {
+        key: '_logoutBPMECM',
+        value: function _logoutBPMECM() {
+            var _this4 = this;
 
-            var apiInstance = new AlfrescoAuthRestApi.AuthenticationApi(this.getClientAuth());
+            var ecmPromise = this.ecmAuth.logout();
+            var bpmPromise = this.bpmAuth.logout();
 
             this.promise = new Promise(function (resolve, reject) {
-                apiInstance.deleteTicket().then(function (data) {
-                    _this2.promise.emit('logout');
-                    _this2.setTicket(undefined);
+                Promise.all([ecmPromise, bpmPromise]).then(function (data) {
+                    _this4.promise.emit('logout');
                     resolve('logout');
                 }, function (error) {
                     if (error.status === 401) {
-                        _this2.promise.emit('unauthorized');
+                        _this4.promise.emit('unauthorized');
                     }
-                    _this2.promise.emit('error');
+                    _this4.promise.emit('error');
                     reject(error);
                 });
             });
@@ -53607,7 +72318,13 @@ var AlfrescoApi = function () {
     }, {
         key: 'isLoggedIn',
         value: function isLoggedIn() {
-            return !!this.config.ticket;
+            if (this.config.provider && this.config.provider.toUpperCase() === 'BPM') {
+                return this.bpmAuth.isLoggedIn();
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ECM') {
+                return this.ecmAuth.isLoggedIn();
+            } else if (this.config.provider && this.config.provider.toUpperCase() === 'ALL') {
+                return this.ecmAuth.isLoggedIn() && this.bpmAuth.isLoggedIn();
+            }
         }
 
         /**
@@ -53619,8 +72336,7 @@ var AlfrescoApi = function () {
     }, {
         key: 'setTicket',
         value: function setTicket(ticket) {
-            this.config.ticket = ticket;
-            this.alfrescoClient.authentications.basicAuth.password = ticket;
+            return this.ecmAuth.setTicket(ticket);
         }
 
         /**
@@ -53632,7 +72348,7 @@ var AlfrescoApi = function () {
     }, {
         key: 'getTicket',
         value: function getTicket() {
-            return this.config.ticket;
+            return this.ecmAuth.getTicket();
         }
     }]);
 
@@ -53642,11 +72358,12 @@ var AlfrescoApi = function () {
 Emitter(AlfrescoApi.prototype); // jshint ignore:line
 module.exports = AlfrescoApi;
 
+module.exports.Activiti = AlfrescoActivitiApi;
 module.exports.Core = AlfrescoCoreRestApi;
 module.exports.Auth = AlfrescoAuthRestApi;
 module.exports.Mock = AlfrescoMock;
 
-},{"../test/mockObjects/mockAlfrescoApi.js":280,"./alfresco-auth-rest-api/src/index":138,"./alfresco-core-rest-api/src/index.js":161,"./alfrescoApiClient":272,"./alfrescoContent":273,"./alfrescoNode":274,"./alfrescoSearch":275,"./alfrescoUpload":276,"./alfrescoWebScript":277,"event-emitter":65}],272:[function(require,module,exports){
+},{"../test/mockObjects/mockAlfrescoApi.js":410,"./alfresco-activiti-rest-api/src/index":178,"./alfresco-auth-rest-api/src/index":260,"./alfresco-core-rest-api/src/index.js":283,"./alfrescoContent":395,"./alfrescoNode":396,"./alfrescoSearch":397,"./alfrescoUpload":398,"./alfrescoWebScript":399,"./bpmAuth":400,"./ecmAuth":401,"event-emitter":65,"lodash":72}],394:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -53668,7 +72385,6 @@ var AlfrescoApiClient = function (_ApiClient) {
     /**
      * @param {String} host
      * */
-
     function AlfrescoApiClient(host) {
         _classCallCheck(this, AlfrescoApiClient);
 
@@ -53718,7 +72434,7 @@ var AlfrescoApiClient = function (_ApiClient) {
             var request = superagent(httpMethod, url);
 
             // apply authentications
-            this.applyAuthToRequest(request, authNames);
+            this.applyAuthToRequest(request, ['basicAuth']);
 
             // set query parameters
             request.query(this.normalizeParams(queryParams));
@@ -53730,6 +72446,12 @@ var AlfrescoApiClient = function (_ApiClient) {
             request.timeout(this.timeout);
 
             var contentType = this.jsonPreferredMime(contentTypes);
+
+            if (contentType && contentType !== 'multipart/form-data') {
+                request.type(contentType);
+            } else if (!request.header['Content-Type'] && contentType !== 'multipart/form-data') {
+                request.type('application/json');
+            }
 
             if (contentType === 'application/x-www-form-urlencoded') {
                 request.send(this.normalizeParams(formParams)).on('progress', function (event) {
@@ -53872,7 +72594,7 @@ var AlfrescoApiClient = function (_ApiClient) {
 Emitter(AlfrescoApiClient.prototype); // jshint ignore:line
 module.exports = AlfrescoApiClient;
 
-},{"./alfresco-core-rest-api/src/ApiClient":146,"event-emitter":65,"lodash":72,"superagent":125}],273:[function(require,module,exports){
+},{"./alfresco-core-rest-api/src/ApiClient":268,"event-emitter":65,"lodash":72,"superagent":125}],395:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -53881,15 +72603,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AlfrescoContent = function () {
     /**
-     * @param {String} apiBaseUrl
-     * @param {Object} config
+     * @param {EcmAuth} ecmAuth
      */
-
-    function AlfrescoContent(apiBaseUrl, config) {
+    function AlfrescoContent(ecmAuth) {
         _classCallCheck(this, AlfrescoContent);
 
-        this.apiBaseUrl = apiBaseUrl;
-        this.config = config;
+        this.ecmAuth = ecmAuth;
     }
 
     /**
@@ -53904,7 +72623,7 @@ var AlfrescoContent = function () {
     _createClass(AlfrescoContent, [{
         key: 'getDocumentThumbnailUrl',
         value: function getDocumentThumbnailUrl(documentId) {
-            return this.apiBaseUrl + '/nodes/' + documentId + '/renditions/doclib/content' + '?attachment=false&alf_ticket=' + this.config.ticket;
+            return this.ecmAuth.getClient().basePath + '/nodes/' + documentId + '/renditions/doclib/content' + '?attachment=false&alf_ticket=' + this.ecmAuth.getTicket();
         }
 
         /**
@@ -53918,7 +72637,7 @@ var AlfrescoContent = function () {
     }, {
         key: 'getContentUrl',
         value: function getContentUrl(documentId) {
-            return this.apiBaseUrl + '/nodes/' + documentId + '/content' + '?attachment=false&alf_ticket=' + this.config.ticket;
+            return this.ecmAuth.getClient().basePath + '/nodes/' + documentId + '/content' + '?attachment=false&alf_ticket=' + this.ecmAuth.getTicket();
         }
     }]);
 
@@ -53927,7 +72646,7 @@ var AlfrescoContent = function () {
 
 module.exports = AlfrescoContent;
 
-},{}],274:[function(require,module,exports){
+},{}],396:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54040,7 +72759,7 @@ var AlfrescoNode = function (_AlfrescoCoreRestApi$) {
 
 module.exports = AlfrescoNode;
 
-},{"./alfresco-core-rest-api/src/index.js":161,"lodash":72}],275:[function(require,module,exports){
+},{"./alfresco-core-rest-api/src/index.js":283,"lodash":72}],397:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -54065,7 +72784,7 @@ var AlfrescoSearch = function (_AlfrescoCoreRestApi$) {
 
 module.exports = AlfrescoSearch;
 
-},{"./alfresco-core-rest-api/src/index.js":161}],276:[function(require,module,exports){
+},{"./alfresco-core-rest-api/src/index.js":283}],398:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54163,7 +72882,7 @@ var AlfrescoUpload = function (_AlfrescoCoreRestApi$) {
 Emitter(AlfrescoUpload.prototype); // jshint ignore:line
 module.exports = AlfrescoUpload;
 
-},{"./alfresco-core-rest-api/src/index.js":161,"event-emitter":65,"lodash":72}],277:[function(require,module,exports){
+},{"./alfresco-core-rest-api/src/index.js":283,"event-emitter":65,"lodash":72}],399:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54227,7 +72946,361 @@ var AlfrescoWebScriptApi = function () {
 
 module.exports = AlfrescoWebScriptApi;
 
-},{"./alfresco-core-rest-api/src/ApiClient":146}],278:[function(require,module,exports){
+},{"./alfresco-core-rest-api/src/ApiClient":268}],400:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AlfrescoApiClient = require('./alfrescoApiClient');
+var Emitter = require('event-emitter');
+
+var BpmAuth = function (_AlfrescoApiClient) {
+    _inherits(BpmAuth, _AlfrescoApiClient);
+
+    /**
+     * @param {Object} config
+     */
+    function BpmAuth(config) {
+        _classCallCheck(this, BpmAuth);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BpmAuth).call(this));
+
+        _this.ticket = undefined;
+        _this.config = config;
+        _this.basePath = config.hostActiviti + '/activiti-app'; //Activiti Call
+        _this.authentications.basicAuth.username = config.username;
+        _this.authentications.basicAuth.password = config.password;
+        Emitter.call(_this);
+        return _this;
+    }
+
+    /**
+     * login Activiti API
+     *
+     * @returns {Promise} A promise that returns {new authentication ticket} if resolved and {error} if rejected.
+     * */
+
+
+    _createClass(BpmAuth, [{
+        key: 'login',
+        value: function login() {
+            var _this2 = this;
+
+            var postBody = {},
+                pathParams = {},
+                queryParams = {};
+
+            var headerParams = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cache-Control': 'no-cache'
+            };
+            var formParams = {
+                j_username: this.authentications.basicAuth.username,
+                j_password: this.authentications.basicAuth.password,
+                _spring_security_remember_me: true,
+                submit: 'Login'
+            };
+
+            var authNames = [];
+            var contentTypes = ['application/x-www-form-urlencoded'];
+            var accepts = ['application/json'];
+
+            this.promise = new Promise(function (resolve, reject) {
+                _this2.callApi('/app/authentication', 'POST', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts).then(function (data) {
+                    var tcket = 'Basic ' + new Buffer(_this2.authentications.basicAuth.username + ':' + _this2.authentications.basicAuth.password).toString('base64');
+                    _this2.setTicket(tcket);
+                    _this2.promise.emit('success');
+                    resolve(tcket);
+                }, function (error) {
+                    if (error.error.status === 401) {
+                        _this2.promise.emit('unauthorized');
+                    }
+                    _this2.promise.emit('error');
+                    reject(error.error);
+                });
+            });
+
+            Emitter(this.promise); // jshint ignore:line
+
+            return this.promise;
+        }
+
+        /**
+         * logout Alfresco API
+         *
+         * @returns {Promise} A promise that returns {new authentication ticket} if resolved and {error} if rejected.
+         * */
+
+    }, {
+        key: 'logout',
+        value: function logout() {
+            var _this3 = this;
+
+            var postBody = {},
+                pathParams = {},
+                queryParams = {},
+                headerParams = {},
+                formParams = {};
+
+            var authNames = [];
+            var contentTypes = ['application/json'];
+            var accepts = ['application/json'];
+
+            this.promise = new Promise(function (resolve, reject) {
+                _this3.callApi('/app/logout', 'GET', pathParams, queryParams, headerParams, formParams, postBody, authNames, contentTypes, accepts).then(function () {
+                    _this3.promise.emit('logout');
+                    _this3.setTicket(undefined);
+                    resolve('logout');
+                }, function (error) {
+                    if (error.status === 401) {
+                        _this3.promise.emit('unauthorized');
+                    }
+                    _this3.promise.emit('error');
+                    reject(error);
+                });
+            });
+
+            Emitter(this.promise); // jshint ignore:line
+
+            return this.promise;
+        }
+
+        /**
+         * Set the current Ticket
+         *
+         * @param {String} Ticket
+         * */
+
+    }, {
+        key: 'setTicket',
+        value: function setTicket(ticket) {
+            this.ticket = ticket;
+        }
+
+        /**
+         * Get the current Ticket
+         *
+         * @returns {String} Ticket
+         * */
+
+    }, {
+        key: 'getTicket',
+        value: function getTicket() {
+            return this.ticket;
+        }
+
+        /**
+         * If the client is logged in retun true
+         *
+         * @returns {Boolean} is logged in
+         */
+
+    }, {
+        key: 'isLoggedIn',
+        value: function isLoggedIn() {
+            return !!this.ticket;
+        }
+
+        /**
+         * return an Alfresco BPM API Client
+         *
+         * @returns {AlfrescoApiClient} Alfresco BPM API Client
+         * */
+
+    }, {
+        key: 'getClient',
+        value: function getClient() {
+            return this;
+        }
+    }]);
+
+    return BpmAuth;
+}(AlfrescoApiClient);
+
+Emitter(BpmAuth.prototype); // jshint ignore:line
+module.exports = BpmAuth;
+
+}).call(this,require("buffer").Buffer)
+},{"./alfrescoApiClient":394,"buffer":8,"event-emitter":65}],401:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AlfrescoAuthRestApi = require('./alfresco-auth-rest-api/src/index');
+var AlfrescoApiClient = require('./alfrescoApiClient');
+var Emitter = require('event-emitter');
+
+var EcmAuth = function (_AlfrescoApiClient) {
+    _inherits(EcmAuth, _AlfrescoApiClient);
+
+    /**
+     * @param {Object} config
+     */
+    function EcmAuth(config) {
+        _classCallCheck(this, EcmAuth);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EcmAuth).call(this));
+
+        _this.config = config;
+        _this.basePath = _this.config.host + '/' + _this.config.contextRoot + '/api/-default-/public/authentication/versions/1'; //Auth Call
+
+        if (_this.config.ticket) {
+            _this.setTicket(_this.config.ticket);
+        } else {
+            _this.authentications.basicAuth.username = _this.config.username;
+            _this.authentications.basicAuth.password = _this.config.password;
+        }
+
+        Emitter.call(_this);
+        return _this;
+    }
+
+    /**
+     * login Alfresco API
+     *
+     * @returns {Promise} A promise that returns {new authentication ticket} if resolved and {error} if rejected.
+     * */
+
+
+    _createClass(EcmAuth, [{
+        key: 'login',
+        value: function login() {
+            var _this2 = this;
+
+            var apiInstance = new AlfrescoAuthRestApi.AuthenticationApi(this);
+            var loginRequest = new AlfrescoAuthRestApi.LoginRequest();
+
+            loginRequest.userId = this.config.username;
+            loginRequest.password = this.config.password;
+
+            this.promise = new Promise(function (resolve, reject) {
+                apiInstance.createTicket(loginRequest).then(function (data) {
+                    _this2.setTicket(data.entry.id);
+                    _this2.promise.emit('success');
+                    resolve(data.entry.id);
+                }, function (error) {
+                    if (error.status === 401) {
+                        _this2.promise.emit('unauthorized');
+                    }
+                    _this2.promise.emit('error');
+                    reject(error);
+                });
+            });
+
+            Emitter(this.promise); // jshint ignore:line
+
+            return this.promise;
+        }
+
+        /**
+         * logout Alfresco API
+         *
+         * @returns {Promise} A promise that returns {new authentication ticket} if resolved and {error} if rejected.
+         * */
+
+    }, {
+        key: 'logout',
+        value: function logout() {
+            var _this3 = this;
+
+            var apiInstance = new AlfrescoAuthRestApi.AuthenticationApi(this);
+
+            this.promise = new Promise(function (resolve, reject) {
+                apiInstance.deleteTicket().then(function () {
+                    _this3.promise.emit('logout');
+                    _this3.setTicket(undefined);
+                    resolve('logout');
+                }, function (error) {
+                    if (error.status === 401) {
+                        _this3.promise.emit('unauthorized');
+                    }
+                    _this3.promise.emit('error');
+                    reject(error);
+                });
+            });
+
+            Emitter(this.promise); // jshint ignore:line
+
+            return this.promise;
+        }
+
+        /**
+         * Set the current Ticket
+         *
+         * @param {String} Ticket
+         * */
+
+    }, {
+        key: 'setTicket',
+        value: function setTicket(ticket) {
+            this.authentications.basicAuth.username = 'ROLE_TICKET';
+            this.authentications.basicAuth.password = ticket;
+            this.ticket = ticket;
+        }
+
+        /**
+         * Get the current Ticket
+         *
+         * @returns {String} Ticket
+         * */
+
+    }, {
+        key: 'getTicket',
+        value: function getTicket() {
+            return this.ticket;
+        }
+
+        /**
+         * If the client is logged in retun true
+         *
+         * @returns {Boolean} is logged in
+         */
+
+    }, {
+        key: 'isLoggedIn',
+        value: function isLoggedIn() {
+            return !!this.ticket;
+        }
+
+        /**
+         * return an Alfresco API Client
+         *
+         * @returns {ApiClient} Alfresco API Client
+         * */
+
+    }, {
+        key: 'getClient',
+        value: function getClient() {
+            if (!this.alfrescoClient) {
+                this.alfrescoClient = new AlfrescoApiClient(this.config.host);
+            }
+
+            this.alfrescoClient.basePath = this.config.host + '/' + this.config.contextRoot + '/api/-default-/public/alfresco/versions/1'; //Auth Call
+            this.alfrescoClient.authentications = this.authentications;
+            return this.alfrescoClient;
+        }
+    }]);
+
+    return EcmAuth;
+}(AlfrescoApiClient);
+
+Emitter(EcmAuth.prototype); // jshint ignore:line
+module.exports = EcmAuth;
+
+},{"./alfresco-auth-rest-api/src/index":260,"./alfrescoApiClient":394,"event-emitter":65}],402:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54239,15 +73312,272 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var nock = require('nock');
-var BaseMock = require('./baseMock');
+var BaseMock = require('../baseMock');
 
 var AuthResponseMock = function (_BaseMock) {
     _inherits(AuthResponseMock, _BaseMock);
 
-    function AuthResponseMock(host) {
+    function AuthResponseMock(host, username, password) {
         _classCallCheck(this, AuthResponseMock);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(AuthResponseMock).call(this, host));
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AuthResponseMock).call(this, host));
+
+        _this.username = username || 'admin';
+        _this.password = password || 'admin';
+        return _this;
+    }
+
+    _createClass(AuthResponseMock, [{
+        key: 'get200Response',
+        value: function get200Response() {
+            nock(this.host, { 'encodedQueryParams': true }).post('/activiti-app/app/authentication', 'j_username=' + this.username + '&j_password=' + this.password + '&_spring_security_remember_me=true&submit=Login').reply(200);
+        }
+    }, {
+        key: 'get200ResponseLogout',
+        value: function get200ResponseLogout() {
+            nock(this.host, { 'encodedQueryParams': true }).get('/activiti-app/app/logout', {}).reply(200);
+        }
+    }, {
+        key: 'get401Response',
+        value: function get401Response() {
+            nock(this.host, { 'encodedQueryParams': true }).post('/activiti-app/app/authentication', 'j_username=wrong&j_password=name&_spring_security_remember_me=true&submit=Login').reply(401);
+        }
+    }]);
+
+    return AuthResponseMock;
+}(BaseMock);
+
+module.exports = AuthResponseMock;
+
+},{"../baseMock":409,"nock":75}],403:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var nock = require('nock');
+var BaseMock = require('../baseMock');
+
+var ProcessMock = function (_BaseMock) {
+    _inherits(ProcessMock, _BaseMock);
+
+    function ProcessMock(host) {
+        _classCallCheck(this, ProcessMock);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(ProcessMock).call(this, host));
+    }
+
+    _createClass(ProcessMock, [{
+        key: 'get200Response',
+        value: function get200Response() {
+            nock(this.host, { 'encodedQueryParams': true }).post('/activiti-app/api/enterprise/process-instances/query', {
+                'page': 0,
+                'sort': 'created-desc',
+                'state': 'all'
+            }).reply(200, {
+                'size': 2,
+                'total': 2,
+                'start': 0,
+                'data': [{
+                    'id': '39',
+                    'name': 'Process Test Api - July 26th 2016',
+                    'businessKey': null,
+                    'processDefinitionId': 'ProcessTestApi:1:32',
+                    'tenantId': 'tenant_1',
+                    'started': '2016-07-26T15:31:00.414+0000',
+                    'ended': null,
+                    'startedBy': {
+                        'id': 1,
+                        'firstName': null,
+                        'lastName': 'Administrator',
+                        'email': 'admin@app.activiti.com'
+                    },
+                    'processDefinitionName': 'Process Test Api',
+                    'processDefinitionDescription': null,
+                    'processDefinitionKey': 'ProcessTestApi',
+                    'processDefinitionCategory': 'http://www.activiti.org/processdef',
+                    'processDefinitionVersion': 1,
+                    'processDefinitionDeploymentId': '29',
+                    'graphicalNotationDefined': true,
+                    'startFormDefined': false,
+                    'suspended': false,
+                    'variables': []
+                }, {
+                    'id': '33',
+                    'name': 'Process Test Api - July 26th 2016',
+                    'businessKey': null,
+                    'processDefinitionId': 'ProcessTestApi:1:32',
+                    'tenantId': 'tenant_1',
+                    'started': '2016-07-26T15:30:58.367+0000',
+                    'ended': null,
+                    'startedBy': {
+                        'id': 1,
+                        'firstName': null,
+                        'lastName': 'Administrator',
+                        'email': 'admin@app.activiti.com'
+                    },
+                    'processDefinitionName': 'Process Test Api',
+                    'processDefinitionDescription': null,
+                    'processDefinitionKey': 'ProcessTestApi',
+                    'processDefinitionCategory': 'http://www.activiti.org/processdef',
+                    'processDefinitionVersion': 1,
+                    'processDefinitionDeploymentId': '29',
+                    'graphicalNotationDefined': true,
+                    'startFormDefined': false,
+                    'suspended': false,
+                    'variables': []
+                }]
+            });
+        }
+    }]);
+
+    return ProcessMock;
+}(BaseMock);
+
+module.exports = ProcessMock;
+
+},{"../baseMock":409,"nock":75}],404:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var nock = require('nock');
+var BaseMock = require('../baseMock');
+
+var TasksMock = function (_BaseMock) {
+    _inherits(TasksMock, _BaseMock);
+
+    function TasksMock(host) {
+        _classCallCheck(this, TasksMock);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(TasksMock).call(this, host));
+    }
+
+    _createClass(TasksMock, [{
+        key: 'get200Response',
+        value: function get200Response() {
+            nock(this.host, { 'encodedQueryParams': true }).post('/activiti-app/api/enterprise/tasks/query', {}).reply(200, {
+                'size': 2,
+                'total': 2,
+                'start': 0,
+                'data': [{
+                    'id': '38',
+                    'name': null,
+                    'description': null,
+                    'category': null,
+                    'assignee': {
+                        'id': 1,
+                        'firstName': null,
+                        'lastName': 'Administrator',
+                        'email': 'admin@app.activiti.com'
+                    },
+                    'created': '2016-07-26T15:30:58.368+0000',
+                    'dueDate': null,
+                    'endDate': null,
+                    'duration': null,
+                    'priority': 50,
+                    'parentTaskId': null,
+                    'parentTaskName': null,
+                    'processInstanceId': '33',
+                    'processInstanceName': null,
+                    'processDefinitionId': 'ProcessTestApi:1:32',
+                    'processDefinitionName': 'Process Test Api',
+                    'processDefinitionDescription': null,
+                    'processDefinitionKey': 'ProcessTestApi',
+                    'processDefinitionCategory': 'http://www.activiti.org/processdef',
+                    'processDefinitionVersion': 1,
+                    'processDefinitionDeploymentId': '29',
+                    'formKey': null,
+                    'processInstanceStartUserId': null,
+                    'initiatorCanCompleteTask': false,
+                    'adhocTaskCanBeReassigned': false,
+                    'taskDefinitionKey': 'sid-E6C102D3-F101-47AE-8D39-B7FD17F38FE9',
+                    'executionId': '33',
+                    'memberOfCandidateGroup': false,
+                    'memberOfCandidateUsers': false,
+                    'managerOfCandidateGroup': false
+                }, {
+                    'id': '44',
+                    'name': null,
+                    'description': null,
+                    'category': null,
+                    'assignee': {
+                        'id': 1,
+                        'firstName': null,
+                        'lastName': 'Administrator',
+                        'email': 'admin@app.activiti.com'
+                    },
+                    'created': '2016-07-26T15:31:00.415+0000',
+                    'dueDate': null,
+                    'endDate': null,
+                    'duration': null,
+                    'priority': 50,
+                    'parentTaskId': null,
+                    'parentTaskName': null,
+                    'processInstanceId': '39',
+                    'processInstanceName': null,
+                    'processDefinitionId': 'ProcessTestApi:1:32',
+                    'processDefinitionName': 'Process Test Api',
+                    'processDefinitionDescription': null,
+                    'processDefinitionKey': 'ProcessTestApi',
+                    'processDefinitionCategory': 'http://www.activiti.org/processdef',
+                    'processDefinitionVersion': 1,
+                    'processDefinitionDeploymentId': '29',
+                    'formKey': null,
+                    'processInstanceStartUserId': null,
+                    'initiatorCanCompleteTask': false,
+                    'adhocTaskCanBeReassigned': false,
+                    'taskDefinitionKey': 'sid-E6C102D3-F101-47AE-8D39-B7FD17F38FE9',
+                    'executionId': '39',
+                    'memberOfCandidateGroup': false,
+                    'memberOfCandidateUsers': false,
+                    'managerOfCandidateGroup': false
+                }]
+            });
+        }
+    }]);
+
+    return TasksMock;
+}(BaseMock);
+
+module.exports = TasksMock;
+
+},{"../baseMock":409,"nock":75}],405:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var nock = require('nock');
+var BaseMock = require('../baseMock');
+
+var AuthResponseMock = function (_BaseMock) {
+    _inherits(AuthResponseMock, _BaseMock);
+
+    function AuthResponseMock(host, username, password) {
+        _classCallCheck(this, AuthResponseMock);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AuthResponseMock).call(this, host));
+
+        _this.username = username || 'admin';
+        _this.password = password || 'admin';
+        return _this;
     }
 
     _createClass(AuthResponseMock, [{
@@ -54257,8 +73587,8 @@ var AuthResponseMock = function (_BaseMock) {
             var returnMockTicket = forceTicket || 'TICKET_4479f4d3bb155195879bfbb8d5206f433488a1b1';
 
             nock(this.host, { 'encodedQueryParams': true }).post('/alfresco/api/-default-/public/authentication/versions/1/tickets', {
-                'userId': 'admin',
-                'password': 'admin'
+                'userId': this.username,
+                'password': this.password
             }).reply(201, { 'entry': { 'id': returnMockTicket, 'userId': 'admin' } });
         }
     }, {
@@ -54299,7 +73629,7 @@ var AuthResponseMock = function (_BaseMock) {
         value: function get401Response() {
             nock(this.host, { 'encodedQueryParams': true }).post('/alfresco/api/-default-/public/authentication/versions/1/tickets', {
                 'userId': 'wrong',
-                'password': 'credentials'
+                'password': 'name'
             }).reply(401, {
                 'error': {
                     'errorKey': 'framework.exception.ApiDefault',
@@ -54327,62 +73657,7 @@ var AuthResponseMock = function (_BaseMock) {
 
 module.exports = AuthResponseMock;
 
-},{"./baseMock":279,"nock":75}],279:[function(require,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var nock = require('nock');
-
-var BaseMock = function () {
-    function BaseMock(host) {
-        _classCallCheck(this, BaseMock);
-
-        this.host = host ? host : 'http://127.0.0.1:8080';
-    }
-
-    _createClass(BaseMock, [{
-        key: 'get200Response',
-        value: function get200Response() {
-            nock(this.host, { 'encodedQueryParams': true }).get(this.scriptSlug).reply(200, {
-                'randomStructure': {
-                    'exampleInt': 1,
-                    'exampleString': 'string test'
-                }
-            });
-        }
-    }, {
-        key: 'rec',
-        value: function rec() {
-            nock.recorder.rec();
-        }
-    }, {
-        key: 'play',
-        value: function play() {
-            nock.recorder.play();
-        }
-    }]);
-
-    return BaseMock;
-}();
-
-module.exports = BaseMock;
-
-},{"nock":75}],280:[function(require,module,exports){
-'use strict';
-
-var mockAlfrescoApi = {};
-
-mockAlfrescoApi.Auth = require('./authResponseMock.js');
-mockAlfrescoApi.Node = require('./nodeMock.js');
-mockAlfrescoApi.Upload = require('./uploadMock.js');
-mockAlfrescoApi.WebScript = require('./webScriptMock.js');
-
-module.exports = mockAlfrescoApi;
-
-},{"./authResponseMock.js":278,"./nodeMock.js":281,"./uploadMock.js":282,"./webScriptMock.js":283}],281:[function(require,module,exports){
+},{"../baseMock":409,"nock":75}],406:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54394,7 +73669,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var nock = require('nock');
-var BaseMock = require('./baseMock');
+var BaseMock = require('../baseMock');
 
 var NodeMock = function (_BaseMock) {
     _inherits(NodeMock, _BaseMock);
@@ -54659,7 +73934,7 @@ var NodeMock = function (_BaseMock) {
 
 module.exports = NodeMock;
 
-},{"./baseMock":279,"nock":75}],282:[function(require,module,exports){
+},{"../baseMock":409,"nock":75}],407:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54671,7 +73946,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var nock = require('nock');
-var BaseMock = require('./baseMock');
+var BaseMock = require('../baseMock');
 
 var UploadMock = function (_BaseMock) {
     _inherits(UploadMock, _BaseMock);
@@ -54767,7 +74042,7 @@ var UploadMock = function (_BaseMock) {
 
 module.exports = UploadMock;
 
-},{"./baseMock":279,"nock":75}],283:[function(require,module,exports){
+},{"../baseMock":409,"nock":75}],408:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54779,7 +74054,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var nock = require('nock');
-var BaseMock = require('./baseMock');
+var BaseMock = require('../baseMock');
 
 var WebScriptMock = function (_BaseMock) {
     _inherits(WebScriptMock, _BaseMock);
@@ -54846,5 +74121,71 @@ var WebScriptMock = function (_BaseMock) {
 
 module.exports = WebScriptMock;
 
-},{"./baseMock":279,"nock":75}]},{},[1])(1)
+},{"../baseMock":409,"nock":75}],409:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var nock = require('nock');
+
+var BaseMock = function () {
+    function BaseMock(host) {
+        _classCallCheck(this, BaseMock);
+
+        this.host = host ? host : 'http://127.0.0.1:8080';
+    }
+
+    _createClass(BaseMock, [{
+        key: 'get200Response',
+        value: function get200Response() {
+            nock(this.host, { 'encodedQueryParams': true }).get(this.scriptSlug).reply(200, {
+                'randomStructure': {
+                    'exampleInt': 1,
+                    'exampleString': 'string test'
+                }
+            });
+        }
+    }, {
+        key: 'rec',
+        value: function rec() {
+            nock.recorder.rec();
+        }
+    }, {
+        key: 'play',
+        value: function play() {
+            nock.recorder.play();
+        }
+    }, {
+        key: 'cleanAll',
+        value: function cleanAll() {
+            nock.cleanAll();
+        }
+    }]);
+
+    return BaseMock;
+}();
+
+module.exports = BaseMock;
+
+},{"nock":75}],410:[function(require,module,exports){
+'use strict';
+
+var mockAlfrescoApi = {};
+
+mockAlfrescoApi.Auth = require('./alfresco/authResponseMock.js');
+mockAlfrescoApi.Node = require('./alfresco/nodeMock.js');
+mockAlfrescoApi.Upload = require('./alfresco/uploadMock.js');
+mockAlfrescoApi.WebScript = require('./alfresco/webScriptMock.js');
+
+//Bpm Mock
+mockAlfrescoApi.ActivitiMock = {};
+mockAlfrescoApi.ActivitiMock.Auth = require('./activiti/authResponseMock.js');
+mockAlfrescoApi.ActivitiMock.Process = require('./activiti/processMock.js');
+mockAlfrescoApi.ActivitiMock.Tasks = require('./activiti/tasksMock.js');
+
+module.exports = mockAlfrescoApi;
+
+},{"./activiti/authResponseMock.js":402,"./activiti/processMock.js":403,"./activiti/tasksMock.js":404,"./alfresco/authResponseMock.js":405,"./alfresco/nodeMock.js":406,"./alfresco/uploadMock.js":407,"./alfresco/webScriptMock.js":408}]},{},[1])(1)
 });

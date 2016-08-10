@@ -5,17 +5,44 @@ Alfresco Mock API - is a suite of class to mock the alfresco-core-rest-api alfre
 Alfresco Mock API use [Nock](https://github.com/node-nock/nock) which is an HTTP mocking and expectations library for Node.js
                                                                 
 
-### Basic usage For node projects
+<!-- markdown-toc start - Don't edit this section.  npm run toc to generate it-->
+
+<!-- toc -->
+
+- [Basic usage For node projects](#basic-usage-for-node-projects)
+- [ECM](#ecm)
+  * [Mock Auth Api](#mock-auth-api)
+    + [Example](#example)
+  * [Mock Node Api](#mock-node-api)
+    + [Example](#example-1)
+  * [Mock Upload Api](#mock-upload-api)
+    + [Example](#example-2)
+  * [WebScript Upload Api](#webscript-upload-api)
+    + [Example](#example-3)
+- [BPM](#bpm)
+  * [Mock Auth Api](#mock-auth-api-1)
+
+<!-- tocstop -->
+
+<!-- markdown-toc end -->
+
+# Basic usage For node projects
 
 ```javascript
 var AlfrescoMockJsApi = require('alfresco-js-api').Mock;
 ```
 
-# Mock Auth Api
+# ECM
+
+## Mock Auth Api
 
 var AuthResponseMock = require('alfresco-js-api').Mock.Auth
 
-authResponseMock = new AuthResponseMock(host);
+authResponseMock = new AuthResponseMock(host, username, password);
+Property | default value| 
+------------- | -------------|
+username| admin |
+password| admin |
 
 Method | Description  |
 ------------- | ------------- |
@@ -27,8 +54,9 @@ authResponseMock.get204ResponseLogout()| |
 authResponseMock.get404ResponseLogout()| | 
 authResponseMock.rec()| | 
 authResponseMock.play()| | 
+authResponseMock.cleanAll()| | 
 
-##Example 
+### Example 
 
 ```javascript
 var AlfrescoApi = require('alfresco-js-api');
@@ -52,7 +80,7 @@ alfrescoJsApi.login().then((data) => {
 });
 ```
 
-# Mock Node Api
+## Mock Node Api
 
 var NodeMock = require('alfresco-js-api').Mock.Node
 
@@ -73,8 +101,9 @@ nodeMock.get409CreationFolderNewNameClashes()| |
 nodeMock.get201CreationFolderNewNameNotClashes()| | 
 nodeMock.rec();| | 
 nodeMock.play();| | 
+authResponseMock.cleanAll()| | 
 
-##Example 
+### Example 
 
 ```javascript
 var AlfrescoApi = require('alfresco-js-api');
@@ -106,7 +135,7 @@ alfrescoJsApi.node.createFolder('newFolder').then(function (data) {
 });
 ```
 
-# Mock Upload Api
+## Mock Upload Api
 
 var UploadMock = require('alfresco-js-api').Mock.Upload
 
@@ -120,7 +149,9 @@ uploadMock.get409CreationFileNewNameClashes()| |
 uploadMock.get401Response()| | 
 uploadMock.rec()| | 
 uploadMock.play()| | 
+authResponseMock.cleanAll()| | 
 
+### Example 
 
 ```javascript
 var AlfrescoApi = require('alfresco-js-api');
@@ -156,7 +187,7 @@ alfrescoJsApi.upload.uploadFile(file).then(function (data) {
 ```
 
 
-# WebScript Upload Api
+## WebScript Upload Api
 
 var UploadMock = require('alfresco-js-api').Mock.WebScript
 
@@ -169,7 +200,9 @@ WebScript.get401Response()| |
 WebScript.get200Response()| | 
 uploadMock.rec()| | 
 uploadMock.play()| | 
+authResponseMock.cleanAll()| | 
 
+### Example 
 
 ```javascript
 var AlfrescoApi = require('alfresco-js-api');
@@ -203,3 +236,47 @@ alfrescoJsApi.webScript.executeWebScript('GET', scriptPath, null, contextRoot, s
 });
 
 ```
+
+# BPM
+
+## Mock Auth Api
+
+var AuthResponseMock = require('alfresco-js-api').Mock.Activiti.Auth
+
+authResponseMock = new AuthResponseMock(host);
+
+Method | Description  |
+------------- | ------------- |
+authResponseMock.get201Response(forceTicket);| | 
+authResponseMock.get200Response()| | 
+authResponseMock.get200ResponseLogout()| | 
+authResponseMock.rec()| | 
+authResponseMock.play()| |
+authResponseMock.cleanAll()| | 
+
+
+## Mock Process Api
+
+var ProcessMock = require('alfresco-js-api').Mock.Activiti.Process
+
+processMock = new ProcessMock(host);
+
+Method | Description  |
+------------- | ------------- |
+processMock.get200Response()| | 
+processMock.rec()| | 
+processMock.play()| |
+processMock.cleanAll()| | 
+
+## Mock Tasks Api
+
+var TasksMock = require('alfresco-js-api').Mock.Activiti.Tasks
+
+tasksMock = new TasksMock(host);
+
+Method | Description  |
+------------- | ------------- |
+tasksMock.get200Response()| | 
+tasksMock.rec()| | 
+tasksMock.play()| |
+tasksMock.cleanAll()| | 

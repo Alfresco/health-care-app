@@ -105,7 +105,7 @@ interface Auth {
 }
 
 interface AuthMock {
-    new(host: string): UploadMock;
+    new(host: string, username: string, password: string): AuthMock;
     get201Response(forceTicket: string);
     get403Response();
     get400Response();
@@ -117,7 +117,7 @@ interface AuthMock {
 }
 
 interface NodeMock {
-    new(host: string): UploadMock;
+    new(host: string): NodeMock;
     get200ResponseChildren();
     get200ResponseSingleFileFolder();
     get404ChildrenNotExist();
@@ -156,6 +156,34 @@ interface Mock {
     Node: NodeMock;
     Upload: UploadMock;
     WebScript: WebScript;
+    ActivitiMock : ActivitiMock;
+}
+
+interface ActivitiMock {
+    Auth: ActivitiAuthMock;
+    Process : ProcessMock;
+    Tasks :TasksMock;
+}
+
+interface ActivitiAuthMock {
+    new(host: string, username: string, password: string): ActivitiAuthMock;
+    get200Response();
+    get200ResponseLogout()
+    get401Response();
+}
+
+interface ProcessMock {
+    new(host: string): ProcessMock;
+    get200Response();
+}
+
+interface TasksMock {
+    new(host: string): TasksMock;
+    get200Response();
+}
+
+interface Activiti {
+
 }
 
 interface NodesApi {
@@ -167,13 +195,22 @@ interface ApiClient {
     new(client: any): ApiClient;
 }
 
+interface BpmAuth {
+    new(config: any): BpmAuth;
+}
+
 export interface AlfrescoApi {
     new(config: any): AlfrescoApi;
 
+    Activiti: Activiti;
     Auth: Auth;
     Core: Core;
     Mock: Mock;
 
+    activiti: any;
+    core: any;
+
+    activiti: any;
     search: any;
     nodes: any;
     webScript: any;
