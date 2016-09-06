@@ -1,0 +1,161 @@
+/*!
+ * @license
+ * Copyright 2016 Alfresco Software, Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { Component, ViewChild } from '@angular/core';
+import { ROUTER_DIRECTIVES, Router } from '@angular/router';
+
+import {
+    MDL,
+    AlfrescoSettingsService,
+    AlfrescoTranslationService,
+    AlfrescoPipeTranslate,
+    AlfrescoAuthenticationService
+} from 'ng2-alfresco-core';
+
+import { SearchBarComponent } from './components/index';
+import { NotificationService } from './services/notification.service';
+
+declare var document: any;
+declare let componentHandler: any;
+
+@Component({
+    selector: 'alfresco-app',
+    templateUrl: 'app/app.component.html',
+    styleUrls: ['app/app.component.css'],
+    directives: [SearchBarComponent, ROUTER_DIRECTIVES, MDL],
+    pipes: [AlfrescoPipeTranslate]
+})
+export class AppComponent {
+
+    @ViewChild('notificationBar')
+    notificationBar: any;
+
+    translate: AlfrescoTranslationService;
+    searchTerm: string = '';
+
+    ecmHost: string = 'http://' + window.location.hostname + ':8080';
+    bpmHost: string = 'http://' + window.location.hostname + ':9999';
+
+    constructor(public auth: AlfrescoAuthenticationService,
+                public router: Router,
+                translate: AlfrescoTranslationService,
+                public alfrescoSettingsService: AlfrescoSettingsService,
+                private notificationService: NotificationService) {
+        this.setEcmHost();
+        this.setBpmHost();
+
+        this.translate = translate;
+        this.translate.addTranslationFolder();
+
+        notificationService.notifications.subscribe(
+            message => {
+                this.showNotificationBar(message);
+            });
+    }
+
+    public onChangeECMHost(event: KeyboardEvent): void {
+        console.log((<HTMLInputElement>event.target).value);
+        this.ecmHost = (<HTMLInputElement>event.target).value;
+        this.alfrescoSettingsService.ecmHost = this.ecmHost;
+        localStorage.setItem(`ecmHost`, this.ecmHost);
+    }
+
+    public onChangeBPMHost(event: KeyboardEvent): void {
+        console.log((<HTMLInputElement>event.target).value);
+        this.bpmHost = (<HTMLInputElement>event.target).value;
+        this.alfrescoSettingsService.bpmHost = this.bpmHost;
+        localStorage.setItem(`bpmHost`, this.bpmHost);
+    }
+
+    isLoggedIn(): boolean {
+        if (localStorage.getItem('username')) {
+            return this.auth.isLoggedIn();
+        } else {
+            return false;
+        }
+    }
+
+    onLogout(event) {
+        event.preventDefault();
+        localStorage.clear();
+        this.auth.logout()
+            .subscribe(
+                () => {
+                    this.router.navigate(['/login']);
+                    localStorage.removeItem('username');
+                }
+            );
+    }
+
+    onToggleSearch(event) {
+        let expandedHeaderClass = 'header-search-expanded',
+            header = document.querySelector('header');
+        if (event.expanded) {
+            header.classList.add(expandedHeaderClass);
+        } else {
+            header.classList.remove(expandedHeaderClass);
+        }
+    }
+
+    changeLanguage(lang: string) {
+        this.translate.use(lang);
+    }
+
+    hideDrawer() {
+        // todo: workaround for drawer closing
+        document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
+    }
+
+    isAdmin() {
+        if (localStorage.getItem(`username`) === 'admin') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private setEcmHost() {
+        if (localStorage.getItem(`ecmHost`)) {
+            this.alfrescoSettingsService.ecmHost = localStorage.getItem(`ecmHost`);
+            this.ecmHost = localStorage.getItem(`ecmHost`);
+        } else {
+            this.alfrescoSettingsService.ecmHost = this.ecmHost;
+        }
+    }
+
+    private setBpmHost() {
+        if (localStorage.getItem(`bpmHost`)) {
+            this.alfrescoSettingsService.bpmHost = localStorage.getItem(`bpmHost`);
+            this.bpmHost = localStorage.getItem(`bpmHost`);
+        } else {
+            this.alfrescoSettingsService.bpmHost = this.bpmHost;
+        }
+    }
+
+    private showNotificationBar(message: string) {
+        if (componentHandler) {
+            componentHandler.upgradeAllRegistered();
+        }
+
+        if (this.notificationBar.nativeElement.MaterialSnackbar) {
+            this.notificationBar.nativeElement.MaterialSnackbar.showSnackbar({
+                message: message,
+                timeout: 3000
+            });
+        }
+    }
+}

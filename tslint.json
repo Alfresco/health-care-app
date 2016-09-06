@@ -1,7 +1,7 @@
 {
   "rules": {
     "align": [
-      true,
+      false,
       "parameters",
       "arguments",
       "statements"
@@ -26,7 +26,7 @@
     "label-undefined": true,
     "max-line-length": [
       true,
-      140
+      180
     ],
     "member-ordering": [
       true,
@@ -36,7 +36,7 @@
     ],
     "no-any": false,
     "no-arg": true,
-    "no-bitwise": true,
+    "no-bitwise": false,
     "no-conditional-assignment": true,
     "no-consecutive-blank-lines": false,
     "no-console": [
@@ -114,9 +114,11 @@
     "whitespace": [
       true,
       "check-branch",
-      "check-decl",
       "check-operator",
-      "check-separator"
+      "check-separator",
+      "check-type",
+      "check-module",
+      "check-decl"
     ]
   }
 }

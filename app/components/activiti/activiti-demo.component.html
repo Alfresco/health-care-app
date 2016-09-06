@@ -1,0 +1,37 @@
+<div class="mdl-card__title title container-title-details">
+    <h2 class="mdl-card__title-text title-details">Visits List</h2>
+</div>
+<div class="user-image-wrap">
+    <img class="image-cell"
+         src="app/img/visit.jpg">
+</div>
+
+<div class="mdl-grid" style="margin-top: 20px">
+    <div class="mdl-cell mdl-cell--3-col mdl-shadow--2dp" id="visitlist">
+        <activiti-tasklist *ngIf="isTaskListSelected()" [taskFilter]="taskFilter" [schemaColumn]="schemaColumn"
+                           (rowClick)="onRowClick($event)" #activititasklist></activiti-tasklist>
+    </div>
+    <div class="mdl-cell mdl-cell--9-col mdl-shadow--2dp">
+        <div *ngIf="isTaskCompleted()" class="empty-task" >
+            <div class="title-empty-task center" >
+                Task completed
+            </div>
+            <img class="img-empty-task center" src="app/img/completed.svg" alt="empty">
+        </div>
+        <div class="upload-button">
+            <alfresco-upload-button *ngIf="showUploader()"
+                                    [showUdoNotificationBar]="true"
+                                    [uploaddirectory]="uploadPath"
+                                    [currentFolderPath]="uploadPath"
+                                    [uploadFolders]="false"
+                                    [multipleFiles]="false"
+                                    [acceptedFilesType]="'.jpg,.gif,.png,.svg'"
+                                    [staticTitle]="'Upload Photo'">
+            </alfresco-upload-button>
+        </div>
+        <activiti-task-details  *ngIf="!isTaskCompleted()" [taskId]="currentTaskId"
+                                (formSaved)='saveData($event)' (formCompleted)='saveMetadata($event)'
+                                (formLoaded)='formLoaded($event)'
+                               #activitidetails></activiti-task-details>
+    </div>
+</div>
