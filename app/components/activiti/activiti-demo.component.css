@@ -99,3 +99,7 @@ activiti-tasklist >>> .mdl-data-table{
         width: 100%;
     }
 }
+
+.title-empty-task{
+    text-align: center;
+}

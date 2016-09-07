@@ -12,8 +12,8 @@
                            (rowClick)="onRowClick($event)" #activititasklist></activiti-tasklist>
     </div>
     <div class="mdl-cell mdl-cell--9-col mdl-shadow--2dp">
-        <div *ngIf="isTaskCompleted()" class="empty-task" >
-            <div class="title-empty-task center" >
+        <div *ngIf="isTaskCompleted()" class="empty-task">
+            <div class="title-empty-task center">
                 Task completed
             </div>
             <img class="img-empty-task center" src="app/img/completed.svg" alt="empty">
@@ -29,9 +29,20 @@
                                     [staticTitle]="'Upload Photo'">
             </alfresco-upload-button>
         </div>
-        <activiti-task-details  *ngIf="!isTaskCompleted()" [taskId]="currentTaskId"
-                                (formSaved)='saveData($event)' (formCompleted)='saveMetadata($event)'
-                                (formLoaded)='formLoaded($event)'
-                               #activitidetails></activiti-task-details>
+        <activiti-task-details *ngIf="!isTaskCompleted()" [taskId]="currentTaskId"
+                               (formSaved)='saveData($event)' (formCompleted)='saveMetadata($event)'
+                               (formLoaded)='formLoaded($event)'
+                               #activitidetails>
+            <no-task-details-template>
+                <template>
+                    <div class="title-empty-task center">
+                        Select a task
+                    </div>
+                    <div class="title-empty-task center">
+                        <img class="img-empty-task center" src="app/img/select-layers.svg" alt="empty">
+                    </div>
+                </template>
+            </no-task-details-template>
+        </activiti-task-details>
     </div>
 </div>
