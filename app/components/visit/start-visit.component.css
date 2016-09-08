@@ -37,3 +37,7 @@
 .wrap-form{
     margin-top: 35px;
 }
+
+activiti-form >>> #nodeId{
+    display: none;
+}

@@ -205,15 +205,16 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
     }
 
     private updateDescriptionTaskWithNamePatient(formModel: any) {
-        let self  = this;
+        let self = this;
         this.alfrescoApi.activiti.taskApi.getTask(this.currentTaskId).then(function (data) {
             self.processService.getTaskIdFromProcessID(data.processDefinitionId, self.appId, data.processInstanceId).subscribe(
                 response => {
                     self.alfrescoApi.activiti.taskApi.updateTask(response.data[0].id,
-                        {description: formModel.values.firstName + ' ' + formModel.values.lastName});
-                    self.taskCompleted = true;
-                    self.activititasklist.load(self.taskFilter);
-                    self.notificationService.sendNotification('Task Completed');
+                        {description: formModel.values.firstName + ' ' + formModel.values.lastName}).then(function (data) {
+                        self.taskCompleted = true;
+                        self.activititasklist.load(self.taskFilter);
+                        self.notificationService.sendNotification('Task Completed');
+                    });
                 },
                 error => {
                     console.log(error);

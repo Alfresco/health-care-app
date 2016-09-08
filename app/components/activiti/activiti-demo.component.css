@@ -76,6 +76,17 @@ activiti-tasklist >>> .mdl-data-table{
     border: 0px;
 }
 
+activiti-tasklist >>> alfresco-datatable >>> .cell-value{
+    width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+activiti-task-details >>> activiti-form >>> #nodeId{
+    display: none;
+}
+
 .empty-task{
     text-align: center;
     height: 100%;
