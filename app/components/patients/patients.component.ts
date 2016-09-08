@@ -42,7 +42,7 @@ import {
 } from 'ng2-alfresco-core';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
-import { FormService } from 'ng2-activiti-form';
+import { ATIVITI_FORM_PROVIDERS } from 'ng2-activiti-form';
 import { PatientModel } from './patient.model';
 import { TagModel, TagCache, TagFilter } from './tag.model';
 import { TagService } from './tag.service';
@@ -62,7 +62,7 @@ declare let dialogPolyfill: any;
         CONTEXT_MENU_DIRECTIVES,
         PaginationComponent
     ],
-    providers: [DOCUMENT_LIST_PROVIDERS, FormService, TagService],
+    providers: [DOCUMENT_LIST_PROVIDERS, ATIVITI_FORM_PROVIDERS, TagService],
     pipes: [AlfrescoPipeTranslate]
 })
 export class PatientsComponent implements OnInit {

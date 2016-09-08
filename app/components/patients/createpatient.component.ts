@@ -17,20 +17,19 @@
 
 import { Component } from '@angular/core';
 import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
-import { FormService, ActivitiForm } from 'ng2-activiti-form';
+import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
 
 declare let __moduleName: string;
-declare let AlfrescoApi: any;
 
 @Component({
     moduleId: __moduleName,
     selector: 'createpatient-component',
     templateUrl: './createpatient.component.html',
     styleUrls: ['./createpatient.component.css'],
-    providers: [FormService],
+    providers: [ATIVITI_FORM_PROVIDERS],
     directives: [ALFRESCO_ULPOAD_COMPONENTS, ActivitiForm]
 })
 export class CreatePatientComponent {
@@ -42,6 +41,8 @@ export class CreatePatientComponent {
     photoNode: string = '';
 
     imgSrc: string = 'app/img/anonymous.gif';
+
+    alfrescoApi: any = this.authService.getAlfrescoApi();
 
     constructor(private authService: AlfrescoAuthenticationService,
                 private router: Router,
@@ -82,7 +83,7 @@ export class CreatePatientComponent {
         let opts = {};
 
         let self = this;
-        this.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+        this.alfrescoApi.nodes.addNode('-root-', body, opts).then(
             (node) => {
                 console.log('The folder created', node);
                 self.router.navigate(['/patients']);

@@ -17,7 +17,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
-import { FormService, ActivitiForm } from 'ng2-activiti-form';
+import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
@@ -29,7 +29,7 @@ declare let AlfrescoApi: any;
     selector: 'patient-details',
     templateUrl: './patientdetails.component.html',
     styleUrls: ['./patientdetails.component.css'],
-    providers: [FormService],
+    providers: [ATIVITI_FORM_PROVIDERS],
     directives: [ActivitiForm]
 })
 export class PatientDetailsComponent implements OnInit, OnDestroy {

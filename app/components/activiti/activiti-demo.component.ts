@@ -62,6 +62,12 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     folderId: string;
 
+    alfrescoApi: any = this.authService.getAlfrescoApi();
+
+    processInstanceId: string;
+
+    processDefinitionId: string;
+
     setChoice($event) {
         this.currentChoice = $event.target.value;
     }
@@ -84,15 +90,14 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
                 private activitiTaskListService: ActivitiTaskListService) {
         console.log('Activiti demo component');
         this.schemaColumn = [
-            {type: 'text', key: 'name', title: 'Name', cssClass: 'full-width name-column', sortable: true}
-            // {type: 'text', key: 'created', title: 'Created', sortable: true}
+            {type: 'text', key: 'name', title: 'Visit Type', cssClass: 'full-width name-column', sortable: true},
+            {type: 'text', key: 'description', title: 'Name', sortable: true}
         ];
 
 
-        let self = this;
         this.processService.getDeployedApplication('Visit').subscribe(
             application => {
-                self.appId = application.id;
+                this.appId = application.id;
                 this.activitiTaskListService.getTaskListFilters(application.id).subscribe(
                     response => {
                         this.taskFilter = response[0];
@@ -139,24 +144,24 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
             }
         }
 
-        this.authService.getAlfrescoApi().nodes.updateNode(this.folderId, body, {}).then(
+        this.alfrescoApi.nodes.updateNode(this.folderId, body, {}).then(
             (node) => {
                 console.log(node);
-                this.taskCompleted = true;
-                this.activititasklist.load(this.taskFilter);
-                this.notificationService.sendNotification('Task Completed');
+                this.updateDescriptionTaskWithNamePatient(formModel);
             },
             (err) => {
                 console.log(err);
             }
         );
+
+
     }
 
     createFolder(body: any, opts: any) {
         let self = this;
-        this.authService.getAlfrescoApi().core.searchApi.liveSearchNodes(this.currentTaskId, opts).then(function (data) {
+        this.alfrescoApi.core.searchApi.liveSearchNodes(this.currentTaskId, opts).then(function (data) {
             if (data.list.entries.length === 0) {
-                self.authService.getAlfrescoApi().nodes.addNode('-root-', body, opts).then(
+                self.alfrescoApi.nodes.addNode('-root-', body, opts).then(
                     (node) => {
                         console.log('folderId', node.entry.id);
                         self.folderId = node.entry.id;
@@ -189,6 +194,7 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
                 this.activitidetails.loadDetails(taskId);
             }
         }
+
     }
 
     ngAfterViewChecked() {
@@ -196,5 +202,25 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         if (componentHandler) {
             componentHandler.upgradeAllRegistered();
         }
+    }
+
+    private updateDescriptionTaskWithNamePatient(formModel: any) {
+        let self  = this;
+        this.alfrescoApi.activiti.taskApi.getTask(this.currentTaskId).then(function (data) {
+            self.processService.getTaskIdFromProcessID(data.processDefinitionId, self.appId, data.processInstanceId).subscribe(
+                response => {
+                    self.alfrescoApi.activiti.taskApi.updateTask(response.data[0].id,
+                        {description: formModel.values.firstName + ' ' + formModel.values.lastName});
+                    self.taskCompleted = true;
+                    self.activititasklist.load(self.taskFilter);
+                    self.notificationService.sendNotification('Task Completed');
+                },
+                error => {
+                    console.log(error);
+                }
+            );
+        }, function (error) {
+            console.log('Error' + error);
+        });
     }
 }

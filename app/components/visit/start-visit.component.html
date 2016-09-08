@@ -11,5 +11,6 @@
                    [showRefreshButton]="false"
                    [showSaveButton]="false"
                    (formCompleted)='saveData($event)'
+                   (onError)='onErrorEmitter($event)'
                    [showTitle]="false"></activiti-form>
 </div>

@@ -20,9 +20,8 @@ import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { ProcessService } from './process.service';
-import { Process } from './process.data';
 
-import { FormService, ActivitiForm } from 'ng2-activiti-form';
+import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
 import { NotificationService } from '../../services/notification.service';
 
 declare let __moduleName: string;
@@ -33,7 +32,7 @@ declare let AlfrescoApi: any;
     selector: 'start-visit-component',
     templateUrl: './start-visit.component.html',
     styleUrls: ['./start-visit.component.css'],
-    providers: [ProcessService, FormService],
+    providers: [ProcessService, ATIVITI_FORM_PROVIDERS],
     directives: [ActivitiForm]
 })
 
@@ -51,9 +50,13 @@ export class StartVisitComponent {
 
     errorMessage: string;
 
-    process: Process;
+    process: any;
 
     taskId: string;
+
+    application: any;
+
+    startedProcess: any;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -67,19 +70,22 @@ export class StartVisitComponent {
             this.retriveNodeMetadataFromEcm(params['id']);
         });
 
-
-        let self = this;
         this.processService.getDeployedApplication('Visit').subscribe(
             application => {
+                this.application = application;
                 this.processService.getProcessDefinitionByApplication(application).subscribe(
                     process => {
-                        self.processService.startProcessByID(process.id, process.name).subscribe(
+                        this.process = process;
+                        this.processService.startProcessByID(process.id, process.name).subscribe(
                             startedProcess => {
                                 console.log(startedProcess);
+                                this.startedProcess = startedProcess;
                                 this.processService.getTaskIdFromProcessID(process.id, application.id, startedProcess.id).subscribe(
                                     response => {
                                         console.log(response.data[0].id);
-                                        self.taskId = response.data[0].id;
+                                        this.taskId = response.data[0].id;
+                                        this.authService.getAlfrescoApi().activiti.taskApi.updateTask(response.data[0].id, {description: 'test'});
+
                                     },
                                     error => {
                                         console.log(error);
@@ -99,9 +105,14 @@ export class StartVisitComponent {
         );
     }
 
-    public saveData() {
+    public saveData(formModel: any) {
+        this.updateDescriptionTaskWithNamePatient(formModel);
         this.router.navigate(['/patients']);
         this.notificationService.sendNotification('New Visit Created');
+    }
+
+    public onErrorEmitter(error: any) {
+        this.notificationService.sendNotification('Validation Error');
     }
 
     private retriveNodeMetadataFromEcm(nodeId: string): void {
@@ -120,5 +131,17 @@ export class StartVisitComponent {
         }, function (error) {
             console.log('This node does not exist', error);
         });
+    }
+
+    private updateDescriptionTaskWithNamePatient(formModel: any) {
+        this.processService.getTaskIdFromProcessID(this.process.id, this.application.id, this.startedProcess.id).subscribe(
+            response => {
+                this.authService.getAlfrescoApi().activiti.taskApi.updateTask(response.data[0].id,
+                    {description: formModel.values.firstName + ' ' + formModel.values.lastName});
+            },
+            error => {
+                console.log(error);
+            }
+        );
     }
 }
