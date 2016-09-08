@@ -210,7 +210,7 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
             self.processService.getTaskIdFromProcessID(data.processDefinitionId, self.appId, data.processInstanceId).subscribe(
                 response => {
                     self.alfrescoApi.activiti.taskApi.updateTask(response.data[0].id,
-                        {description: formModel.values.firstName + ' ' + formModel.values.lastName}).then(function (data) {
+                        {description: formModel.values.firstName + ' ' + formModel.values.lastName}).then(function (res) {
                         self.taskCompleted = true;
                         self.activititasklist.load(self.taskFilter);
                         self.notificationService.sendNotification('Task Completed');
