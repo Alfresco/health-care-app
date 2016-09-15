@@ -149,11 +149,8 @@ export class PatientsComponent implements OnInit {
     }
 
     isAdmin() {
-        if (localStorage.getItem(`username`) === 'admin') {
-            return true;
-        } else {
-            return false;
-        }
+        let currentUser = localStorage.getItem('username');
+        return currentUser !== null && currentUser.indexOf('admin') === 0;
     }
 
     resetFilters() {
