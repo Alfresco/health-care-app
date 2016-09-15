@@ -56,7 +56,7 @@ declare let __moduleName: string;
     pipes: [AlfrescoPipeTranslate]
 })
 export class FilesComponent implements OnInit {
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     fileNodeId: any;
     fileShowed: boolean = false;

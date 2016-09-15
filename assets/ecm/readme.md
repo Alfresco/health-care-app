@@ -15,7 +15,7 @@ Follow the steps below to configure your share app
     - User Name : visitor
     - Password : visitor
     - Add the groups : ALFRESCO_ADMINISTRATORS, ALFRESCO_MODEL_ADMINISTRATORS, ALFRESCO_SEARCH_ADMINISTRATORS and SITE_ADMINISTRATORS
-
+7. Create a site named 'Health Visits' (URL name must be `health-visits`) and add the visitor user as a Collaborator
 
 
 ## Sample ECM model for `Health Care Express Appliction` (Alfresco AppFest)

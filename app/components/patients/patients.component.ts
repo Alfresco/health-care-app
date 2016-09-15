@@ -67,7 +67,7 @@ declare let dialogPolyfill: any;
 })
 export class PatientsComponent implements OnInit {
 
-    DEFAULT_PATH: string = '/Sites/swsdp/documentLibrary';
+    DEFAULT_PATH: string = '/Sites/health-visits/documentLibrary';
 
     currentPath: string = this.DEFAULT_PATH;
 
@@ -232,6 +232,10 @@ export class PatientsComponent implements OnInit {
         setTimeout(() => {
             this.documentList.reload();
         }, 500);
+    }
+
+    onHomeClicked(event) {
+        this.documentList.currentFolderPath = this.DEFAULT_PATH;
     }
 
     addTag(event) {
