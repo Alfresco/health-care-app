@@ -51,7 +51,7 @@ Note that it was tested only with internal v.5.2 docker image._
 #### Using `curl`
 
 ```sh
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'Authorization: Basic <put-auth-here>' -d '{
+curl -u 'admin:admin' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   "name":"Patient 01",
   "nodeType":"hc:patientFolder",
   "properties": {
