@@ -186,7 +186,7 @@ export class PatientsComponent implements OnInit {
             if (this.currentPath === this.DEFAULT_PATH) {
                 this.folderImageResolver = (row: DataRow, col: DataColumn) => {
                     let isFolder = <boolean> row.getValue('isFolder');
-                    if (isFolder) {
+                    if (isFolder && this.auth.getTicketEcm()) {
                         let value = row.getValue(col.key);
                         return this.alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` +
                             value + '/content?attachment=false&alf_ticket=' + this.auth.getTicketEcm();
