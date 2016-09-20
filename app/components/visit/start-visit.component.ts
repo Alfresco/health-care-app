@@ -40,7 +40,7 @@ export class StartVisitComponent {
 
     sub: Subscription;
 
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     metadata: any = {};
 

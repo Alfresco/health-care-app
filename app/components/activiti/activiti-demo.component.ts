@@ -38,7 +38,7 @@ declare let componentHandler;
 })
 export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     uploadPath: string;
 

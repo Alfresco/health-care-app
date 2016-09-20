@@ -36,7 +36,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     sub: Subscription;
 
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     metadata: any = {};
 

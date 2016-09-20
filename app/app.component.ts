@@ -97,6 +97,15 @@ export class AppComponent {
                 () => {
                     this.router.navigate(['/login']);
                     localStorage.removeItem('username');
+                },
+                ($event: any) => {
+                    console.log($event);
+                    if ($event && $event.response && $event.response.status === 401) {
+                        this.router.navigate(['/login']);
+                        localStorage.removeItem('username');
+                    } else {
+                        console.error('An unknown error occurred while logging out', $event);
+                    }
                 }
             );
     }
@@ -121,11 +130,8 @@ export class AppComponent {
     }
 
     isAdmin() {
-        if (localStorage.getItem(`username`) === 'admin') {
-            return true;
-        } else {
-            return false;
-        }
+        let currentUser = localStorage.getItem('username');
+        return currentUser !== null && currentUser.indexOf('admin') === 0;
     }
 
     private setEcmHost() {

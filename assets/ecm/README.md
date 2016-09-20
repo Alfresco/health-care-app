@@ -15,7 +15,7 @@ Follow the steps below to configure your share app
     - User Name : visitor
     - Password : visitor
     - Add the groups : ALFRESCO_ADMINISTRATORS, ALFRESCO_MODEL_ADMINISTRATORS, ALFRESCO_SEARCH_ADMINISTRATORS and SITE_ADMINISTRATORS
-
+7. Create a site named 'Health Visits' (URL name must be `health-visits`) and add the visitor user as a Collaborator
 
 
 ## Sample ECM model for `Health Care Express Appliction` (Alfresco AppFest)
@@ -51,7 +51,7 @@ Note that it was tested only with internal v.5.2 docker image._
 #### Using `curl`
 
 ```sh
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'Authorization: Basic <put-auth-here>' -d '{
+curl -u 'admin:admin' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   "name":"Patient 01",
   "nodeType":"hc:patientFolder",
   "properties": {

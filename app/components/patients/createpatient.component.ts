@@ -34,7 +34,7 @@ declare let __moduleName: string;
 })
 export class CreatePatientComponent {
 
-    currentPath: string = '/Sites/swsdp/documentLibrary';
+    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     metadata: any = {};
 
