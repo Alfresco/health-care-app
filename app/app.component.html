@@ -24,8 +24,8 @@
             <!-- Right aligned menu below button -->
             <div id="img_container">
                 <div class="button-profile" id="demo-menu-lower-right" data-automation-id="right-action-menu">
-                    <img *ngIf="isLoggedIn() && isAdmin()" id="admin-img" src="app/img/admin.jpeg" class="profile-image"/>
-                    <img *ngIf="isLoggedIn() && !isAdmin()" id="visitor-img" src="app/img/visitor.jpg" class="profile-image"/>
+                    <img *ngIf="isLoggedIn() && isAdmin()" id="admin-img" src="img/admin.jpeg" class="profile-image"/>
+                    <img *ngIf="isLoggedIn() && !isAdmin()" id="visitor-img" src="img/visitor.jpg" class="profile-image"/>
                 </div>
             </div>
             <!--button id="demo-menu-lower-right" data-automation-id="right-action-menu"></button-->
@@ -70,10 +70,8 @@
     </div>
     <main class="mdl-layout__content">
         <div class="page-content">
-            <alfresco-login method="{{methodName}}"></alfresco-login>
             <router-outlet></router-outlet>
         </div>
-
         <!--Notification bar-->
         <div id="notification-bar"  class="mdl-js-snackbar mdl-snackbar"
              #notificationBar>

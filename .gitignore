@@ -1,17 +1,12 @@
 *.log
-node_modules
-workspace.xml
 .idea/
-dist/
-!systemjs.config.js
-typings/
-node_modules/
-bower_components/
 app/**/*.js
 app/**/*.js.map
-.idea
 dist/
+node_modules/
+typings/
+versions.json
+workspace.xml
 
 # docker files
 docker-compose.yml
-!app/js/xml2json.js

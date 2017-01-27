@@ -21,3 +21,8 @@ export { SearchBarComponent } from './search/search-bar.component';
 export { LoginDemoComponent } from './login/login-demo.component';
 export { ActivitiDemoComponent } from './activiti/activiti-demo.component';
 export { FilesComponent } from './files/files.component';
+export { SettingComponent } from './setting/setting.component';
+export { PatientsComponent } from './patients/patients.component';
+export { CreatePatientComponent } from './patients/createpatient.component';
+export { PatientDetailsComponent } from './patients/patientdetails.component';
+export { StartVisitComponent } from './visit/start-visit.component';

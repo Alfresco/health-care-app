@@ -6,9 +6,8 @@
          src="{{imgSrc}}">
 </div>
 <div class="upload-photo-button">
-    <alfresco-upload-button [showUdoNotificationBar]="true"
-                            [uploaddirectory]="'Shared'"
-                            [currentFolderPath]="'Shared'"
+    <alfresco-upload-button [showUndoNotificationBar]="true"
+                            [rootFolderId]="sharedFolderId"
                             [uploadFolders]="false"
                             [multipleFiles]="false"
                             [acceptedFilesType]="'.jpg,.gif,.png,.svg'"

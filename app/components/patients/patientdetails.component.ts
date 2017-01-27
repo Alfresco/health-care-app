@@ -16,27 +16,19 @@
  */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
-import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 
-declare let __moduleName: string;
-declare let AlfrescoApi: any;
+import { AlfrescoApiService, AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 
 @Component({
-    moduleId: __moduleName,
     selector: 'patient-details',
     templateUrl: './patientdetails.component.html',
-    styleUrls: ['./patientdetails.component.css'],
-    providers: [ATIVITI_FORM_PROVIDERS],
-    directives: [ActivitiForm]
+    styleUrls: ['./patientdetails.component.css']
 })
 export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     sub: Subscription;
-
-    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     metadata: any = {};
 
@@ -44,12 +36,9 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
 
     photoNodeId: string;
 
-    ticket: string = localStorage.getItem('ticket-ECM');
-
     constructor(private route: ActivatedRoute,
-                private router: Router,
                 private authService: AlfrescoAuthenticationService,
-                public alfrescoSettingsService: AlfrescoSettingsService) {
+                private apiService: AlfrescoApiService) {
     }
 
     ngOnInit() {
@@ -67,7 +56,7 @@ export class PatientDetailsComponent implements OnInit, OnDestroy {
     private retriveNodeMetadataFromEcm(nodeId: string): void {
         let self = this;
         this.nodeId = nodeId;
-        this.authService.getAlfrescoApi().nodes.getNodeInfo(this.nodeId).then(function (data) {
+        this.apiService.getInstance().nodes.getNodeInfo(this.nodeId, {}).then(function (data) {
                 console.log(data.properties);
                 self.photoNodeId = data.name;
                 for (let key in data.properties) {

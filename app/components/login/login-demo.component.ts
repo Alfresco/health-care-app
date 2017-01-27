@@ -16,52 +16,27 @@
  */
 
 import { Component } from '@angular/core';
-import { AlfrescoLoginComponent } from 'ng2-alfresco-login';
-import { ROUTER_DIRECTIVES, Router } from '@angular/router';
-
-declare let __moduleName: string;
+import { Router } from '@angular/router';
+import { LogService } from 'ng2-alfresco-core';
 
 @Component({
-    moduleId: __moduleName,
     selector: 'login-demo',
-    templateUrl: './login-demo.component.html',
-    directives: [ROUTER_DIRECTIVES, AlfrescoLoginComponent],
-    pipes: []
+    templateUrl: './login-demo.component.html'
 })
 export class LoginDemoComponent {
 
-    providers: string = 'ECM';
+    providers: string = 'ALL';
 
-    constructor(public router: Router) {
+    constructor(public router: Router,
+                private logService: LogService) {
     }
 
     onLogin($event) {
-        console.log($event);
-        localStorage.setItem(`username`, $event.username);
+        localStorage.setItem('username', $event.username);
         this.router.navigate(['/home']);
     }
 
     onError($event) {
-        console.log($event);
-    }
-
-    toggleECM(checked) {
-        if (checked && this.providers === 'BPM') {
-            this.providers = 'ALL';
-        } else if (checked) {
-            this.providers = 'ECM';
-        } else {
-            this.providers = undefined;
-        }
-    }
-
-    toggleBPM(checked) {
-        if (checked && this.providers === 'ECM') {
-            this.providers = 'ALL';
-        } else if (checked) {
-            this.providers = 'BPM';
-        } else {
-            this.providers = undefined;
-        }
+        this.logService.error($event);
     }
 }

@@ -15,74 +15,52 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Optional, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
-    PaginationComponent,
     DataColumn,
     DataRow,
     ObjectDataColumn
 } from 'ng2-alfresco-datatable';
 import {
-    DOCUMENT_LIST_DIRECTIVES,
-    DOCUMENT_LIST_PROVIDERS,
-    DocumentList,
+    DocumentListComponent,
+    ImageResolver,
     ShareDataRow,
-    RowFilter,
-    MinimalNodeEntity,
-    ImageResolver
+    RowFilter
 } from 'ng2-alfresco-documentlist';
 import {
-    MDL,
-    AlfrescoContentService,
-    CONTEXT_MENU_DIRECTIVES,
-    AlfrescoPipeTranslate,
+    AlfrescoApiService,
     AlfrescoSettingsService,
-    AlfrescoAuthenticationService
+    AlfrescoAuthenticationService,
+    LogService
 } from 'ng2-alfresco-core';
-import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
-import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
-import { ATIVITI_FORM_PROVIDERS } from 'ng2-activiti-form';
+import { MinimalNodeEntity, MinimalNodeEntryEntity } from 'alfresco-js-api';
 import { PatientModel } from './patient.model';
 import { TagModel, TagCache, TagFilter } from './tag.model';
 import { TagService } from './tag.service';
 
-declare let __moduleName: string;
 declare let dialogPolyfill: any;
+
 @Component({
-    moduleId: __moduleName,
     selector: 'patients-component',
     templateUrl: './patients.component.html',
-    styleUrls: ['./patients.component.css'],
-    directives: [
-        DOCUMENT_LIST_DIRECTIVES,
-        MDL,
-        ALFRESCO_ULPOAD_COMPONENTS,
-        VIEWERCOMPONENT,
-        CONTEXT_MENU_DIRECTIVES,
-        PaginationComponent
-    ],
-    providers: [DOCUMENT_LIST_PROVIDERS, ATIVITI_FORM_PROVIDERS, TagService],
-    pipes: [AlfrescoPipeTranslate]
+    styleUrls: ['./patients.component.css']
 })
 export class PatientsComponent implements OnInit {
-
-    DEFAULT_PATH: string = '/Sites/health-visits/documentLibrary';
-
-    currentPath: string = this.DEFAULT_PATH;
-
-    urlFile: string;
-    fileName: string;
-    mimeType: string;
+    currentFolderId: string = null;
+    patientsFolderPath = '/Sites/health-visits/documentLibrary';
+    errorMessage: string;
+    fileNodeId: any;
     fileShowed: boolean = false;
+    multipleFileUpload: boolean = false;
+    folderUpload: boolean = false;
+    acceptedFilesTypeShow: boolean = false;
+    versioning: boolean = false;
 
-    acceptedFilesType: string = '.jpg,.pdf,.js';
-
-    @ViewChild(DocumentList)
-    documentList: DocumentList;
+    @ViewChild(DocumentListComponent)
+    documentList: DocumentListComponent;
 
     newPatient: PatientModel;
-    debugMode: boolean = false;
 
     tags: TagCache = {};
     tagFilters: TagFilter[] = [];
@@ -96,13 +74,14 @@ export class PatientsComponent implements OnInit {
     isVisitFolder: boolean = false;
     patientLayout: DataColumn[] = [];
     fileLayout: DataColumn[] = [];
-    emptyimgSrc: string = 'app/img/anonymous.gif';
 
-    constructor(private contentService: AlfrescoContentService,
-                private router: Router,
-                private tagService: TagService,
+    constructor(private tagService: TagService,
                 private alfrescoSettingsService: AlfrescoSettingsService,
-                public auth: AlfrescoAuthenticationService) {
+                private auth: AlfrescoAuthenticationService,
+                private apiService: AlfrescoApiService,
+                private logService: LogService,
+                private router: Router,
+                @Optional() private route: ActivatedRoute) {
         this.newPatient = new PatientModel();
         this.ecmHost = alfrescoSettingsService.ecmHost;
         this.tagFilter = (row: ShareDataRow) => {
@@ -166,9 +145,7 @@ export class PatientsComponent implements OnInit {
 
     showFile(event) {
         if (event.value.entry.isFile) {
-            this.fileName = event.value.entry.name;
-            this.mimeType = event.value.entry.content.mimeType;
-            this.urlFile = this.contentService.getContentUrl(event.value);
+            this.fileNodeId = event.value.entry.id;
             this.fileShowed = true;
         } else {
             this.fileShowed = false;
@@ -180,37 +157,59 @@ export class PatientsComponent implements OnInit {
             this.selectedNode = null;
             this.selectedNodeProperties = null;
 
-
-            this.currentPath = event.path;
+            let node = event.node;
+            this.currentFolderId = event.node.id;
             this.loadTags();
-            if (this.currentPath === this.DEFAULT_PATH) {
-                this.folderImageResolver = (row: DataRow, col: DataColumn) => {
-                    let isFolder = <boolean> row.getValue('isFolder');
-                    if (isFolder && this.auth.getTicketEcm()) {
-                        let value = row.getValue(col.key);
-                        return this.alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` +
-                            value + '/content?attachment=false&alf_ticket=' + this.auth.getTicketEcm();
-                    }
-                    return null;
-                };
-                this.documentList.data.setColumns(this.patientLayout);
-                this.isVisitFolder = false;
-            } else {
-                this.documentList.data.setColumns(this.fileLayout);
-                this.folderImageResolver = (row: DataRow, col: DataColumn) => {
-                    return 'app/img/checklist.svg';
-                };
-                this.isVisitFolder = true;
-            }
+            this.setListProperties(node);
+        }
+    }
+
+    private setListProperties(node: MinimalNodeEntryEntity): void {
+        if (node.name === 'documentLibrary') {
+            this.folderImageResolver = (row: DataRow, col: DataColumn) => {
+                let isFolder = <boolean> row.getValue('isFolder');
+                if (isFolder && this.auth.getTicketEcm()) {
+                    let value = row.getValue(col.key);
+                    return this.alfrescoSettingsService.ecmHost + `/alfresco/api/-default-/public/alfresco/versions/1/nodes/` +
+                        value + '/content?attachment=false&alf_ticket=' + this.auth.getTicketEcm();
+                }
+                return null;
+            };
+            this.documentList.data.setColumns(this.patientLayout);
+            this.isVisitFolder = false;
+        } else {
+            this.documentList.data.setColumns(this.fileLayout);
+            this.folderImageResolver = (row: DataRow, col: DataColumn) => {
+                return 'app/img/checklist.svg';
+            };
+            this.isVisitFolder = true;
         }
     }
 
     ngOnInit() {
-        // this.loadTags();
+        if (this.route) {
+            this.route.params.forEach((params: Params) => {
+                if (params['id']) {
+                    this.currentFolderId = params['id'];
+                }
+            });
+        }
+        this.loadPatientsFolder();
+        this.loadTags();
+    }
+
+    private loadPatientsFolder(): void {
+        this.apiService.getInstance().core.nodesApi.getNode('-root-', {
+            relativePath: this.patientsFolderPath
+        }).then(nodeEntry => {
+            this.currentFolderId = nodeEntry.entry.id;
+            this.setListProperties(nodeEntry.entry);
+        }, error => {
+            this.logService.error(error);
+        });
     }
 
     onNodeClicked(event?: any) {
-        console.log(event);
         if (event && event.value) {
             this.selectedNodeProperties = null;
             this.selectedNode = <MinimalNodeEntity> event.value;
@@ -234,14 +233,14 @@ export class PatientsComponent implements OnInit {
         }, 500);
     }
 
-    onHomeClicked(event) {
-        this.documentList.currentFolderPath = this.DEFAULT_PATH;
+    onHomeClicked() {
+        this.loadPatientsFolder();
     }
 
     addTag(event) {
         let self = this;
         let nodeId = event.value.entry.id;
-        let dialog: any = document.querySelector('dialog');
+        let dialog: any = document.querySelector('dialog.tags-dialog');
         if (!dialog.showModal) {
             dialogPolyfill.registerDialog(dialog);
         }
@@ -265,7 +264,7 @@ export class PatientsComponent implements OnInit {
 
             this.tagService.addTags(nodeId, tags).then(
                 data => {
-                    console.log(data);
+                    this.loadTags();
                 },
                 this.handleError
             );
@@ -301,7 +300,7 @@ export class PatientsComponent implements OnInit {
     }
 
     private handleError(err) {
-        console.log(err);
+        this.logService.error(err);
     }
 
     private getPatientLayout(): DataColumn[] {

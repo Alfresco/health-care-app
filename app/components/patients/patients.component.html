@@ -33,17 +33,22 @@
         </div>
         <div class="container">
             <alfresco-upload-drag-area
-                [showUploadDialog]="true"
-                [currentFolderPath]="currentPath"
-                [uploaddirectory]=""
+                [rootFolderId]="currentFolderId"
+                [versioning] = "versioning"
                 (onSuccess)="documentList.reload()">
+                <div *ngIf="errorMessage" class="error-message">
+                    <button (click)="resetError()" class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">highlight_off</i>
+                    </button>
+                    <span class="error-message--text">{{errorMessage}}</span>
+                </div>
                 <alfresco-document-list
                     #documentList
-                    [currentFolderPath]="currentPath"
+                    [currentFolderId]="currentFolderId"
                     [contextMenuActions]="true"
                     [contentActions]="true"
                     [rowFilter]="tagFilter"
-                    fallbackThubnail="/app/img/anonymous.gif"
+                    [fallbackThumbnail]="'/app/img/anonymous.gif'"
                     [imageResolver]="folderImageResolver"
                     (preview)="showFile($event)"
                     (folderChange)="onFolderChanged($event)"
@@ -184,7 +189,7 @@
 </div>
 -->
 
-<dialog class="mdl-dialog">
+<dialog class="mdl-dialog tags-dialog">
     <h4 class="mdl-dialog__title">Set Tags</h4>
     <div class="mdl-dialog__content">
         <div class="md-cell mdl-cell--12-col">
@@ -205,15 +210,12 @@ For debugging and data visualisation purposes,
 will be removed during future revisions
 -->
 
-
 <context-menu-holder></context-menu-holder>
 
+<file-uploading-dialog #fileDialog></file-uploading-dialog>
+
 <alfresco-viewer [(showViewer)]="fileShowed"
-                 [urlFile]="urlFile"
-                 [fileName]="fileName"
-                 [mimeType]="mimeType"
+                 [fileNodeId]="fileNodeId"
                  [overlayMode]="true">
     <div class="mdl-spinner mdl-js-spinner is-active"></div>
 </alfresco-viewer>
-
-<file-uploading-dialog #fileDialog></file-uploading-dialog>

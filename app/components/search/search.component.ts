@@ -16,14 +16,10 @@
  */
 
 import { Component } from '@angular/core';
-import { AlfrescoContentService } from 'ng2-alfresco-core';
-import { ALFRESCO_SEARCH_DIRECTIVES } from 'ng2-alfresco-search';
-import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
-
-declare let __moduleName: string;
+import { Router } from '@angular/router';
+import { MinimalNodeEntity } from 'alfresco-js-api';
 
 @Component({
-    moduleId: __moduleName,
     selector: 'search-component',
     templateUrl: './search.component.html',
     styles: [`
@@ -47,21 +43,22 @@ declare let __moduleName: string;
                 width: 100%;
             }
         }
-    `],
-    directives: [ ALFRESCO_SEARCH_DIRECTIVES, VIEWERCOMPONENT ]
+    `]
 })
 export class SearchComponent {
 
     fileShowed: boolean = false;
     fileNodeId: string;
 
-    constructor(public contentService: AlfrescoContentService) {
+    constructor(private router: Router) {
     }
 
-    onFileClicked(event) {
-        if (event.value.entry.isFile) {
-            this.fileNodeId = event.value.entry.id;
+    onNavigateItem(event: MinimalNodeEntity) {
+        if (event.entry.isFile) {
+            this.fileNodeId = event.entry.id;
             this.fileShowed = true;
+        } else if (event.entry.isFolder) {
+            this.router.navigate(['/files', event.entry.id]);
         }
     }
 }

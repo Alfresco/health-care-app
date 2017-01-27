@@ -16,31 +16,23 @@
  */
 
 import { Component } from '@angular/core';
-import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
+
+import { AlfrescoApiService } from 'ng2-alfresco-core';
+
+import { NotificationService } from '../../services/notification.service';
 import { ProcessService } from './process.service';
 
-import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
-import { NotificationService } from '../../services/notification.service';
-
-declare let __moduleName: string;
-declare let AlfrescoApi: any;
-
 @Component({
-    moduleId: __moduleName,
     selector: 'start-visit-component',
     templateUrl: './start-visit.component.html',
-    styleUrls: ['./start-visit.component.css'],
-    providers: [ProcessService, ATIVITI_FORM_PROVIDERS],
-    directives: [ActivitiForm]
+    styleUrls: ['./start-visit.component.css']
 })
 
 export class StartVisitComponent {
 
     sub: Subscription;
-
-    currentPath: string = '/Sites/health-visits/documentLibrary';
 
     metadata: any = {};
 
@@ -61,7 +53,7 @@ export class StartVisitComponent {
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private processService: ProcessService,
-                private authService: AlfrescoAuthenticationService,
+                private apiService: AlfrescoApiService,
                 private notificationService: NotificationService) {
     }
 
@@ -84,7 +76,7 @@ export class StartVisitComponent {
                                     response => {
                                         console.log(response.data[0].id);
                                         this.taskId = response.data[0].id;
-                                        this.authService.getAlfrescoApi().activiti.taskApi.updateTask(response.data[0].id, {description: 'test'});
+                                        this.apiService.getInstance().activiti.taskApi.updateTask(response.data[0].id, {description: 'test'});
 
                                     },
                                     error => {
@@ -118,7 +110,7 @@ export class StartVisitComponent {
     private retriveNodeMetadataFromEcm(nodeId: string): void {
         let self = this;
         this.nodeId = nodeId;
-        this.authService.getAlfrescoApi().nodes.getNodeInfo(this.nodeId).then(function (data) {
+        this.apiService.getInstance().nodes.getNodeInfo(this.nodeId, {}).then(function (data) {
             console.log(data.properties);
             self.nodeName = data.name;
             for (let key in data.properties) {
@@ -136,7 +128,7 @@ export class StartVisitComponent {
     private updateDescriptionTaskWithNamePatient(formModel: any) {
         this.processService.getTaskIdFromProcessID(this.process.id, this.application.id, this.startedProcess.id).subscribe(
             response => {
-                this.authService.getAlfrescoApi().activiti.taskApi.updateTask(response.data[0].id,
+                this.apiService.getInstance().activiti.taskApi.updateTask(response.data[0].id,
                     {description: formModel.values.firstName + ' ' + formModel.values.lastName});
             },
             error => {
