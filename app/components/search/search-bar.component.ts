@@ -16,17 +16,13 @@
  */
 
 import { Component, EventEmitter, Output } from '@angular/core';
-import { ALFRESCO_SEARCH_DIRECTIVES } from 'ng2-alfresco-search';
-import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
+import { Router } from '@angular/router';
 import { AlfrescoAuthenticationService } from 'ng2-alfresco-core';
-
-declare let __moduleName: string;
+import { MinimalNodeEntity } from 'alfresco-js-api';
 
 @Component({
-    moduleId: __moduleName,
     selector: 'search-bar',
-    templateUrl: './search-bar.component.html',
-    directives: [ALFRESCO_SEARCH_DIRECTIVES, VIEWERCOMPONENT]
+    templateUrl: './search-bar.component.html'
 })
 export class SearchBarComponent {
 
@@ -37,22 +33,35 @@ export class SearchBarComponent {
     @Output()
     expand = new EventEmitter();
 
-    constructor(public auth: AlfrescoAuthenticationService) {
+    constructor(public router: Router,
+                public auth: AlfrescoAuthenticationService) {
     }
 
     isLoggedIn(): boolean {
         return this.auth.isLoggedIn();
     }
 
-    onFileClicked(event) {
-        if (event.value.entry.isFile) {
-            this.fileNodeId = event.value.entry.id;
+    /**
+     * Called when the user submits the search, e.g. hits enter or clicks submit
+     *
+     * @param event Parameters relating to the search
+     */
+    onSearchSubmit(event) {
+        this.router.navigate(['/search', {
+            q: event.value
+        }]);
+    }
+
+    onItemClicked(event: MinimalNodeEntity) {
+        if (event.entry.isFile) {
+            this.fileNodeId = event.entry.id;
             this.fileShowed = true;
+        } else if (event.entry.isFolder) {
+            this.router.navigate(['/files', event.entry.id]);
         }
     }
 
-    searchTermChange(event) {
-        console.log('Search term changed', event);
+    onSearchTermChange(event) {
         this.searchTerm = event.value;
     }
 

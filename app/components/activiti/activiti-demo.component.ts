@@ -15,44 +15,58 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
-import { ALFRESCO_TASKLIST_DIRECTIVES } from 'ng2-activiti-tasklist';
-import { ActivitiForm } from 'ng2-activiti-form';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ProcessService } from '../visit/process.service';
-import { Http } from '@angular/http';
-import { AlfrescoSettingsService, AlfrescoAuthenticationService } from 'ng2-alfresco-core';
-import { ActivitiTaskListService } from 'ng2-activiti-tasklist';
-import { NotificationService } from '../../services/notification.service';
-import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
+import {
+    ActivitiApps,
+    ActivitiFilters,
+    ActivitiTaskList,
+    ActivitiTaskListService,
+    FilterRepresentationModel,
+    TaskDetailsEvent
+} from 'ng2-activiti-tasklist';
+import {
+    ObjectDataTableAdapter
+} from 'ng2-alfresco-datatable';
+import { AlfrescoApiService } from 'ng2-alfresco-core';
+import { FormModel, FormRenderingService } from 'ng2-activiti-form';
+import { /*CustomEditorComponent*/ CustomStencil01 } from './custom-editor/custom-editor.component';
+import { MinimalNodeEntity } from 'alfresco-js-api';
 
-declare let __moduleName: string;
+import { NotificationService } from '../../services/notification.service';
+import {NodeMinimalEntry} from "ng2-alfresco-documentlist";
+
 declare let componentHandler;
 
 @Component({
-    moduleId: __moduleName,
     selector: 'activiti-demo',
     templateUrl: './activiti-demo.component.html',
-    styleUrls: ['./activiti-demo.component.css'],
-    providers: [ProcessService, ActivitiTaskListService],
-    directives: [ALFRESCO_ULPOAD_COMPONENTS, ALFRESCO_TASKLIST_DIRECTIVES, ActivitiForm]
+    styleUrls: ['./activiti-demo.component.css']
 })
 export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
-    currentPath: string = '/Sites/health-visits/documentLibrary';
+    initialPath: string = '/Sites/health-visits/documentLibrary';
 
-    uploadPath: string;
+    currentFolderId: string;
+
+    uploadFolderId: string;
 
     currentChoice: string = 'task-list';
+
+    taskListSort: string;
+
+    taskListState: string;
 
     @ViewChild('activitidetails')
     activitidetails: any;
 
-    @ViewChild('activititasklist')
-    activititasklist: any;
+    @ViewChild(ActivitiTaskList)
+    activititasklist: ActivitiTaskList;
 
     currentTaskId: string;
 
-    schemaColumn: any [] = [];
+    taskListAdapter: ObjectDataTableAdapter;
 
     taskFilter: any;
 
@@ -61,8 +75,6 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
     taskCompleted: boolean = false;
 
     folderId: string;
-
-    alfrescoApi: any = this.authService.getAlfrescoApi();
 
     processInstanceId: string;
 
@@ -84,24 +96,26 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         return !this.isTaskCompleted() && this.currentTaskId;
     }
 
-    constructor(private processService: ProcessService, private http: Http, public alfrescoSettingsService: AlfrescoSettingsService,
-                private authService: AlfrescoAuthenticationService,
+    constructor(private processService: ProcessService,
                 private notificationService: NotificationService,
-                private activitiTaskListService: ActivitiTaskListService) {
+                private activitiTaskListService: ActivitiTaskListService,
+                private elementRef: ElementRef,
+                private apiService: AlfrescoApiService,
+                private formRenderingService: FormRenderingService) {
         console.log('Activiti demo component');
-        this.schemaColumn = [
-            {type: 'text', key: 'name', title: 'Visit Type', cssClass: 'full-width name-column', sortable: true},
-            {type: 'text', key: 'description', title: 'Name', sortable: true}
-        ];
-
+        this.taskListAdapter = new ObjectDataTableAdapter([], [
+                {type: 'text', key: 'name', title: 'Visit Type', cssClass: 'full-width name-column', sortable: true},
+                {type: 'text', key: 'description', title: 'Name', sortable: true}
+            ]
+        );
 
         this.processService.getDeployedApplication('Visit').subscribe(
             application => {
                 this.appId = application.id;
                 this.activitiTaskListService.getTaskListFilters(application.id).subscribe(
-                    response => {
-                        this.taskFilter = response[0];
-                        this.activititasklist.load(this.taskFilter);
+                    (response: FilterRepresentationModel) => {
+                        this.taskListState = response.filter.state;
+                        this.taskListSort = response.filter.sort;
                         this.currentTaskId = null;
                     },
                     error => console.log(error)
@@ -111,40 +125,47 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         );
     }
 
-    saveData(data: any) {
+    saveData(data: FormModel) {
         this.notificationService.sendNotification('Task Saved');
     }
 
-    formLoaded(formModel: any) {
-        let data = formModel.values;
-        console.log('formLoaded', data);
-
-        this.uploadPath = this.currentPath + '/' + data.nodeId + '/visit - ' + this.currentTaskId;
-
-        let body = {
-            name: 'visit - ' + this.currentTaskId,
-            nodeType: 'vsd:visitdata',
-            relativePath: this.currentPath + '/' + data.nodeId
-        };
-
-        this.createFolder(body, {});
+    private getPatientFolderPath(patientFolder: any): string {
+        return this.initialPath + '/' + patientFolder.nodeId;
     }
 
-    saveMetadata(formModel: any) {
-        let data = formModel.values;
-        let body = {
+    private getVisitFolderPath(patientFolder: any): string {
+        return this.getPatientFolderPath(patientFolder) + '/visit - ' + this.currentTaskId;
+    }
+
+    private getPatientFolderData(formData: any): any {
+        return {
             name: 'visit - ' + this.currentTaskId,
-            properties: {},
-            relativePath: this.currentPath + '/' + data.nodeId
+            relativePath: this.getPatientFolderPath(formData)
         };
+    }
+
+    formLoaded(formModel: FormModel) {
+        let data = formModel.values;
+        console.log('formLoaded', data);
+        let customerFolderData = this.getPatientFolderData(data);
+        customerFolderData.nodeType = 'vsd:visitdata';
+        this.getFolderOrCreate(customerFolderData, {}).then((nodeEntry: NodeMinimalEntry) => {
+            this.uploadFolderId = nodeEntry.entry.id;
+        });
+    }
+
+    saveMetadata(formModel: FormModel) {
+        let data = formModel.values;
+        let customerFolderData = this.getPatientFolderData(data);
+        customerFolderData.properties = {};
 
         for (let key in data) {
             if (data[key]) {
-                body.properties['vsd:' + key] = data[key];
+                customerFolderData.properties['vsd:' + key] = data[key];
             }
         }
 
-        this.alfrescoApi.nodes.updateNode(this.folderId, body, {}).then(
+        this.apiService.getInstance().nodes.updateNode(this.folderId, customerFolderData, {}).then(
             (node) => {
                 console.log(node);
                 this.updateDescriptionTaskWithNamePatient(formModel);
@@ -157,24 +178,13 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     }
 
-    createFolder(body: any, opts: any) {
-        let self = this;
-        this.alfrescoApi.core.searchApi.liveSearchNodes(this.currentTaskId, opts).then(function (data) {
-            if (data.list.entries.length === 0) {
-                self.alfrescoApi.nodes.addNode('-root-', body, opts).then(
-                    (node) => {
-                        console.log('folderId', node.entry.id);
-                        self.folderId = node.entry.id;
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            } else {
-                self.folderId = data.list.entries[0].entry.id;
-            }
-        }, function (error) {
-            console.error(error);
+    getFolderOrCreate(body: any, opts: any): Promise<NodeMinimalEntry> {
+        return this.apiService.getInstance().core.nodesApi.getNode('-root-', {
+            relativePath: opts.relativePath
+        }).then((nodeEntry) => {
+            return Promise.resolve(nodeEntry);
+        }, () => {
+            return this.apiService.getInstance().nodes.addNode('-root-', body, opts);
         });
     }
 
@@ -186,7 +196,7 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         return this.taskCompleted;
     }
 
-    onRowClick(taskId) {
+    onRowClick(taskId: string) {
         if (taskId) {
             this.currentTaskId = taskId;
             this.taskCompleted = false;
@@ -204,24 +214,43 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    private updateDescriptionTaskWithNamePatient(formModel: any) {
-        let self = this;
-        this.alfrescoApi.activiti.taskApi.getTask(this.currentTaskId).then(function (data) {
-            self.processService.getTaskIdFromProcessID(data.processDefinitionId, self.appId, data.processInstanceId).subscribe(
+    private updateDescriptionTaskWithNamePatient(formModel: FormModel) {
+        this.apiService.getInstance().activiti.taskApi.getTask(this.currentTaskId).then((data) => {
+            this.processService.getTaskIdFromProcessID(data.processDefinitionId, this.appId, data.processInstanceId).subscribe(
                 response => {
-                    self.alfrescoApi.activiti.taskApi.updateTask(response.data[0].id,
-                        {description: formModel.values.firstName + ' ' + formModel.values.lastName}).then(function (res) {
-                        self.taskCompleted = true;
-                        self.activititasklist.load(self.taskFilter);
-                        self.notificationService.sendNotification('Task Completed');
+                    this.apiService.getInstance().activiti.taskApi.updateTask(response.data[0].id,
+                        {description: formModel.values['firstName'] + ' ' + formModel.values['lastName']}).then(function (res) {
+                        this.taskCompleted = true;
+                        this.activititasklist.load(this.taskFilter);
+                        this.notificationService.sendNotification('Task Completed');
                     });
                 },
                 error => {
                     console.log(error);
                 }
             );
-        }, function (error) {
+        }, (error) => {
             console.log('Error' + error);
+        });
+    }
+
+    ngAfterViewInit() {
+        // workaround for MDL issues with dynamic components
+        if (componentHandler) {
+            componentHandler.upgradeAllRegistered();
+        }
+
+        this.loadStencilScriptsInPageFromActiviti();
+    }
+
+    loadStencilScriptsInPageFromActiviti() {
+        this.apiService.getInstance().activiti.scriptFileApi.getControllers().then(response => {
+            if (response) {
+                let s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.text = response;
+                this.elementRef.nativeElement.appendChild(s);
+            }
         });
     }
 }

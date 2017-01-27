@@ -1,21 +1,26 @@
 <div class="container">
     <alfresco-upload-drag-area
-            [showUploadDialog]="true"
-            [currentFolderPath]="currentPath"
-            [uploaddirectory]=""
+            [rootFolderId]="documentList.currentFolderId"
             [versioning] = "versioning"
             (onSuccess)="documentList.reload()">
         <alfresco-document-list-breadcrumb
-            [currentFolderPath]="currentPath"
+            [folderNode]="documentList.folderNode"
             [target]="documentList">
         </alfresco-document-list-breadcrumb>
+        <div *ngIf="errorMessage" class="error-message">
+            <button (click)="resetError()" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">highlight_off</i>
+            </button>
+            <span class="error-message--text">{{errorMessage}}</span>
+        </div>
         <alfresco-document-list
                 #documentList
-                [currentFolderPath]="currentPath"
+                [currentFolderId]="currentFolderId"
                 [contextMenuActions]="true"
                 [contentActions]="true"
-                (preview)="showFile($event)"
-                (folderChange)="onFolderChanged($event)">
+                (error)="onNavigationError($event)"
+                (success)="resetError()"
+                (preview)="showFile($event)">
             <!--
             <empty-folder-content>
                 <template>
@@ -164,8 +169,7 @@
 </div>
 <div *ngIf="!acceptedFilesTypeShow">
     <alfresco-upload-button data-automation-id="multiple-file-upload"
-                            [uploaddirectory]="currentPath"
-                            [currentFolderPath]="currentPath"
+                            [rootFolderId]="documentList.currentFolderId"
                             [multipleFiles]="multipleFileUpload"
                             [uploadFolders]="folderUpload"
                             [versioning] = "versioning"
@@ -175,9 +179,8 @@
 </div>
 <div *ngIf="acceptedFilesTypeShow">
     <alfresco-upload-button data-automation-id="multiple-file-upload"
-                            [uploaddirectory]="currentPath"
-                            [currentFolderPath]="currentPath"
-                            acceptedFilesType="{{acceptedFilesType}}"
+                            [rootFolderId]="documentList.currentFolderId"
+                            [acceptedFilesType]="acceptedFilesType"
                             [multipleFiles]="multipleFileUpload"
                             [uploadFolders]="folderUpload"
                             [versioning] = "versioning"
@@ -186,10 +189,10 @@
     </alfresco-upload-button>
 </div>
 
+<file-uploading-dialog #fileDialog></file-uploading-dialog>
+
 <alfresco-viewer [(showViewer)]="fileShowed"
                  [fileNodeId]="fileNodeId"
                  [overlayMode]="true">
     <div class="mdl-spinner mdl-js-spinner is-active"></div>
 </alfresco-viewer>
-
-<file-uploading-dialog #fileDialog></file-uploading-dialog>

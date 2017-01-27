@@ -15,22 +15,13 @@
  * limitations under the License.
  */
 
-import { bootstrap } from '@angular/platform-browser-dynamic';
-import { HTTP_PROVIDERS } from '@angular/http';
-import { ALFRESCO_SEARCH_PROVIDERS } from 'ng2-alfresco-search';
-import { ALFRESCO_CORE_PROVIDERS } from 'ng2-alfresco-core';
-import { ATIVITI_FORM_PROVIDERS } from 'ng2-activiti-form';
-import { UploadService } from 'ng2-alfresco-upload';
-import { AppComponent } from './app.component';
-import { appRouterProviders } from './app.routes';
-import { NotificationService } from './services/notification.service';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode } from '@angular/core';
+import { AppModule } from './app.module';
 
-bootstrap(AppComponent, [
-    appRouterProviders,
-    HTTP_PROVIDERS,
-    ALFRESCO_CORE_PROVIDERS,
-    ALFRESCO_SEARCH_PROVIDERS,
-    UploadService,
-    ATIVITI_FORM_PROVIDERS,
-    NotificationService
-]).catch(err => console.error(err));
+if (process.env.ENV === 'production') {
+    enableProdMode();
+}
+
+const platform = platformBrowserDynamic();
+platform.bootstrapModule(AppModule);

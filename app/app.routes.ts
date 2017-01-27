@@ -15,35 +15,86 @@
  * limitations under the License.
  */
 
-import { provideRouter, RouterConfig } from '@angular/router';
+import { ModuleWithProviders }  from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard, AuthGuardEcm, AuthGuardBpm } from 'ng2-alfresco-core';
 
 import {
     FilesComponent,
     UploadButtonComponent,
     SearchComponent,
     LoginDemoComponent,
-    ActivitiDemoComponent
+    ActivitiDemoComponent,
+    SettingComponent
 } from './components/index';
 import { PatientsComponent } from './components/patients/patients.component';
 import { PatientDetailsComponent } from './components/patients/patientdetails.component';
 import { CreatePatientComponent } from './components/patients/createpatient.component';
 import { StartVisitComponent } from './components/visit/start-visit.component';
 
-export const routes: RouterConfig = [
-    { path: 'home', component: PatientsComponent },
-    { path: 'files', component: FilesComponent },
-    { path: '', component: LoginDemoComponent },
-    { path: 'uploader', component: UploadButtonComponent },
+export const appRoutes: Routes = [
     { path: 'login', component: LoginDemoComponent },
-    { path: 'search', component: SearchComponent },
-    { path: 'visits', component: ActivitiDemoComponent },
-    { path: 'patientdetails/:id', component: PatientDetailsComponent },
-    { path: 'createpatient', component: CreatePatientComponent },
-    { path: 'patientdetails/:id', component: PatientDetailsComponent },
-    { path: 'startvisit/:id', component: StartVisitComponent },
-    { path: 'patients', component: PatientsComponent }
+    {
+        path: '',
+        component: LoginDemoComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'home',
+        component: PatientsComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'files',
+        component: FilesComponent,
+        canActivate: [AuthGuardEcm]
+    },
+    {
+        path: 'files/:id',
+        component: FilesComponent,
+        canActivate: [AuthGuardEcm]
+    },
+    {
+        path: 'uploader',
+        component: UploadButtonComponent,
+        canActivate: [AuthGuardEcm]
+    },
+    {
+        path: 'login',
+        component: LoginDemoComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'search',
+        component: SearchComponent,
+        canActivate: [AuthGuardEcm]
+    },
+    {
+        path: 'visits',
+        component: ActivitiDemoComponent,
+        canActivate: [AuthGuardBpm]
+    },
+    {
+        path: 'patientdetails/:id',
+        component: PatientDetailsComponent,
+        canActivate: [AuthGuardBpm]
+    },
+    {
+        path: 'createpatient',
+        component: CreatePatientComponent,
+        canActivate: [AuthGuardBpm]
+    },
+    {
+        path: 'startvisit/:id',
+        component: StartVisitComponent,
+        canActivate: [AuthGuardBpm]
+    },
+    {
+        path: 'patients',
+        component: PatientsComponent,
+        canActivate: [AuthGuardBpm]
+    },
+    { path: 'settings', component: SettingComponent }
 ];
 
-export const appRouterProviders = [
-    provideRouter(routes)
-];
+export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);

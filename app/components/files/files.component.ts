@@ -15,26 +15,16 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Optional, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { LogService } from 'ng2-alfresco-core';
 import {
-    DOCUMENT_LIST_DIRECTIVES,
-    DOCUMENT_LIST_PROVIDERS,
     DocumentActionsService,
-    DocumentList,
+    DocumentListComponent,
     ContentActionHandler,
     DocumentActionModel,
     FolderActionModel
 } from 'ng2-alfresco-documentlist';
-import {
-    MDL,
-    AlfrescoContentService,
-    CONTEXT_MENU_DIRECTIVES,
-    AlfrescoPipeTranslate
-} from 'ng2-alfresco-core';
-import { PaginationComponent } from 'ng2-alfresco-datatable';
-import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
-import { VIEWERCOMPONENT } from 'ng2-alfresco-viewer';
 import { FormService } from 'ng2-activiti-form';
 
 declare let __moduleName: string;
@@ -43,21 +33,12 @@ declare let __moduleName: string;
     moduleId: __moduleName,
     selector: 'files-component',
     templateUrl: './files.component.html',
-    styleUrls: ['./files.component.css'],
-    directives: [
-        DOCUMENT_LIST_DIRECTIVES,
-        MDL,
-        ALFRESCO_ULPOAD_COMPONENTS,
-        VIEWERCOMPONENT,
-        CONTEXT_MENU_DIRECTIVES,
-        PaginationComponent
-    ],
-    providers: [DOCUMENT_LIST_PROVIDERS, FormService],
-    pipes: [AlfrescoPipeTranslate]
+    styleUrls: ['./files.component.css']
 })
 export class FilesComponent implements OnInit {
-    currentPath: string = '/Sites/health-visits/documentLibrary';
+    currentFolderId: string = '-my-';
 
+    errorMessage: string = null;
     fileNodeId: any;
     fileShowed: boolean = false;
     multipleFileUpload: boolean = false;
@@ -67,13 +48,14 @@ export class FilesComponent implements OnInit {
 
     acceptedFilesType: string = '.jpg,.pdf,.js';
 
-    @ViewChild(DocumentList)
-    documentList: DocumentList;
+    @ViewChild(DocumentListComponent)
+    documentList: DocumentListComponent;
 
-    constructor(private contentService: AlfrescoContentService,
-                private documentActions: DocumentActionsService,
+    constructor(private documentActions: DocumentActionsService,
                 private formService: FormService,
-                private router: Router) {
+                private logService: LogService,
+                private router: Router,
+                @Optional() private route: ActivatedRoute) {
         documentActions.setHandler('my-handler', this.myDocumentActionHandler.bind(this));
     }
 
@@ -95,12 +77,6 @@ export class FilesComponent implements OnInit {
             this.fileShowed = true;
         } else {
             this.fileShowed = false;
-        }
-    }
-
-    onFolderChanged(event?: any) {
-        if (event) {
-            this.currentPath = event.path;
         }
     }
 
@@ -126,14 +102,31 @@ export class FilesComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (this.route) {
+            this.route.params.forEach((params: Params) => {
+                if (params['id']) {
+                    this.currentFolderId = params['id'];
+                }
+            });
+        }
         this.formService.getProcessDefinitions().subscribe(
             defs => this.setupBpmActions(defs || []),
-            err => console.log(err)
+            err => this.logService.error(err)
         );
     }
 
     viewActivitiForm(event?: any) {
         this.router.navigate(['/activiti/tasksnode', event.value.entry.id]);
+    }
+
+    onNavigationError(err: any) {
+        if (err) {
+            this.errorMessage = err.message || 'Navigation error';
+        }
+    }
+
+    resetError() {
+        this.errorMessage = null;
     }
 
     private setupBpmActions(actions: any[]) {

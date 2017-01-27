@@ -15,99 +15,80 @@
  * limitations under the License.
  */
 
-import { Component, ViewChild } from '@angular/core';
-import { ROUTER_DIRECTIVES, Router } from '@angular/router';
-
-import {
-    MDL,
-    AlfrescoSettingsService,
-    AlfrescoTranslationService,
-    AlfrescoPipeTranslate,
-    AlfrescoAuthenticationService
-} from 'ng2-alfresco-core';
-
-import { SearchBarComponent } from './components/index';
-import { NotificationService } from './services/notification.service';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlfrescoTranslationService, AlfrescoAuthenticationService, AlfrescoSettingsService, StorageService, LogService } from 'ng2-alfresco-core';
 
 declare var document: any;
-declare let componentHandler: any;
 
 @Component({
     selector: 'alfresco-app',
-    templateUrl: 'app/app.component.html',
-    styleUrls: ['app/app.component.css'],
-    directives: [SearchBarComponent, ROUTER_DIRECTIVES, MDL],
-    pipes: [AlfrescoPipeTranslate]
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
-    @ViewChild('notificationBar')
-    notificationBar: any;
-
-    translate: AlfrescoTranslationService;
     searchTerm: string = '';
 
     ecmHost: string = 'http://' + window.location.hostname + ':8080';
     bpmHost: string = 'http://' + window.location.hostname + ':9999';
 
-    constructor(public auth: AlfrescoAuthenticationService,
-                public router: Router,
-                translate: AlfrescoTranslationService,
-                public alfrescoSettingsService: AlfrescoSettingsService,
-                private notificationService: NotificationService) {
+    constructor(private authService: AlfrescoAuthenticationService,
+                private router: Router,
+                private settingsService: AlfrescoSettingsService,
+                private translateService: AlfrescoTranslationService,
+                private storage: StorageService,
+                private logService: LogService) {
         this.setEcmHost();
         this.setBpmHost();
+        this.setProvider();
 
-        this.translate = translate;
-        this.translate.addTranslationFolder();
-
-        notificationService.notifications.subscribe(
-            message => {
-                this.showNotificationBar(message);
-            });
-    }
-
-    public onChangeECMHost(event: KeyboardEvent): void {
-        console.log((<HTMLInputElement>event.target).value);
-        this.ecmHost = (<HTMLInputElement>event.target).value;
-        this.alfrescoSettingsService.ecmHost = this.ecmHost;
-        localStorage.setItem(`ecmHost`, this.ecmHost);
-    }
-
-    public onChangeBPMHost(event: KeyboardEvent): void {
-        console.log((<HTMLInputElement>event.target).value);
-        this.bpmHost = (<HTMLInputElement>event.target).value;
-        this.alfrescoSettingsService.bpmHost = this.bpmHost;
-        localStorage.setItem(`bpmHost`, this.bpmHost);
+        if (translateService) {
+            if (process.env.ENV === 'production') {
+                translateService.addTranslationFolder('custom', 'i18n/custom-translation');
+                translateService.addTranslationFolder('ng2-alfresco-login', 'i18n/custom-translation/alfresco-login');
+            } else {
+                translateService.addTranslationFolder('custom', 'custom-translation');
+                translateService.addTranslationFolder('ng2-alfresco-login', 'custom-translation/alfresco-login');
+            }
+        }
     }
 
     isLoggedIn(): boolean {
-        if (localStorage.getItem('username')) {
-            return this.auth.isLoggedIn();
-        } else {
-            return false;
+        this.redirectToLoginPageIfNotLoggedIn();
+        return this.authService.isLoggedIn();
+    }
+
+    redirectToLoginPageIfNotLoggedIn(): void {
+        if (!this.authService.isLoggedIn()) {
+            this.router.navigate(['/login']);
         }
+    }
+
+    isAPageWithHeaderBar(): boolean {
+        return location.pathname === '/login' || location.pathname === '/settings';
     }
 
     onLogout(event) {
         event.preventDefault();
-        localStorage.clear();
-        this.auth.logout()
+        this.authService.logout()
             .subscribe(
                 () => {
-                    this.router.navigate(['/login']);
-                    localStorage.removeItem('username');
+                    this.navigateToLogin();
                 },
-                ($event: any) => {
-                    console.log($event);
-                    if ($event && $event.response && $event.response.status === 401) {
-                        this.router.navigate(['/login']);
-                        localStorage.removeItem('username');
+                (error: any) => {
+                    if (error && error.response && error.response.status === 401) {
+                        this.navigateToLogin();
                     } else {
-                        console.error('An unknown error occurred while logging out', $event);
+                        this.logService.error('An unknown error occurred while logging out', error);
+                        this.navigateToLogin();
                     }
                 }
             );
+    }
+
+    navigateToLogin(){
+        this.router.navigate(['/login']);
+        this.hideDrawer();
     }
 
     onToggleSearch(event) {
@@ -121,7 +102,8 @@ export class AppComponent {
     }
 
     changeLanguage(lang: string) {
-        this.translate.use(lang);
+        this.translateService.use(lang);
+        this.hideDrawer();
     }
 
     hideDrawer() {
@@ -129,39 +111,32 @@ export class AppComponent {
         document.querySelector('.mdl-layout').MaterialLayout.toggleDrawer();
     }
 
-    isAdmin() {
-        let currentUser = localStorage.getItem('username');
-        return currentUser !== null && currentUser.indexOf('admin') === 0;
-    }
-
     private setEcmHost() {
-        if (localStorage.getItem(`ecmHost`)) {
-            this.alfrescoSettingsService.ecmHost = localStorage.getItem(`ecmHost`);
-            this.ecmHost = localStorage.getItem(`ecmHost`);
+        if (this.storage.hasItem(`ecmHost`)) {
+            this.settingsService.ecmHost = this.storage.getItem(`ecmHost`);
+            this.ecmHost = this.storage.getItem(`ecmHost`);
         } else {
-            this.alfrescoSettingsService.ecmHost = this.ecmHost;
+            this.settingsService.ecmHost = this.ecmHost;
         }
     }
 
     private setBpmHost() {
-        if (localStorage.getItem(`bpmHost`)) {
-            this.alfrescoSettingsService.bpmHost = localStorage.getItem(`bpmHost`);
-            this.bpmHost = localStorage.getItem(`bpmHost`);
+        if (this.storage.hasItem(`bpmHost`)) {
+            this.settingsService.bpmHost = this.storage.getItem(`bpmHost`);
+            this.bpmHost = this.storage.getItem(`bpmHost`);
         } else {
-            this.alfrescoSettingsService.bpmHost = this.bpmHost;
+            this.settingsService.bpmHost = this.bpmHost;
         }
     }
 
-    private showNotificationBar(message: string) {
-        if (componentHandler) {
-            componentHandler.upgradeAllRegistered();
+    private setProvider() {
+        if (this.storage.hasItem(`providers`)) {
+            this.settingsService.setProviders(this.storage.getItem(`providers`));
         }
+    }
 
-        if (this.notificationBar.nativeElement.MaterialSnackbar) {
-            this.notificationBar.nativeElement.MaterialSnackbar.showSnackbar({
-                message: message,
-                timeout: 3000
-            });
-        }
+    isAdmin() {
+        let currentUser = localStorage.getItem('username');
+        return currentUser !== null && currentUser.indexOf('admin') === 0;
     }
 }

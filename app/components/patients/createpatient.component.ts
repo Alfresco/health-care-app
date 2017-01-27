@@ -16,38 +16,48 @@
  */
 
 import { Component } from '@angular/core';
-import { AlfrescoAuthenticationService, AlfrescoSettingsService } from 'ng2-alfresco-core';
-import { ATIVITI_FORM_PROVIDERS, ActivitiForm } from 'ng2-activiti-form';
 import { Router } from '@angular/router';
+import {
+    AlfrescoApiService,
+    AlfrescoAuthenticationService,
+    AlfrescoSettingsService,
+    LogService
+} from 'ng2-alfresco-core';
 import { NotificationService } from '../../services/notification.service';
-import { ALFRESCO_ULPOAD_COMPONENTS } from 'ng2-alfresco-upload';
-
-declare let __moduleName: string;
 
 @Component({
-    moduleId: __moduleName,
     selector: 'createpatient-component',
     templateUrl: './createpatient.component.html',
-    styleUrls: ['./createpatient.component.css'],
-    providers: [ATIVITI_FORM_PROVIDERS],
-    directives: [ALFRESCO_ULPOAD_COMPONENTS, ActivitiForm]
+    styleUrls: ['./createpatient.component.css']
 })
 export class CreatePatientComponent {
 
-    currentPath: string = '/Sites/health-visits/documentLibrary';
+    rootPath: string = '/Sites/health-visits/documentLibrary';
+
+    sharedFolderId: string;
 
     metadata: any = {};
 
     photoNode: string = '';
 
-    imgSrc: string = 'app/img/anonymous.gif';
-
-    alfrescoApi: any = this.authService.getAlfrescoApi();
+    imgSrc: string = '/app/img/anonymous.gif';
 
     constructor(private authService: AlfrescoAuthenticationService,
                 private router: Router,
                 private notificationService: NotificationService,
-                private alfrescoSettingsService: AlfrescoSettingsService) {
+                private alfrescoSettingsService: AlfrescoSettingsService,
+                private apiService: AlfrescoApiService,
+                private logService: LogService) {
+    }
+
+    public ngOnInit() {
+        this.apiService.getInstance().core.nodesApi.getNode('-root-', {
+            relativePath: 'Shared'
+        }).then((nodeEntry) => {
+            this.sharedFolderId = nodeEntry.entry.id;
+        }, (error) => {
+            this.logService.error(error);
+        });
     }
 
     public fileUploaded(data) {
@@ -72,7 +82,7 @@ export class CreatePatientComponent {
             name: name,
             nodeType: 'hc:patientFolder',
             properties: {},
-            relativePath: this.currentPath
+            relativePath: this.rootPath
         };
 
         for (let key in data) {
@@ -83,7 +93,7 @@ export class CreatePatientComponent {
         let opts = {};
 
         let self = this;
-        this.alfrescoApi.nodes.addNode('-root-', body, opts).then(
+        this.apiService.getInstance().nodes.addNode('-root-', body, opts).then(
             (node) => {
                 console.log('The folder created', node);
                 self.router.navigate(['/patients']);
