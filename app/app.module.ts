@@ -31,7 +31,6 @@ import { ActivitiFormModule } from 'ng2-activiti-form';
 import { ActivitiTaskListModule } from 'ng2-activiti-tasklist';
 import { ActivitiProcessListModule } from 'ng2-activiti-processlist';
 import { UserInfoComponentModule } from 'ng2-alfresco-userinfo';
-import { AnalyticsModule } from 'ng2-activiti-analytics';
 
 import { AppComponent } from './app.component';
 import { routing } from './app.routes';
@@ -70,7 +69,6 @@ import {
         ActivitiTaskListModule.forRoot(),
         ActivitiProcessListModule.forRoot(),
         UserInfoComponentModule.forRoot(),
-        AnalyticsModule.forRoot(),
         CustomEditorsModule
     ],
     declarations: [
