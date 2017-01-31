@@ -74,8 +74,6 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     taskCompleted: boolean = false;
 
-    folderId: string;
-
     processInstanceId: string;
 
     processDefinitionId: string;
@@ -156,31 +154,31 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
 
     saveMetadata(formModel: FormModel) {
         let data = formModel.values;
-        let customerFolderData = this.getPatientFolderData(data);
-        customerFolderData.properties = {};
+        let patientFolderData = this.getPatientFolderData(data);
+        patientFolderData.properties = {};
 
         for (let key in data) {
             if (data[key]) {
-                customerFolderData.properties['vsd:' + key] = data[key];
+                patientFolderData.properties['vsd:' + key] = data[key];
             }
         }
 
-        this.apiService.getInstance().nodes.updateNode(this.folderId, customerFolderData, {}).then(
-            (node) => {
-                console.log(node);
-                this.updateDescriptionTaskWithNamePatient(formModel);
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
-
-
+        this.getFolderOrCreate(patientFolderData, {}).then((nodeEntry: NodeMinimalEntry) => {
+            this.apiService.getInstance().nodes.updateNode(nodeEntry.entry.id, patientFolderData, {}).then(
+                (updatedNode) => {
+                    console.log('Updated node', updatedNode);
+                    this.updateDescriptionTaskWithNamePatient(formModel);
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
     }
 
     getFolderOrCreate(body: any, opts: any): Promise<NodeMinimalEntry> {
         return this.apiService.getInstance().core.nodesApi.getNode('-root-', {
-            relativePath: opts.relativePath
+            relativePath: body.relativePath
         }).then((nodeEntry) => {
             return Promise.resolve(nodeEntry);
         }, () => {
