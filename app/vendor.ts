@@ -12,8 +12,6 @@ import 'rxjs';
 //Alfresco
 import 'ng2-alfresco-core';
 import 'ng2-alfresco-datatable';
-import 'ng2-activiti-diagrams';
-import 'ng2-activiti-analytics';
 import 'ng2-activiti-form';
 import 'ng2-activiti-processlist';
 import 'ng2-activiti-tasklist';
