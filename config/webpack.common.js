@@ -163,7 +163,12 @@ module.exports = {
                 from: 'css/material.orange-blue.min.css',
                 to: 'css/material.orange-blue.min.css',
                 flatten: true
-            },  {
+            }, {
+                context: 'public',
+                from: 'css/app.css',
+                to: 'css/app.css',
+                flatten: true
+            }, {
                 context: 'node_modules',
                 from: 'material-design-icons/iconfont/',
                 to: 'css/iconfont/',
