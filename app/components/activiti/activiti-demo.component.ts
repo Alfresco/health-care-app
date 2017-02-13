@@ -127,35 +127,30 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         this.notificationService.sendNotification('Task Saved');
     }
 
-    private getPatientFolderPath(patientFolder: any): string {
-        return this.initialPath + '/' + patientFolder.nodeId;
+    private getPatientFolderPath(patientData: any): string {
+        return this.initialPath + '/' + patientData.nodeId;
     }
 
     private getVisitFolderPath(patientFolder: any): string {
-        return this.getPatientFolderPath(patientFolder) + '/visit - ' + this.currentTaskId;
+        return this.getPatientFolderPath(patientFolder) + '/' + this.getVisitFolderName();
     }
 
-    private getPatientFolderData(formData: any): any {
-        return {
-            name: 'visit - ' + this.currentTaskId,
-            relativePath: this.getPatientFolderPath(formData)
-        };
+    private getVisitFolderName(): string {
+        return 'visit - ' + this.currentTaskId;
     }
 
     formLoaded(formModel: FormModel) {
         let data = formModel.values;
-        console.log('formLoaded', data);
-        let customerFolderData = this.getPatientFolderData(data);
-        customerFolderData.nodeType = 'vsd:visitdata';
-        this.getFolderOrCreate(customerFolderData, {}).then((nodeEntry: NodeMinimalEntry) => {
+        this.getFolderOrCreate(this.getVisitFolderName(), this.getPatientFolderPath(data), 'vsd:visitdata', {}).then((nodeEntry: NodeMinimalEntry) => {
             this.uploadFolderId = nodeEntry.entry.id;
         });
     }
 
     saveMetadata(formModel: FormModel) {
         let data = formModel.values;
-        let patientFolderData = this.getPatientFolderData(data);
-        patientFolderData.properties = {};
+        let patientFolderData = {
+            properties: {}
+        };
 
         for (let key in data) {
             if (data[key]) {
@@ -163,10 +158,9 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
             }
         }
 
-        this.getFolderOrCreate(patientFolderData, {}).then((nodeEntry: NodeMinimalEntry) => {
+        this.getFolderOrCreate(data['nodeId'], this.initialPath, 'hc:patientFolder', {}).then((nodeEntry: NodeMinimalEntry) => {
             this.apiService.getInstance().nodes.updateNode(nodeEntry.entry.id, patientFolderData, {}).then(
                 (updatedNode) => {
-                    console.log('Updated node', updatedNode);
                     this.updateDescriptionTaskWithNamePatient(formModel);
                 },
                 (err) => {
@@ -176,13 +170,17 @@ export class ActivitiDemoComponent implements OnInit, AfterViewChecked {
         });
     }
 
-    getFolderOrCreate(body: any, opts: any): Promise<NodeMinimalEntry> {
+    getFolderOrCreate(name: string, basePath: string, nodeType: string, opts: any): Promise<NodeMinimalEntry> {
         return this.apiService.getInstance().core.nodesApi.getNode('-root-', {
-            relativePath: body.relativePath
+            relativePath: basePath + '/' + name
         }).then((nodeEntry) => {
             return Promise.resolve(nodeEntry);
         }, () => {
-            return this.apiService.getInstance().nodes.addNode('-root-', body, opts);
+            return this.apiService.getInstance().nodes.addNode('-root-', {
+                name: name,
+                relativePath: basePath,
+                nodeType: nodeType
+            }, opts);
         });
     }
 
