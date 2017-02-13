@@ -95,8 +95,8 @@
     "element.scrollintoviewifneeded-polyfill": "^1.0.1"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.5.35",
-    "@types/node": "^6.0.45",
+    "@types/jasmine": "2.5.35",
+    "@types/node": "6.0.45",
     "angular2-template-loader": "^0.6.0",
     "awesome-typescript-loader": "^2.2.4",
     "classlist-polyfill": "^1.0.3",
