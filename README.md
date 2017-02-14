@@ -22,9 +22,9 @@ If you have fulfilled the prerequisites then you can install dependencies and st
     npm install
     npm run start
 
-##Configure ECM and BPM
+## Add demo data
 
-The project contains a script `bootstrap.sh` that you can use to import all the necessary data into your
+The project contains a script `bootstrap.sh` that you can use to import all the required data into your
 environment automatically.
 
 The script assumes you have Alfresco Content Services running on port 8080 and Alfresco Process Services
@@ -43,3 +43,22 @@ this at your own risk in a system with other data already present.*
 
 If you prefer you can set up the application data for [content services data](assets/ecm/README.md) and
 [process services data](assets/bpm/README.md) manually.
+
+## Usage
+
+The demo data defines two users who are used together to show the basic capabilities of the app
+
+| Username                  | Password    | Description              |
+| ------------------------- | ----------- | ------------------------ |
+| `admin@app.activiti.com`  | `admin`     | Administrative user used to create patients and schedule appointments |
+| `visitor@visitor.com`     | `visitor`   | Health visitor user required to carry out visits/tasks assigned to them |
+
+The basic demo flow as as follows
+
+1. Log in as the `admin@app.activiti.com` user
+2. Click *Create Patient* in the top navigation bar. Fill out the required fields and add an avatar image.
+3. In the *Patients* list, click the context menu for the new patient and click *Schedule an appointment*
+4. Fill out the required details in the form to schedule an appointment with the health visitor and click *Save*
+4. Log out of the app and log back in as the `visitor@visitor.com` user
+5. Click *Visits* in the top navigation. Select the first task assigned to you in the list and fill out the form before completing it.
+6. The next task assigned to you will automatically load. Continue through the process flow until you have no more tasks. The visit is now complete.
