@@ -159,3 +159,4 @@ ecm_update_model_status "VisitData" "ACTIVE"
 # create site and add visitor user as collaborator
 ecm_create_site "health-visits" "Healthcare Visits" "Healthcare app patient data" "PUBLIC"
 ecm_add_site_member "health-visits" "$bpm_user" "SiteCollaborator"
+ecm_add_site_member "health-visits" "visitor@visitor.com" "SiteCollaborator"
