@@ -16,7 +16,7 @@
 ### Import app
 
 1. Login as admin user and go to *Kickstart* > *Apps*
-2. Import app `app/visit.zip` into Activiti (Alfresco AppFest)
+2. Import app [app/visit.zip](./app/visit.zip) into Activiti (Alfresco AppFest)
 3. In the app editor remove and re-add the visitor user
 4. *Save* and *Publish* the App
 5. Login as visitor user
